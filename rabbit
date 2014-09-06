@@ -1,0 +1,20 @@
+#!/usr/bin/env php
+<?php
+
+(@include_once __DIR__ . '/vendor/autoload.php') || @include_once __DIR__ . '/../../autoload.php';
+
+use Bab\RabbitMq\Command\VhostMappingCreateCommand;
+use Bab\RabbitMq\Command\QueuePurgeCommand;
+use Bab\RabbitMq\Command\VhostResetCommand;
+use Bab\RabbitMq\Command\QueueRemoveCommand;
+use Bab\RabbitMq\Command\MessageMoveCommand;
+use Symfony\Component\Console\Application;
+
+$application = new Application();
+
+$application->add(new VhostMappingCreateCommand());
+$application->add(new MessageMoveCommand());
+$application->add(new QueuePurgeCommand());
+$application->add(new QueueRemoveCommand());
+$application->add(new VhostResetCommand());
+$application->run();
