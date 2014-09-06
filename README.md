@@ -41,3 +41,8 @@ You can use the followings parameters for configuring an exchange:
   and all  others ones will be configured to move unroutable messages to this
   one. The `unroutable` exchange is a fanout exchange and a `unroutable` queue
   is bind on it.
+
+## License
+
+This project is released under the MIT License. See the bundled LICENSE file
+for details.
