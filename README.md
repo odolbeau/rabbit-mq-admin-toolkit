@@ -2,11 +2,23 @@
 
 ## Installation
 
-Clone the repository and install vendors with [composer](http://getcomposer.org/download/).
+The recommended way to install Swarrot is through
+[Composer](http://getcomposer.org/). Require the
+`odolbeau/rabbit-mq-admin-toolkit` package into your `composer.json` file:
 
-    composer install
+```json
+{
+    "require": {
+        "odolbeau/rabbit-mq-admin-toolkit": "@stable"
+    }
+}
+```
 
-## Example
+**Protip:** you should browse the
+[`odolbeau/rabbit-mq-admin-toolkit`](https://packagist.org/packages/odolbeau/rabbit-mq-admin-toolkit)
+page to choose a stable version to use, avoid the `@stable` meta constraint.
+
+## Usage
 
 You can create / update vhosts with the following command:
 
