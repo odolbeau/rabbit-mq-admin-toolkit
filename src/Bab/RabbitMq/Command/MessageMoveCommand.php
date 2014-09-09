@@ -42,10 +42,12 @@ class MessageMoveCommand extends BaseCommand
             $input->getArgument('to_vhost')
         ));
 
+        $password = $this->getPassword($input, $output);
+
         $connection = new \AMQPConnection(array(
             'host'     => $input->getOption('host'),
-            'user'     => $input->getOption('user'),
-            'password' => $this->getPassword($input, $output),
+            'login'    => $input->getOption('user'),
+            'password' => $password,
             'vhost'    => $input->getArgument('from_vhost'),
         ));
         $connection->connect();
@@ -55,8 +57,8 @@ class MessageMoveCommand extends BaseCommand
 
         $connection = new \AMQPConnection(array(
             'host'     => $input->getOption('host'),
-            'user'     => $input->getOption('user'),
-            'password' => $this->getPassword($input, $output),
+            'login'    => $input->getOption('user'),
+            'password' => $password,
             'vhost'    => $input->getArgument('from_vhost'),
         ));
         $connection->connect();
