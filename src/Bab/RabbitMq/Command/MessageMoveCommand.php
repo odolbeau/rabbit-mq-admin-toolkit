@@ -35,11 +35,11 @@ class MessageMoveCommand extends BaseCommand
     {
         $output->writeln(sprintf(
             'Move messages from queue "%s" (vhost: "%s") to exchange "%s" with routingKey "%s" (vhost: "%s")',
-            $input->getARgument('from_queue'),
-            $input->getARgument('from_vhost'),
-            $input->getARgument('to_exchange'),
-            $input->getARgument('to_routing_key'),
-            $input->getARgument('to_vhost')
+            $input->getArgument('from_queue'),
+            $input->getArgument('from_vhost'),
+            $input->getArgument('to_exchange'),
+            $input->getArgument('to_routing_key'),
+            $input->getArgument('to_vhost')
         ));
 
         $connection = new \AMQPConnection(array(
