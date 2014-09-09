@@ -23,9 +23,9 @@ class BaseCommand extends Command
     /**
      * getVhostManager
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
-     * @param string $vhost
+     * @param string          $vhost
      *
      * @return VhostManager
      */
@@ -43,7 +43,7 @@ class BaseCommand extends Command
     /**
      * getPassword
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return string
