@@ -77,7 +77,7 @@ class MessageMoveCommand extends BaseCommand
         }
         $stack->push('Swarrot\Processor\Ack\AckProcessor', $messageProvider);
 
-        $processor = $stack->resolve(new MoveProcessor($messagePublisher, $input->getArgument('to_exchange')));
+        $processor = $stack->resolve(new MoveProcessor($messagePublisher, $input->getArgument('to_routing_key')));
 
         $consumer = new Consumer($messageProvider, $processor);
         $consumer->consume($options);
