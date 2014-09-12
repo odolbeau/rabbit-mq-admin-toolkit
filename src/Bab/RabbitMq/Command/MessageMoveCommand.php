@@ -59,7 +59,7 @@ class MessageMoveCommand extends BaseCommand
             'host'     => $input->getOption('host'),
             'login'    => $input->getOption('user'),
             'password' => $password,
-            'vhost'    => $input->getArgument('from_vhost'),
+            'vhost'    => $input->getArgument('to_vhost'),
         ));
         $connection->connect();
         $channel = new \AMQPChannel($connection);
