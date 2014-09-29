@@ -44,7 +44,7 @@ You can use the followings parameters for configuring an exchange:
 
 ## Exxample
 
-```json
+```yaml
 my_vhost_name:
     parameters:
         with_dl: true # If true, all queues will have a dl and the corresponding mapping with the exchange "dl"
