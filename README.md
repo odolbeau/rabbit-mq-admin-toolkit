@@ -42,7 +42,7 @@ You can use the followings parameters for configuring an exchange:
   one. The `unroutable` exchange is a fanout exchange and a `unroutable` queue
   is bind on it.
 
-## Exxample
+## Example
 
 ```yaml
 my_vhost_name:
