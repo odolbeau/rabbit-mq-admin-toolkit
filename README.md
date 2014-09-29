@@ -42,6 +42,31 @@ You can use the followings parameters for configuring an exchange:
   one. The `unroutable` exchange is a fanout exchange and a `unroutable` queue
   is bind on it.
 
+## Exxample
+
+```json
+my_vhost_name:
+    parameters:
+        with_dl: true # If true, all queues will have a dl and the corresponding mapping with the exchange "dl"
+        with_unroutable: true # If true, all exchange will be declared with an unroutable config
+
+    exchanges:
+        my_exchange:
+            type: direct
+            durable: true
+
+    queues:
+        my_queue:
+            durable: true
+            bindings:
+                - my_exchange:my_routing_key
+        another_queue:
+            durable: true
+            retries: [25, 125, 625]
+            bindings:
+                - my_exchange:my_routing_key
+```
+
 ## License
 
 This project is released under the MIT License. See the bundled LICENSE file
