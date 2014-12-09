@@ -75,6 +75,7 @@ class MessageMoveCommand extends BaseCommand
             $stack->push('Swarrot\Processor\MaxMessages\MaxMessagesProcessor');
             $options['max_messages'] = $max;
         }
+        $stack->push('Swarrot\Processor\Insomniac\InsomniacProcessor');
         $stack->push('Swarrot\Processor\Ack\AckProcessor', $messageProvider);
 
         $processor = $stack->resolve(new MoveProcessor($messagePublisher, $input->getArgument('to_routing_key')));
