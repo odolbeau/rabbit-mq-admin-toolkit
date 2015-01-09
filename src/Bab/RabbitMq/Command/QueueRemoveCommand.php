@@ -43,7 +43,7 @@ class QueueRemoveCommand extends BaseCommand
                 continue;
             }
             $output->writeln(sprintf(
-                'Purge queue <comment>%s</comment>.',
+                'Remove queue <comment>%s</comment>.',
                 $queue
             ));
 
