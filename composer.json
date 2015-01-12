@@ -1,5 +1,5 @@
 {
-    "name": "odolbeau/rabbit-mq-admin-toolkit",
+    "name": "domisys/rabbit-mq-admin-toolkit",
     "description": "RabbitMQ administration toolkit",
     "license": "MIT",
     "require": {
@@ -16,7 +16,7 @@
         }
     },
     "config": {
-        "bin-dir": "bin"
+        "bin-dir": "vendor/bin"
     },
     "bin": ["rabbit"],
     "extra": {
