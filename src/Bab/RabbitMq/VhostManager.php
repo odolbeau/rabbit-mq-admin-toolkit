@@ -189,6 +189,10 @@ class VhostManager
                 $this->createBinding($exchange, $bindingName, $routingKey);
             }
         }
+        
+        if (!empty($config['permissions'])) {
+            $this->setPermissions($config['permissions']);
+        }
     }
 
     /**
@@ -321,6 +325,50 @@ class VhostManager
                 'alternate-exchange' => 'unroutable'
             )
         ));
+    }
+    
+    /**
+     * setPermissions
+     *
+     * @param array $permissions
+     *
+     * @return void
+     */
+    protected function setPermissions(array $permissions = array())
+    {
+        if (!empty($permissions)) {
+            foreach($permissions as $user => $userPermissions)
+            {
+                $parameters = $this->extractPermissions($userPermissions);
+                $this->query('PUT', '/api/permissions/'.$this->credentials['vhost'].'/'.$user, $parameters);
+            }
+        }
+    }
+    
+    /**
+     * extractPermissions
+     *
+     * @param array $userPermissions
+     *
+     * @return void
+     */
+    private function extractPermissions(array $userPermissions = array())
+    {
+        $permissions = array(
+            'configure' => '',
+            'read' => '',
+            'write' => '',
+        );
+        
+        if (!empty($userPermissions)) {
+            foreach(array_keys($permissions) as $permission) {
+                if (!empty($userPermissions[$permission])) {
+                    $permissions[$permission] = $userPermissions[$permission];
+                }
+            }
+        }
+        
+        return $permissions;
     }
 
     /**
