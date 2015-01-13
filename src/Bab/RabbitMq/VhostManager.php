@@ -403,7 +403,7 @@ class VhostManager
      */
     protected function query($method, $url, array $parameters = null)
     {
-        $this->httpClient->query($method, $url, $parameters);
+        return $this->httpClient->query($method, $url, $parameters);
     }
 
     protected function log($message)
