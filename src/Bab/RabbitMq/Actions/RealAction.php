@@ -38,33 +38,10 @@ class RealAction extends Action
         return $this->query('POST', '/api/bindings/'.$this->vhost.'/e/'.$name.'/q/'.$queue, $parameters);
     }
     
-    public function setPermissions(array $config = array())
+    public function setPermissions($user, array $parameters = array())
     {
-        if (!empty($config['permissions'])) {
-            foreach($config['permissions'] as $user => $userPermissions)
-            {
-                $parameters = $this->extractPermissions($userPermissions);
-                $this->query('PUT', '/api/permissions/'.$this->vhost.'/'.$user, $parameters);
-            }
-        }
-    }
-    
-    private function extractPermissions(array $userPermissions = array())
-    {
-        $permissions = array(
-            'configure' => '',
-            'read' => '',
-            'write' => '',
-        );
-    
-        if (!empty($userPermissions)) {
-            foreach(array_keys($permissions) as $permission) {
-                if (!empty($userPermissions[$permission])) {
-                    $permissions[$permission] = $userPermissions[$permission];
-                }
-            }
-        }
-    
-        return $permissions;
+        $this->log(sprintf('Grant following permissions for user <info>%s</info> on vhost <info>%s</info>: <info>%s</info>', $user, $this->vhost, json_encode($parameters)));
+        
+        $this->query('PUT', '/api/permissions/'.$this->vhost.'/'.$user, $parameters);
     }
 }

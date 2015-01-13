@@ -70,7 +70,7 @@ class VhostManager
         $this->createBaseStructure($config);
         $this->createExchanges($config);
         $this->createQueues($config);
-        $this->action->setPermissions($config);
+        $this->setPermissions($config);
     }
     
     private function createBaseStructure(array $config)
@@ -335,6 +335,50 @@ class VhostManager
                 'alternate-exchange' => 'unroutable'
             )
         ));
+    }
+    
+    /**
+     * setPermissions
+     *
+     * @param array $permissions
+     *
+     * @return void
+     */
+    protected function setPermissions(array $config = array())
+    {
+        if (!empty($config['permissions'])) {
+            foreach($config['permissions'] as $user => $userPermissions)
+            {
+                $parameters = $this->extractPermissions($userPermissions);
+                $this->action->setPermissions($user, $parameters);
+            }
+        }
+    }
+    
+    /**
+     * extractPermissions
+     *
+     * @param array $userPermissions
+     *
+     * @return void
+     */
+    private function extractPermissions(array $userPermissions = array())
+    {
+        $permissions = array(
+            'configure' => '',
+            'read' => '',
+            'write' => '',
+        );
+        
+        if (!empty($userPermissions)) {
+            foreach(array_keys($permissions) as $permission) {
+                if (!empty($userPermissions[$permission])) {
+                    $permissions[$permission] = $userPermissions[$permission];
+                }
+            }
+        }
+        
+        return $permissions;
     }
 
     /**

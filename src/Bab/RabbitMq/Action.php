@@ -11,7 +11,7 @@ interface Action
     
     public function createBinding($name, $queue, $routingKey);
     
-    public function setPermissions(array $config = array());
+    public function setPermissions($user, array $parameters = array());
     
     public function setVhost($vhost);
 }
