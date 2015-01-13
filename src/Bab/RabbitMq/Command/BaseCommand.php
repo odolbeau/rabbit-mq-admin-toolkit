@@ -9,6 +9,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Bab\RabbitMq\Actions\RealAction;
 use Bab\RabbitMq\HttpClients\CurlClient;
+use Bab\RabbitMq\Loggers\CliLogger;
 
 class BaseCommand extends Command
 {
@@ -39,6 +40,7 @@ class BaseCommand extends Command
         $port = $input->getOption('port');
         $httpClient = new CurlClient($host, $port, $user, $pass);
         $action = new RealAction($httpClient);
+        $action->setLogger(new CliLogger($output));
         
         return new VhostManager(array(
             'host'     => $host,
