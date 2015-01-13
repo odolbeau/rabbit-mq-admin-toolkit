@@ -70,7 +70,7 @@ class VhostManager
         $this->createBaseStructure($config);
         $this->createExchanges($config);
         $this->createQueues($config);
-        $this->setPermissions($config);
+        $this->action->setPermissions($config);
     }
     
     private function createBaseStructure(array $config)
@@ -214,7 +214,6 @@ class VhostManager
                 $this->createBinding('retry', $name, $name);
             }
     
-    
             foreach ($bindings as $binding) {
                 list ($exchange, $routingKey) = explode(':', $binding);
                 $bindingName = $withDelay ? $name.'_delay_'.$delay : $name;
@@ -274,7 +273,7 @@ class VhostManager
      */
     protected function createExchange($exchange, array $parameters = array())
     {
-        $this->action->createExchange($exchange, $parameters);
+        return $this->action->createExchange($exchange, $parameters);
     }
 
     /**
@@ -287,7 +286,7 @@ class VhostManager
      */
     protected function createQueue($queue, array $parameters = array())
     {
-        $this->action->createQueue($queue, $parameters);
+        return $this->action->createQueue($queue, $parameters);
     }
 
     /**
@@ -301,21 +300,7 @@ class VhostManager
      */
     protected function createBinding($exchange, $queue, $routingKey = null)
     {
-        $this->log(sprintf(
-            'Create binding between exchange <info>%s</info> and queue <info>%s</info> (with routing_key: <info>%s</info>)',
-            $exchange,
-            $queue,
-            null !== $routingKey ? $routingKey : 'none'
-        ));
-
-        $parameters = null;
-        if (null !== $routingKey) {
-            $parameters = array(
-                'routing_key' => $routingKey,
-            );
-        }
-
-        return $this->query('POST', '/api/bindings/'.$this->credentials['vhost'].'/e/'.$exchange.'/q/'.$queue, $parameters);
+        return $this->action->createBinding($exchange, $queue, $routingKey);
     }
 
     /**
@@ -350,50 +335,6 @@ class VhostManager
                 'alternate-exchange' => 'unroutable'
             )
         ));
-    }
-    
-    /**
-     * setPermissions
-     *
-     * @param array $permissions
-     *
-     * @return void
-     */
-    protected function setPermissions(array $config = array())
-    {
-        if (!empty($config['permissions'])) {
-            foreach($config['permissions'] as $user => $userPermissions)
-            {
-                $parameters = $this->extractPermissions($userPermissions);
-                $this->query('PUT', '/api/permissions/'.$this->credentials['vhost'].'/'.$user, $parameters);
-            }
-        }
-    }
-    
-    /**
-     * extractPermissions
-     *
-     * @param array $userPermissions
-     *
-     * @return void
-     */
-    private function extractPermissions(array $userPermissions = array())
-    {
-        $permissions = array(
-            'configure' => '',
-            'read' => '',
-            'write' => '',
-        );
-        
-        if (!empty($userPermissions)) {
-            foreach(array_keys($permissions) as $permission) {
-                if (!empty($userPermissions[$permission])) {
-                    $permissions[$permission] = $userPermissions[$permission];
-                }
-            }
-        }
-        
-        return $permissions;
     }
 
     /**

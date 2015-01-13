@@ -9,5 +9,9 @@ interface Action
     
     public function createQueue($name, $parameters);
     
+    public function createBinding($name, $queue, $routingKey);
+    
+    public function setPermissions(array $config = array());
+    
     public function setVhost($vhost);
 }
