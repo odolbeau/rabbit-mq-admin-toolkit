@@ -3,27 +3,31 @@
 namespace Bab\RabbitMq;
 
 use Bab\RabbitMq\Actions\RealAction;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\NullLogger;
 
 class VhostManager
 {
+    use LoggerAwareTrait;
+    
     protected $credentials;
-    protected $output;
     private $hasDeadLetterExchange;
     private $hasUnroutableExchange;
     private $httpClient;
 
-    public function __construct(array $credentials, $output = null, Action $action, HttpClient $httpClient)
+    public function __construct(array $credentials, Action $action, HttpClient $httpClient)
     {
         $this->credentials = $credentials;
         if ('/' === $this->credentials['vhost']) {
             $this->credentials['vhost'] = '%2f';
         }
-        $this->output = $output;
+        
         $this->hasDeadLetterExchange = false;
         $this->hasUnroutableExchange = false;
         $this->action = $action;
         $this->action->setVhost($this->credentials['vhost']);
         $this->httpClient = $httpClient;
+        $this->logger = new NullLogger();
     }
 
     /**
@@ -408,10 +412,6 @@ class VhostManager
 
     protected function log($message)
     {
-        if (null == $this->output) {
-            return;
-        }
-
-        $this->output->writeln($message);
+        $this->logger->info($message);
     }
 }

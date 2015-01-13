@@ -34,21 +34,27 @@ class BaseCommand extends Command
      */
     protected function getVhostManager(InputInterface $input, OutputInterface $output, $vhost)
     {
+        $logger = new CliLogger($output);
+        
         $host = $input->getOption('host');
         $user = $input->getOption('user');
         $pass = $this->getPassword($input, $output);
         $port = $input->getOption('port');
         $httpClient = new CurlClient($host, $port, $user, $pass);
         $action = new RealAction($httpClient);
-        $action->setLogger(new CliLogger($output));
+        $action->setLogger($logger);
         
-        return new VhostManager(array(
+        $vhostManager = new VhostManager(array(
             'host'     => $host,
             'user'     => $user,
             'password' => $pass,
             'port'     => $port,
             'vhost'    => $vhost,
-        ), $output, $action, $httpClient);
+        ), $action, $httpClient);
+        
+        $vhostManager->setLogger($logger);
+        
+        return $vhostManager;
     }
 
     /**
