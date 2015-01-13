@@ -7,6 +7,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Bab\RabbitMq\VhostManager;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Bab\RabbitMq\Actions\RealAction;
+use Bab\RabbitMq\HttpClients\CurlClient;
 
 class BaseCommand extends Command
 {
@@ -31,13 +33,20 @@ class BaseCommand extends Command
      */
     protected function getVhostManager(InputInterface $input, OutputInterface $output, $vhost)
     {
+        $host = $input->getOption('host');
+        $user = $input->getOption('user');
+        $pass = $this->getPassword($input, $output);
+        $port = $input->getOption('port');
+        $httpClient = new CurlClient($host, $port, $user, $pass);
+        $action = new RealAction($httpClient);
+        
         return new VhostManager(array(
-            'host'     => $input->getOption('host'),
-            'user'     => $input->getOption('user'),
-            'password' => $this->getPassword($input, $output),
-            'port'     => $input->getOption('port'),
+            'host'     => $host,
+            'user'     => $user,
+            'password' => $pass,
+            'port'     => $port,
             'vhost'    => $vhost,
-        ), $output);
+        ), $output, $action, $httpClient);
     }
 
     /**

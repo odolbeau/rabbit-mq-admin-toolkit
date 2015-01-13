@@ -2,14 +2,17 @@
 
 namespace Bab\RabbitMq;
 
+use Bab\RabbitMq\Actions\RealAction;
+
 class VhostManager
 {
     protected $credentials;
     protected $output;
     private $hasDeadLetterExchange;
     private $hasUnroutableExchange;
+    private $httpClient;
 
-    public function __construct(array $credentials, $output = null)
+    public function __construct(array $credentials, $output = null, Action $action, HttpClient $httpClient)
     {
         $this->credentials = $credentials;
         if ('/' === $this->credentials['vhost']) {
@@ -18,6 +21,9 @@ class VhostManager
         $this->output = $output;
         $this->hasDeadLetterExchange = false;
         $this->hasUnroutableExchange = false;
+        $this->action = $action;
+        $this->action->setVhost($this->credentials['vhost']);
+        $this->httpClient = $httpClient;
     }
 
     /**
@@ -262,11 +268,9 @@ class VhostManager
      *
      * @return void
      */
-    protected function createExchange($exchange, array $parameters = null)
+    protected function createExchange($exchange, array $parameters = array())
     {
-        $this->log(sprintf('Create exchange <info>%s</info>', $exchange));
-
-        return $this->query('PUT', '/api/exchanges/'.$this->credentials['vhost'].'/'.$exchange, $parameters);
+        $this->action->createExchange($exchange, $parameters);
     }
 
     /**
@@ -277,11 +281,9 @@ class VhostManager
      *
      * @return void
      */
-    protected function createQueue($queue, $parameters)
+    protected function createQueue($queue, array $parameters = array())
     {
-        $this->log(sprintf('Create queue <info>%s</info>', $queue));
-
-        return $this->query('PUT', '/api/queues/'.$this->credentials['vhost'].'/'.$queue, $parameters);
+        $this->action->createQueue($queue, $parameters);
     }
 
     /**
@@ -393,79 +395,15 @@ class VhostManager
     /**
      * query
      *
-     * @param mixed $handle
      * @param mixed $method
      * @param mixed $url
-     *
-     * @return void
+     * @param array $parameters
+     * 
+     * @return response body
      */
     protected function query($method, $url, array $parameters = null)
     {
-        $handle = $this->getHandle();
-
-        curl_setopt($handle, CURLOPT_URL, $this->credentials['host'].$url);
-
-        if ('GET' === $method) {
-            curl_setopt($handle, CURLOPT_HTTPGET, true);
-        } else {
-            curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $method);
-        }
-
-        if (null !== $parameters) {
-            curl_setopt($handle, CURLOPT_POSTFIELDS, json_encode($parameters));
-        } elseif ('GET' !== $method && 'DELETE' !== $method) {
-            curl_setopt($handle, CURLOPT_POSTFIELDS, '{}');
-        }
-
-        $response = curl_exec($handle);
-        if (false === $response) {
-            throw new \RuntimeException(sprintf(
-                'Curl error: %s',
-                curl_error($handle)
-            ));
-        }
-
-        $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-
-        if (!in_array($httpCode, array(200, 201, 204))) {
-            throw new \RuntimeException(sprintf(
-                'Receive code %d instead of 200, 201 or 204. Url: %s. Body: %s',
-                $httpCode,
-                $url,
-                $response
-            ));
-        }
-
-        curl_close($handle);
-
-        return $response;
-    }
-
-    /**
-     * getHandle
-     *
-     * Return a correctly configured curl handle
-     *
-     * @return mixed
-     */
-    protected function getHandle()
-    {
-        $handle = curl_init();
-
-        curl_setopt_array($handle, array(
-            CURLOPT_HTTPHEADER     => array('Content-Type: application/json'),
-            CURLOPT_PORT           => $this->credentials['port'],
-            CURLOPT_VERBOSE        => false,
-            CURLOPT_HEADER         => false,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_USERPWD        => sprintf(
-                '%s:%s',
-                $this->credentials['user'],
-                $this->credentials['password']
-            ),
-        ));
-
-        return $handle;
+        $this->httpClient->query($method, $url, $parameters);
     }
 
     protected function log($message)
