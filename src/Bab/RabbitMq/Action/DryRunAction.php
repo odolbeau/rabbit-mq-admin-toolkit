@@ -3,11 +3,19 @@ namespace Bab\RabbitMq\Action;
 
 use Bab\RabbitMq\HttpClient;
 use Bab\RabbitMq\Response;
+use Bab\RabbitMq\HttpClient\GuzzleClient;
 
 class DryRunAction extends Action
 {
     const LABEL_EXCHANGE = 'exchange';
     const LABEL_QUEUE = 'queue';
+    
+    public function __construct(HttpClient $httpClient)
+    {
+        parent::__construct($httpClient);
+        
+        $this->httpClient->setDryRunMode(GuzzleClient::DRYRUN_ENABLED);
+    }
     
     public function resetVhost()
     {
