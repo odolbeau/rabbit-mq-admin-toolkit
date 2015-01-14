@@ -2,7 +2,7 @@
 
 ## Installation
 
-The recommended way to install Swarrot is through
+The recommended way to install RabbitMQ Tools is through
 [Composer](http://getcomposer.org/). Require the
 `odolbeau/rabbit-mq-admin-toolkit` package into your `composer.json` file:
 
@@ -49,7 +49,7 @@ my_vhost_name:
 
     permissions:
         my_user:
-            configuration:
+            configure: amq\.gen.*
             read: .*
             write: .*
             
