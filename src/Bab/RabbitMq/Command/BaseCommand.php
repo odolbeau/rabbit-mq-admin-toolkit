@@ -49,12 +49,9 @@ class BaseCommand extends Command
         $logger = new CliLogger($output);
         $httpClient = new GuzzleClient($context['scheme'], $context['host'], $context['port'], $context['user'], $context['pass']);
         
-        if ($input->getOption('dry-run'))
-        {
+        if ($input->getOption('dry-run')) {
             $action = new DryRunAction($httpClient);
-        }
-        else
-        {
+        } else {
             $action = new RealAction($httpClient);
         }
         $action->setLogger($logger);

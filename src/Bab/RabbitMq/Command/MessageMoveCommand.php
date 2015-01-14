@@ -33,8 +33,7 @@ class MessageMoveCommand extends BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption('dry-run'))
-        {
+        if ($input->getOption('dry-run')) {
             throw new \Exception('No dry-run scenario known for this command. Abort.');
         }
         
