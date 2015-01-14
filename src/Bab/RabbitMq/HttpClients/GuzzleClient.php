@@ -54,16 +54,15 @@ class GuzzleClient implements HttpClient
     
     public function query($verb, $uri, array $parameters = null)
     {
-        if(!empty($parameters)) {
-            $parameters = json_encode($parameters);
-        }
-        
         if($verb === 'GET' || $verb === 'DELETE')
         {
             $request = $this->client->createRequest($verb, $uri, array('body' => '{}'));
         }
         else
         {
+            if(!empty($parameters)) {
+                $parameters = json_encode($parameters);
+            }
             $request = $this->client->createRequest($verb, $uri, array('body' => $parameters));
         }
         
