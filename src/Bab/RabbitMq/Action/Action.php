@@ -23,8 +23,8 @@ abstract class Action implements \Bab\RabbitMq\Action
     {
         $this->vhost = $vhost;
     }
-
-    protected function query($verb, $uri, $parameters)
+    
+    protected function query($verb, $uri, array $parameters = null)
     {
         $this->ensureVhostDefined();
 
