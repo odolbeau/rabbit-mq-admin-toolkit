@@ -46,6 +46,13 @@ You can use the followings parameters for configuring an exchange:
 
 ```yaml
 my_vhost_name:
+
+    permissions:
+        my_user:
+            configuration:
+            read: .*
+            write: .*
+            
     parameters:
         with_dl: true # If true, all queues will have a dl and the corresponding mapping with the exchange "dl"
         with_unroutable: true # If true, all exchange will be declared with an unroutable config
@@ -54,10 +61,12 @@ my_vhost_name:
         my_exchange:
             type: direct
             durable: true
+            with_unroutable: true #if true, unroutable exchange will be created (if not already set as global parameter)
 
     queues:
         my_queue:
             durable: true
+            delay: 5000 #create delayed message queue (value is in milliseconds)
             bindings:
                 - my_exchange:my_routing_key
         another_queue:
