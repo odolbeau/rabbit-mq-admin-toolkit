@@ -7,13 +7,13 @@ use GuzzleHttp\Client;
 
 class GuzzleClient implements HttpClient
 {
-    private
-        $scheme,
-        $host,
-        $port,
-        $user,
-        $pass,
-        $client;
+    private $scheme;
+    private $host;
+    private $port;
+    private $user;
+    private $pass;
+    private $client;
+    private $dryRunModeEnabled;
     
     public function __construct($scheme, $host, $port, $user, $pass)
     {
