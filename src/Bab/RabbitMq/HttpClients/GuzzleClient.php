@@ -34,14 +34,14 @@ class GuzzleClient implements HttpClient
     
     private function formatBaseUrl()
     {
-        $scheme = '';
+        $scheme = $this->scheme;
         $host = trim($this->host);
         
         if (preg_match('~^(?<scheme>https?://).~', $host) === 0) {
-            if(empty($this->scheme)) {
-                throw new \Exception('You must define a host scheme http(s).');
+            if(empty($scheme)) {
+                $scheme = 'http';
             }
-            $scheme = trim($this->scheme). '://';
+            $scheme = trim($scheme). '://';
         }
         
         return sprintf(
