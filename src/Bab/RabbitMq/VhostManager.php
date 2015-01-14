@@ -34,25 +34,7 @@ class VhostManager
      */
     public function resetVhost()
     {
-        $vhost = $this->credentials['vhost'];
-        $this->log(sprintf('Delete vhost: <info>%s</info>', $vhost));
-        try {
-            $this->query('DELETE', '/api/vhosts/'.$vhost);
-        } catch (\Exception $e) {
-        }
-        $this->log(sprintf('Create vhost: <info>%s</info>', $vhost));
-        $this->query('PUT', '/api/vhosts/'.$vhost);
-        $this->log(sprintf(
-            'Grant all permission for <info>%s</info> on vhost <info>%s</info>',
-            $this->credentials['user'],
-            $vhost
-        ));
-        $this->query('PUT', '/api/permissions/'.$vhost.'/'.$this->credentials['user'], array(
-            'scope'     => 'client',
-            'configure' => '.*',
-            'write'     => '.*',
-            'read'      => '.*',
-        ));
+        $this->action->resetVhost();
     }
 
     /**
