@@ -2,7 +2,7 @@
 
 namespace Bab\RabbitMq;
 
-use Bab\RabbitMq\Actions\RealAction;
+use Bab\RabbitMq\Action\RealAction;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
 
@@ -215,7 +215,7 @@ class VhostManager
             }
     
             foreach ($bindings as $binding) {
-                list ($exchange, $routingKey) = explode(':', $binding);
+                list($exchange, $routingKey) = explode(':', $binding);
                 $bindingName = $withDelay ? $name.'_delay_'.$delay : $name;
     
                 $this->createBinding($exchange, $bindingName, $routingKey);
@@ -347,8 +347,7 @@ class VhostManager
     protected function setPermissions(array $config = array())
     {
         if (!empty($config['permissions'])) {
-            foreach($config['permissions'] as $user => $userPermissions)
-            {
+            foreach ($config['permissions'] as $user => $userPermissions) {
                 $parameters = $this->extractPermissions($userPermissions);
                 $this->action->setPermissions($user, $parameters);
             }
@@ -371,7 +370,7 @@ class VhostManager
         );
         
         if (!empty($userPermissions)) {
-            foreach(array_keys($permissions) as $permission) {
+            foreach (array_keys($permissions) as $permission) {
                 if (!empty($userPermissions[$permission])) {
                     $permissions[$permission] = $userPermissions[$permission];
                 }
@@ -387,7 +386,7 @@ class VhostManager
      * @param mixed $method
      * @param mixed $url
      * @param array $parameters
-     * 
+     *
      * @return response body
      */
     protected function query($method, $url, array $parameters = null)

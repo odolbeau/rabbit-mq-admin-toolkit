@@ -1,5 +1,6 @@
 <?php
-namespace Bab\RabbitMq\Actions;
+
+namespace Bab\RabbitMq\Action;
 
 use Bab\RabbitMq\HttpClient;
 

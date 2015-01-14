@@ -1,4 +1,5 @@
 <?php
+
 namespace Bab\RabbitMq;
 
 interface Action

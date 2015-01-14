@@ -1,5 +1,6 @@
 <?php
-namespace Bab\RabbitMq\Actions;
+
+namespace Bab\RabbitMq\Action;
 
 use Bab\RabbitMq\HttpClient;
 use Psr\Log\LoggerAwareTrait;
@@ -9,10 +10,9 @@ abstract class Action implements \Bab\RabbitMq\Action
 {
     use LoggerAwareTrait;
     
-    protected
-        $httpClient,
-        $vhost,
-        $logger;
+    protected $httpClient;
+    protected $vhost;
+    protected $logger;
     
     public function __construct(HttpClient $httpClient)
     {
@@ -39,8 +39,7 @@ abstract class Action implements \Bab\RabbitMq\Action
     
     private function ensureVhostDefined()
     {
-        if(empty($this->vhost))
-        {
+        if (empty($this->vhost)) {
             throw new \RuntimeException('Vhost must be defined');
         }
     }
