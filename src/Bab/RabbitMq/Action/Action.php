@@ -42,16 +42,14 @@ abstract class Action implements \Bab\RabbitMq\Action
     private function ensureVhostDefined()
     {
         $vhost = $this->getContextValue('vhost');
-        if(empty($vhost))
-        {
+        if (empty($vhost)) {
             throw new \RuntimeException('Vhost must be defined');
         }
     }
     
     protected function getContextValue($key)
     {
-        if(isset($this->context[$key]))
-        {
+        if (isset($this->context[$key])) {
             return $this->context[$key];
         }
         

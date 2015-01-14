@@ -1,14 +1,13 @@
 <?php
-namespace Bab\RabbitMq\Actions;
+namespace Bab\RabbitMq\Action;
 
 use Bab\RabbitMq\HttpClient;
 use Bab\RabbitMq\Response;
 
 class DryRunAction extends Action
 {
-    const
-        LABEL_EXCHANGE = 'exchange',
-        LABEL_QUEUE = 'queue';
+    const LABEL_EXCHANGE = 'exchange';
+    const LABEL_QUEUE = 'queue';
     
     public function resetVhost()
     {
@@ -67,18 +66,15 @@ class DryRunAction extends Action
     {
         $currentParameters = $this->query('GET', $apiUri);
         
-        if($currentParameters instanceof Response)
-        {
-            if ($currentParameters->code === 404)
-            {
+        if ($currentParameters instanceof Response) {
+            if ($currentParameters->code === 404) {
                 $this->log(sprintf('Add %s <info>%s</info> with following parameters <info>%s</info>', $objectType, $objectName, json_encode($parameters)));
                 return;
             }
-        
+            
             $configurationDelta = $this->array_diff_assoc_recursive($parameters, json_decode($currentParameters->body, true));
         
-            if(!empty($configurationDelta))
-            {
+            if (!empty($configurationDelta)) {
                 $this->log(
                     sprintf(
                         '<error>WARNING</error> following changes will crash the configuration update: Update %s <info>%s</info> with following parameters <error>%s</error>',
@@ -88,7 +84,6 @@ class DryRunAction extends Action
                     )
                 );
             }
-        
         }
     }
     
@@ -97,16 +92,16 @@ class DryRunAction extends Action
         $difference=array();
     
         foreach ($arrayA as $key => $value) {
-            if ( is_array($value) ) {
-                if ( !isset($arrayB[$key]) || !is_array($arrayB[$key]) ) {
+            if (is_array($value)) {
+                if (!isset($arrayB[$key]) || !is_array($arrayB[$key])) {
                     $difference[$key] = $value;
                 } else {
                     $new_diff = $this->array_diff_assoc_recursive($value, $arrayB[$key]);
-                    if ( !empty($new_diff) ) {
+                    if (!empty($new_diff)) {
                         $difference[$key] = $new_diff;
                     }
                 }
-            } elseif( !array_key_exists($key, $arrayB) || $arrayB[$key] !== $value ) {
+            } elseif (!array_key_exists($key, $arrayB) || $arrayB[$key] !== $value) {
                 $difference[$key] = $value;
             }
         }

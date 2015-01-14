@@ -38,7 +38,7 @@ class GuzzleClient implements HttpClient
         $host = trim($this->host);
         
         if (preg_match('~^(?<scheme>https?://).~', $host) === 0) {
-            if(empty($scheme)) {
+            if (empty($scheme)) {
                 $scheme = 'http';
             }
             $scheme = trim($scheme). '://';
@@ -54,13 +54,10 @@ class GuzzleClient implements HttpClient
     
     public function query($verb, $uri, array $parameters = null)
     {
-        if($verb === 'GET' || $verb === 'DELETE')
-        {
+        if ($verb === 'GET' || $verb === 'DELETE') {
             $request = $this->client->createRequest($verb, $uri, array('body' => '{}'));
-        }
-        else
-        {
-            if(!empty($parameters)) {
+        } else {
+            if (!empty($parameters)) {
                 $parameters = json_encode($parameters);
             }
             $request = $this->client->createRequest($verb, $uri, array('body' => $parameters));

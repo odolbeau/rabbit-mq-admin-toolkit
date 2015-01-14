@@ -227,8 +227,7 @@ class VhostManager
         $response = $this->query('GET', '/api/queues/'.$this->credentials['vhost']);
 
         $queues = array();
-        if($response instanceof Response)
-        {
+        if ($response instanceof Response) {
             $informations = json_decode($response->body, true);
             foreach ($informations as $information) {
                 $queues[] = $information['name'];
