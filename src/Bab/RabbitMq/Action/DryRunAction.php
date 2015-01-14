@@ -1,14 +1,13 @@
 <?php
-namespace Bab\RabbitMq\Actions;
+namespace Bab\RabbitMq\Action;
 
 use Bab\RabbitMq\HttpClient;
 use Bab\RabbitMq\Response;
 
 class DryRunAction extends Action
 {
-    const
-        LABEL_EXCHANGE = 'exchange',
-        LABEL_QUEUE = 'queue';
+    const LABEL_EXCHANGE = 'exchange';
+    const LABEL_QUEUE = 'queue';
     
     public function resetVhost()
     {
@@ -74,7 +73,7 @@ class DryRunAction extends Action
                 $this->log(sprintf('Add %s <info>%s</info> with following parameters <info>%s</info>', $objectType, $objectName, json_encode($parameters)));
                 return;
             }
-        
+            
             $configurationDelta = $this->array_diff_assoc_recursive($parameters, json_decode($currentParameters->body, true));
         
             if(!empty($configurationDelta))
