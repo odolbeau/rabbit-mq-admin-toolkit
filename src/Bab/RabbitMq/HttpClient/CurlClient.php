@@ -11,8 +11,8 @@ class CurlClient implements HttpClient
     private $port;
     private $user;
     private $pass;
-
-    public function __construct($host, $port, $user, $pass)
+    
+    public function __construct($scheme, $host, $port, $user, $pass)
     {
         $this->host = $host;
         $this->port = $port;
@@ -58,13 +58,8 @@ class CurlClient implements HttpClient
         }
 
         curl_close($handle);
-<<<<<<< HEAD
 
-        return $response;
-=======
-        
         return new Response($httpCode, $response);
->>>>>>> feat: add dry run action mecanism. move resetVhost, purge and remove action to actions classes
     }
 
     protected function getHandle()
