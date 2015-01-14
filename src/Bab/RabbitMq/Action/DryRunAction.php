@@ -14,12 +14,12 @@ class DryRunAction extends Action
         $vhost = $this->getContextValue('vhost');
         $user = $this->getContextValue('user');
         
-        $this->log(sprintf('Delete vhost: <info>%s</info>', $vhost));
+        $this->log(sprintf('Will Delete vhost: <info>%s</info>', $vhost));
         
-        $this->log(sprintf('Create vhost: <info>%s</info>', $vhost));
+        $this->log(sprintf('Will Create vhost: <info>%s</info>', $vhost));
         
         $this->log(sprintf(
-            'Grant all permission for <info>%s</info> on vhost <info>%s</info>',
+            'Will Grant all permission for <info>%s</info> on vhost <info>%s</info>',
             $user,
             $vhost
         ));
