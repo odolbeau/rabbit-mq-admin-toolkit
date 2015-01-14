@@ -34,14 +34,14 @@ class GuzzleClient implements HttpClient
     
     private function formatBaseUrl()
     {
-        $scheme = '';
+        $scheme = $this->scheme;
         $host = trim($this->host);
         
         if (preg_match('~^(?<scheme>https?://).~', $host) === 0) {
-            if(empty($this->scheme)) {
-                throw new \Exception('You must define a host scheme http(s).');
+            if(empty($scheme)) {
+                $scheme = 'http';
             }
-            $scheme = trim($this->scheme). '://';
+            $scheme = trim($scheme). '://';
         }
         
         return sprintf(
@@ -54,16 +54,15 @@ class GuzzleClient implements HttpClient
     
     public function query($verb, $uri, array $parameters = null)
     {
-        if(!empty($parameters)) {
-            $parameters = json_encode($parameters);
-        }
-        
         if($verb === 'GET' || $verb === 'DELETE')
         {
             $request = $this->client->createRequest($verb, $uri, array('body' => '{}'));
         }
         else
         {
+            if(!empty($parameters)) {
+                $parameters = json_encode($parameters);
+            }
             $request = $this->client->createRequest($verb, $uri, array('body' => $parameters));
         }
         
