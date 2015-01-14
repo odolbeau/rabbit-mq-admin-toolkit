@@ -11,9 +11,8 @@ class VhostManager
     use LoggerAwareTrait;
     
     protected $credentials;
-    private $hasDeadLetterExchange;
-    private $hasUnroutableExchange;
     private $httpClient;
+    private $config;
 
     public function __construct(array $credentials, Action $action, HttpClient $httpClient)
     {
@@ -22,8 +21,6 @@ class VhostManager
             $this->credentials['vhost'] = '%2f';
         }
         
-        $this->hasDeadLetterExchange = false;
-        $this->hasUnroutableExchange = false;
         $this->action = $action;
         $this->action->setVhost($this->credentials['vhost']);
         $this->httpClient = $httpClient;
@@ -65,7 +62,7 @@ class VhostManager
      *
      * @return void
      */
-    public function createMapping(array $config)
+    public function createMapping(Configuration $config)
     {
         $this->createBaseStructure($config);
         $this->createExchanges($config);
@@ -73,44 +70,27 @@ class VhostManager
         $this->setPermissions($config);
     }
     
-    private function createBaseStructure(array $config)
+    private function createBaseStructure(Configuration $config)
     {
-        if (isset($config['parameters']['with_dl'])) {
-            $this->hasDeadLetterExchange = (boolean) $config['parameters']['with_dl'];
-        }
-        $this->log(sprintf('With DL: <info>%s</info>', $this->hasDeadLetterExchange() === true ? 'true' : 'false'));
+        $this->log(sprintf('With DL: <info>%s</info>', $config->hasDeadLetterExchange() === true ? 'true' : 'false'));
     
-        if (isset($config['parameters']['with_unroutable'])) {
-            $this->hasUnroutableExchange = (boolean) $config['parameters']['with_unroutable'];
-        }
-        $this->log(sprintf('With Unroutable: <info>%s</info>', $this->hasUnroutableExchange() === true ? 'true' : 'false'));
+        $this->log(sprintf('With Unroutable: <info>%s</info>', $config->hasUnroutableExchange() === true ? 'true' : 'false'));
     
         // Unroutable queue must be created even if not asked but with_dl is
         // true to not loose unroutable messages which enters in dl exchange
-        if ($this->hasDeadLetterExchange() === true || $this->hasUnroutableExchange() === true) {
+        if ($config->hasDeadLetterExchange() === true || $config->hasUnroutableExchange() === true) {
             $this->createUnroutable();
         }
     
-        if ($this->hasDeadLetterExchange() === true) {
+        if ($config->hasDeadLetterExchange() === true) {
             $this->createDl();
         }
     }
     
-    private function hasDeadLetterExchange()
+    private function createExchanges(Configuration $config)
     {
-        return $this->hasDeadLetterExchange;
-    }
-    
-    private function hasUnroutableExchange()
-    {
-        return $this->hasUnroutableExchange;
-    }
-    
-    private function createExchanges(array $config)
-    {
-        // Create all exchanges
         foreach ($config['exchanges'] as $name => $parameters) {
-            $currentWithUnroutable = $this->hasUnroutableExchange();
+            $currentWithUnroutable = $config->hasUnroutableExchange();
     
             if (isset($parameters['with_unroutable'])) {
                 $currentWithUnroutable = (boolean) $parameters['with_unroutable'];
@@ -128,10 +108,10 @@ class VhostManager
         }
     }
     
-    private function createQueues(array $config)
+    private function createQueues(Configuration $config)
     {
         foreach ($config['queues'] as $name => $parameters) {
-            $currentWithDl = $this->hasDeadLetterExchange();
+            $currentWithDl = $config->hasDeadLetterExchange();
             $retries = array();
     
             $bindings = $parameters['bindings'];
@@ -148,7 +128,7 @@ class VhostManager
                 unset($parameters['retries']);
             }
     
-            if ($currentWithDl && $this->hasDeadLetterExchange() === false) {
+            if ($currentWithDl && $config->hasDeadLetterExchange() === false) {
                 $this->createDl();
             }
     
@@ -344,7 +324,7 @@ class VhostManager
      *
      * @return void
      */
-    protected function setPermissions(array $config = array())
+    protected function setPermissions(Configuration $config)
     {
         if (!empty($config['permissions'])) {
             foreach ($config['permissions'] as $user => $userPermissions) {
