@@ -7,9 +7,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Bab\RabbitMq\VhostManager;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Bab\RabbitMq\Actions\RealAction;
-use Bab\RabbitMq\HttpClients\CurlClient;
-use Bab\RabbitMq\Loggers\CliLogger;
+use Bab\RabbitMq\Action\RealAction;
+use Bab\RabbitMq\HttpClient\CurlClient;
+use Bab\RabbitMq\Logger\CliLogger;
 
 class BaseCommand extends Command
 {

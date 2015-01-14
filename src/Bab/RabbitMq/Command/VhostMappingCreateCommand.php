@@ -6,8 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Yaml\Parser;
+use Bab\RabbitMq\Configuration;
 
 class VhostMappingCreateCommand extends BaseCommand
 {
@@ -26,19 +25,11 @@ class VhostMappingCreateCommand extends BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $path = $input->getArgument('filepath');
-
-        $fs = new Filesystem();
-        if (!$fs->exists($path)) {
-            throw new \InvalidArgumentException(sprintf('File "%s" doen\'t exist', $path));
-        }
-
-        $yaml = new Parser();
-        $config = $yaml->parse(file_get_contents($path));
+        $configuration = new Configuration\Yaml($input->getArgument('filepath'));
 
         $vhost = $input->getOption('vhost');
         if (null === $vhost) {
-            $vhost = key($config);
+            $vhost = $configuration->getVhost();
         }
 
         $vhostManager = $this->getVhostManager($input, $output, $vhost);
@@ -47,6 +38,6 @@ class VhostMappingCreateCommand extends BaseCommand
             $vhostManager->resetVhost();
         }
 
-        $vhostManager->createMapping(current($config));
+        $vhostManager->createMapping($configuration);
     }
 }

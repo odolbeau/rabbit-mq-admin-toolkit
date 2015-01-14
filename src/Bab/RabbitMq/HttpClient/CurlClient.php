@@ -1,15 +1,15 @@
 <?php
-namespace Bab\RabbitMq\HttpClients;
+
+namespace Bab\RabbitMq\HttpClient;
 
 use Bab\RabbitMq\HttpClient;
 
 class CurlClient implements HttpClient
 {
-    private
-        $host,
-        $port,
-        $user,
-        $pass;
+    private $host;
+    private $port;
+    private $user;
+    private $pass;
     
     public function __construct($host, $port, $user, $pass)
     {
