@@ -2,18 +2,32 @@
 
 namespace Bab\RabbitMq;
 
+use Bab\RabbitMq\Actions\RealAction;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\NullLogger;
+
 class VhostManager
 {
+    use LoggerAwareTrait;
+    
     protected $credentials;
-    protected $output;
+    private $hasDeadLetterExchange;
+    private $hasUnroutableExchange;
+    private $httpClient;
 
-    public function __construct(array $credentials, $output = null)
+    public function __construct(array $credentials, Action $action, HttpClient $httpClient)
     {
         $this->credentials = $credentials;
         if ('/' === $this->credentials['vhost']) {
             $this->credentials['vhost'] = '%2f';
         }
-        $this->output = $output;
+        
+        $this->hasDeadLetterExchange = false;
+        $this->hasUnroutableExchange = false;
+        $this->action = $action;
+        $this->action->setVhost($this->credentials['vhost']);
+        $this->httpClient = $httpClient;
+        $this->logger = new NullLogger();
     }
 
     /**
@@ -53,84 +67,102 @@ class VhostManager
      */
     public function createMapping(array $config)
     {
-        $withDl = false;
+        $this->createBaseStructure($config);
+        $this->createExchanges($config);
+        $this->createQueues($config);
+        $this->setPermissions($config);
+    }
+    
+    private function createBaseStructure(array $config)
+    {
         if (isset($config['parameters']['with_dl'])) {
-            $withDl = (boolean) $config['parameters']['with_dl'];
+            $this->hasDeadLetterExchange = (boolean) $config['parameters']['with_dl'];
         }
-        $this->log(sprintf('With DL: <info>%s</info>', $withDl ? 'true' : 'false'));
-
-        $withUnroutable = false;
+        $this->log(sprintf('With DL: <info>%s</info>', $this->hasDeadLetterExchange() === true ? 'true' : 'false'));
+    
         if (isset($config['parameters']['with_unroutable'])) {
-            $withUnroutable = (boolean) $config['parameters']['with_unroutable'];
+            $this->hasUnroutableExchange = (boolean) $config['parameters']['with_unroutable'];
         }
-        $this->log(sprintf('With Unroutable: <info>%s</info>', $withUnroutable ? 'true' : 'false'));
-
+        $this->log(sprintf('With Unroutable: <info>%s</info>', $this->hasUnroutableExchange() === true ? 'true' : 'false'));
+    
         // Unroutable queue must be created even if not asked but with_dl is
         // true to not loose unroutable messages which enters in dl exchange
-        if ($withDl || $withUnroutable) {
+        if ($this->hasDeadLetterExchange() === true || $this->hasUnroutableExchange() === true) {
             $this->createUnroutable();
         }
-
-        if ($withDl) {
+    
+        if ($this->hasDeadLetterExchange() === true) {
             $this->createDl();
         }
-
+    }
+    
+    private function hasDeadLetterExchange()
+    {
+        return $this->hasDeadLetterExchange;
+    }
+    
+    private function hasUnroutableExchange()
+    {
+        return $this->hasUnroutableExchange;
+    }
+    
+    private function createExchanges(array $config)
+    {
         // Create all exchanges
         foreach ($config['exchanges'] as $name => $parameters) {
-            $currentWithUnroutable = $withUnroutable;
-
+            $currentWithUnroutable = $this->hasUnroutableExchange();
+    
             if (isset($parameters['with_unroutable'])) {
                 $currentWithUnroutable = (boolean) $parameters['with_unroutable'];
                 unset($parameters['with_unroutable']);
             }
-
+    
             if ($currentWithUnroutable && !isset($config['arguments']['alternate-exchange'])) {
                 if (!isset($parameters['arguments'])) {
                     $parameters['arguments'] = array();
                 }
                 $parameters['arguments']['alternate-exchange'] = 'unroutable';
             }
-
+    
             $this->createExchange($name, $parameters);
         }
-
-        if (!isset($config['queues'])) {
-            return;
-        }
-
+    }
+    
+    private function createQueues(array $config)
+    {
         foreach ($config['queues'] as $name => $parameters) {
-            $currentWithDl = $withDl;
+            $currentWithDl = $this->hasDeadLetterExchange();
             $retries = array();
-
+    
             $bindings = $parameters['bindings'];
             unset($parameters['bindings']);
-
+    
             if (isset($parameters['with_dl'])) {
                 $currentWithDl = (boolean) $parameters['with_dl'];
                 unset($parameters['with_dl']);
             }
-
+    
             if (isset($parameters['retries'])) {
                 $retries = $parameters['retries'];
                 $currentWithDl = true;
                 unset($parameters['retries']);
             }
-
-            if ($currentWithDl && !$withDl) {
+    
+            if ($currentWithDl && $this->hasDeadLetterExchange() === false) {
                 $this->createDl();
             }
-
+    
             if ($currentWithDl && !isset($config['arguments']['x-dead-letter-exchange'])) {
                 if (!isset($parameters['arguments'])) {
                     $parameters['arguments'] = array();
                 }
-
+    
                 $parameters['arguments']['x-dead-letter-exchange'] = 'dl';
                 $parameters['arguments']['x-dead-letter-routing-key'] = $name;
             }
-
+    
             $this->createQueue($name, $parameters);
-
+    
             $withDelay = false;
             if (isset($parameters['delay'])) {
                 $withDelay = true;
@@ -138,7 +170,7 @@ class VhostManager
                 $this->createExchange('delay', array(
                     'durable' => true,
                 ));
-
+    
                 $this->createQueue($name.'_delay_'.$delay, array(
                     'durable' => true,
                     'arguments' => array(
@@ -147,20 +179,20 @@ class VhostManager
                         'x-dead-letter-routing-key' => $name
                     )
                 ));
-
+    
                 $this->createBinding('delay', $name, $name);
-
+    
                 unset($parameters['delay']);
             }
-
+    
             if ($currentWithDl) {
                 $this->createQueue($name.'_dl', array(
-                    'durable' => true,
+                        'durable' => true,
                 ));
-
+    
                 $this->createBinding('dl', $name.'_dl', $name);
             }
-
+    
             for ($i = 0; $i < count($retries); $i++) {
                 $retryName = $name.'_retry_'.($i+1);
                 $this->createExchange('retry', array(
@@ -181,17 +213,13 @@ class VhostManager
                 $this->createBinding('retry', $retryName, $retryName);
                 $this->createBinding('retry', $name, $name);
             }
-
+    
             foreach ($bindings as $binding) {
                 list ($exchange, $routingKey) = explode(':', $binding);
                 $bindingName = $withDelay ? $name.'_delay_'.$delay : $name;
-
+    
                 $this->createBinding($exchange, $bindingName, $routingKey);
             }
-        }
-        
-        if (!empty($config['permissions'])) {
-            $this->setPermissions($config['permissions']);
         }
     }
 
@@ -243,11 +271,9 @@ class VhostManager
      *
      * @return void
      */
-    protected function createExchange($exchange, array $parameters = null)
+    protected function createExchange($exchange, array $parameters = array())
     {
-        $this->log(sprintf('Create exchange <info>%s</info>', $exchange));
-
-        return $this->query('PUT', '/api/exchanges/'.$this->credentials['vhost'].'/'.$exchange, $parameters);
+        return $this->action->createExchange($exchange, $parameters);
     }
 
     /**
@@ -258,11 +284,9 @@ class VhostManager
      *
      * @return void
      */
-    protected function createQueue($queue, $parameters)
+    protected function createQueue($queue, array $parameters = array())
     {
-        $this->log(sprintf('Create queue <info>%s</info>', $queue));
-
-        return $this->query('PUT', '/api/queues/'.$this->credentials['vhost'].'/'.$queue, $parameters);
+        return $this->action->createQueue($queue, $parameters);
     }
 
     /**
@@ -276,21 +300,7 @@ class VhostManager
      */
     protected function createBinding($exchange, $queue, $routingKey = null)
     {
-        $this->log(sprintf(
-            'Create binding between exchange <info>%s</info> and queue <info>%s</info> (with routing_key: <info>%s</info>)',
-            $exchange,
-            $queue,
-            null !== $routingKey ? $routingKey : 'none'
-        ));
-
-        $parameters = null;
-        if (null !== $routingKey) {
-            $parameters = array(
-                'routing_key' => $routingKey,
-            );
-        }
-
-        return $this->query('POST', '/api/bindings/'.$this->credentials['vhost'].'/e/'.$exchange.'/q/'.$queue, $parameters);
+        return $this->action->createBinding($exchange, $queue, $routingKey);
     }
 
     /**
@@ -334,13 +344,13 @@ class VhostManager
      *
      * @return void
      */
-    protected function setPermissions(array $permissions = array())
+    protected function setPermissions(array $config = array())
     {
-        if (!empty($permissions)) {
-            foreach($permissions as $user => $userPermissions)
+        if (!empty($config['permissions'])) {
+            foreach($config['permissions'] as $user => $userPermissions)
             {
                 $parameters = $this->extractPermissions($userPermissions);
-                $this->query('PUT', '/api/permissions/'.$this->credentials['vhost'].'/'.$user, $parameters);
+                $this->action->setPermissions($user, $parameters);
             }
         }
     }
@@ -374,87 +384,19 @@ class VhostManager
     /**
      * query
      *
-     * @param mixed $handle
      * @param mixed $method
      * @param mixed $url
-     *
-     * @return void
+     * @param array $parameters
+     * 
+     * @return response body
      */
     protected function query($method, $url, array $parameters = null)
     {
-        $handle = $this->getHandle();
-
-        curl_setopt($handle, CURLOPT_URL, $this->credentials['host'].$url);
-
-        if ('GET' === $method) {
-            curl_setopt($handle, CURLOPT_HTTPGET, true);
-        } else {
-            curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $method);
-        }
-
-        if (null !== $parameters) {
-            curl_setopt($handle, CURLOPT_POSTFIELDS, json_encode($parameters));
-        } elseif ('GET' !== $method && 'DELETE' !== $method) {
-            curl_setopt($handle, CURLOPT_POSTFIELDS, '{}');
-        }
-
-        $response = curl_exec($handle);
-        if (false === $response) {
-            throw new \RuntimeException(sprintf(
-                'Curl error: %s',
-                curl_error($handle)
-            ));
-        }
-
-        $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-
-        if (!in_array($httpCode, array(200, 201, 204))) {
-            throw new \RuntimeException(sprintf(
-                'Receive code %d instead of 200, 201 or 204. Url: %s. Body: %s',
-                $httpCode,
-                $url,
-                $response
-            ));
-        }
-
-        curl_close($handle);
-
-        return $response;
-    }
-
-    /**
-     * getHandle
-     *
-     * Return a correctly configured curl handle
-     *
-     * @return mixed
-     */
-    protected function getHandle()
-    {
-        $handle = curl_init();
-
-        curl_setopt_array($handle, array(
-            CURLOPT_HTTPHEADER     => array('Content-Type: application/json'),
-            CURLOPT_PORT           => $this->credentials['port'],
-            CURLOPT_VERBOSE        => false,
-            CURLOPT_HEADER         => false,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_USERPWD        => sprintf(
-                '%s:%s',
-                $this->credentials['user'],
-                $this->credentials['password']
-            ),
-        ));
-
-        return $handle;
+        return $this->httpClient->query($method, $url, $parameters);
     }
 
     protected function log($message)
     {
-        if (null == $this->output) {
-            return;
-        }
-
-        $this->output->writeln($message);
+        $this->logger->info($message);
     }
 }

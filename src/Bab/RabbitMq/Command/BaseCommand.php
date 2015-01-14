@@ -7,6 +7,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Bab\RabbitMq\VhostManager;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Bab\RabbitMq\Actions\RealAction;
+use Bab\RabbitMq\HttpClients\CurlClient;
+use Bab\RabbitMq\Loggers\CliLogger;
 
 class BaseCommand extends Command
 {
@@ -31,13 +34,27 @@ class BaseCommand extends Command
      */
     protected function getVhostManager(InputInterface $input, OutputInterface $output, $vhost)
     {
-        return new VhostManager(array(
-            'host'     => $input->getOption('host'),
-            'user'     => $input->getOption('user'),
-            'password' => $this->getPassword($input, $output),
-            'port'     => $input->getOption('port'),
+        $host = $input->getOption('host');
+        $user = $input->getOption('user');
+        $pass = $this->getPassword($input, $output);
+        $port = $input->getOption('port');
+
+        $logger = new CliLogger($output);
+        $httpClient = new CurlClient($host, $port, $user, $pass);
+        $action = new RealAction($httpClient);
+        $action->setLogger($logger);
+        
+        $vhostManager = new VhostManager(array(
+            'host'     => $host,
+            'user'     => $user,
+            'password' => $pass,
+            'port'     => $port,
             'vhost'    => $vhost,
-        ), $output);
+        ), $action, $httpClient);
+        
+        $vhostManager->setLogger($logger);
+        
+        return $vhostManager;
     }
 
     /**
