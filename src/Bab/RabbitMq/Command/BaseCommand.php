@@ -7,9 +7,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Bab\RabbitMq\VhostManager;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Bab\RabbitMq\Action\RealAction;
 use Bab\RabbitMq\Logger\CliLogger;
-use Bab\RabbitMq\Action\DryRunAction;
+use Bab\RabbitMq\Action;
 use Bab\RabbitMq\HttpClient\GuzzleClient;
 
 class BaseCommand extends Command
@@ -50,9 +49,9 @@ class BaseCommand extends Command
         $httpClient = new GuzzleClient($context['scheme'], $context['host'], $context['port'], $context['user'], $context['pass']);
         
         if ($input->getOption('dry-run')) {
-            $action = new DryRunAction($httpClient);
+            $action = new Action\DryRunAction($httpClient);
         } else {
-            $action = new RealAction($httpClient);
+            $action = new Action\RealAction($httpClient);
         }
         $action->setLogger($logger);
         

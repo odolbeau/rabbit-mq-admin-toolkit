@@ -1,5 +1,5 @@
 <?php
-namespace Bab\RabbitMq\HttpClients;
+namespace Bab\RabbitMq\HttpClient;
 
 use Bab\RabbitMq\HttpClient;
 use Bab\RabbitMq\Response;
