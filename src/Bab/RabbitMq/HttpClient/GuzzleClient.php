@@ -4,6 +4,7 @@ namespace Bab\RabbitMq\HttpClient;
 use Bab\RabbitMq\HttpClient;
 use Bab\RabbitMq\Response;
 use GuzzleHttp\Client;
+use GuzzleHttp\Message\Request;
 
 class GuzzleClient implements HttpClient
 {
@@ -54,6 +55,10 @@ class GuzzleClient implements HttpClient
     
     public function query($verb, $uri, array $parameters = null)
     {
+        if ($this->dryRunModeEnabled === self::DRYRUN_ENABLED && $verb !== 'GET') {
+            throw new \RuntimeException('Dry run mode must only accept GET requests');
+        }
+        
         if ($verb === 'GET' || $verb === 'DELETE') {
             $request = $this->client->createRequest($verb, $uri, array('body' => '{}'));
         } else {
@@ -63,11 +68,15 @@ class GuzzleClient implements HttpClient
             $request = $this->client->createRequest($verb, $uri, array('body' => $parameters));
         }
         
-        $response = $this->client->send($request);
+        try {
+            $response = $this->client->send($request);
+        } catch(\GuzzleHttp\Exception\ClientException $e) {
+            $response = $e->getResponse();
+        }
         
         $httpCode = $response->getStatusCode();
         
-        if (!in_array($httpCode, array(200, 201, 204))) {
+        if ($this->dryRunModeEnabled === self::DRYRUN_NOT_ENABLED && !in_array($httpCode, array(200, 201, 204))) {
             throw new \RuntimeException(sprintf(
                 'Receive code %d instead of 200, 201 or 204. Url: %s. Body: %s',
                 $httpCode,
@@ -77,5 +86,10 @@ class GuzzleClient implements HttpClient
         }
         
         return new Response($httpCode, $response->getBody());
+    }
+    
+    public function setDryRunMode($enabled = self::DRYRUN_NOT_ENABLED)
+    {
+        $this->dryRunModeEnabled = $enabled;
     }
 }
