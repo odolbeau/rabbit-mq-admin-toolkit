@@ -10,6 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Bab\RabbitMq\Action\RealAction;
 use Bab\RabbitMq\HttpClient\CurlClient;
 use Bab\RabbitMq\Logger\CliLogger;
+use Bab\RabbitMq\Action\DryRunAction;
 
 class BaseCommand extends Command
 {
@@ -20,6 +21,7 @@ class BaseCommand extends Command
             ->addOption('user', 'u', InputOption::VALUE_REQUIRED, 'Which user?', 'guest')
             ->addOption('password', 'p', InputOption::VALUE_REQUIRED, 'Which password? If nothing provided, password is asked', null)
             ->addOption('port', null, InputOption::VALUE_REQUIRED, 'Which port?', 15672)
+            ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Compare current configuration and specified one.')
         ;
     }
 
@@ -34,24 +36,29 @@ class BaseCommand extends Command
      */
     protected function getVhostManager(InputInterface $input, OutputInterface $output, $vhost)
     {
-        $host = $input->getOption('host');
-        $user = $input->getOption('user');
-        $pass = $this->getPassword($input, $output);
-        $port = $input->getOption('port');
+        $context = array(
+            'host'  => $input->getOption('host'),
+            'user'  => $input->getOption('user'),
+            'pass'  => $this->getPassword($input, $output),
+            'port'  => $input->getOption('port'),
+            'vhost' => $vhost
+        );
 
         $logger = new CliLogger($output);
-        $httpClient = new CurlClient($host, $port, $user, $pass);
-        $action = new RealAction($httpClient);
+
+        $httpClient = new CurlClient($context['host'], $context['port'], $context['user'], $context['pass']);
+        
+        if ($input->getOption('dry-run'))
+        {
+            $action = new DryRunAction($httpClient);
+        }
+        else
+        {
+            $action = new RealAction($httpClient);
+        }
         $action->setLogger($logger);
-
-        $vhostManager = new VhostManager(array(
-            'host'     => $host,
-            'user'     => $user,
-            'password' => $pass,
-            'port'     => $port,
-            'vhost'    => $vhost,
-        ), $action, $httpClient);
-
+        
+        $vhostManager = new VhostManager($context, $action, $httpClient);
         $vhostManager->setLogger($logger);
 
         return $vhostManager;

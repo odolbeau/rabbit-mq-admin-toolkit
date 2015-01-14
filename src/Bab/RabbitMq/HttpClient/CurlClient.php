@@ -3,6 +3,7 @@
 namespace Bab\RabbitMq\HttpClient;
 
 use Bab\RabbitMq\HttpClient;
+use Bab\RabbitMq\Response;
 
 class CurlClient implements HttpClient
 {
@@ -57,8 +58,13 @@ class CurlClient implements HttpClient
         }
 
         curl_close($handle);
+<<<<<<< HEAD
 
         return $response;
+=======
+        
+        return new Response($httpCode, $response);
+>>>>>>> feat: add dry run action mecanism. move resetVhost, purge and remove action to actions classes
     }
 
     protected function getHandle()

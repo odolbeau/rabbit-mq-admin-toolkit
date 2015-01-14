@@ -13,15 +13,16 @@ class VhostManager
     private $httpClient;
     private $config;
 
-    public function __construct(array $credentials, Action $action, HttpClient $httpClient)
+    public function __construct(array $context, Action $action, HttpClient $httpClient)
     {
-        $this->credentials = $credentials;
+        $this->credentials = $context;
         if ('/' === $this->credentials['vhost']) {
             $this->credentials['vhost'] = '%2f';
         }
 
         $this->action = $action;
-        $this->action->setVhost($this->credentials['vhost']);
+        $this->action->setContext($context);
+        
         $this->httpClient = $httpClient;
         $this->logger = new NullLogger();
     }
@@ -241,12 +242,17 @@ class VhostManager
      */
     public function getQueues()
     {
-        $informations = json_decode($this->query('GET', '/api/queues/'.$this->credentials['vhost']), true);
-        $queues = array();
-        foreach ($informations as $information) {
-            $queues[] = $information['name'];
-        }
+        $response = $this->query('GET', '/api/queues/'.$this->credentials['vhost']);
 
+        $queues = array();
+        if($response instanceof Response)
+        {
+            $informations = json_decode($response->body, true);
+            foreach ($informations as $information) {
+                $queues[] = $information['name'];
+            }
+        }
+        
         return $queues;
     }
 
@@ -259,7 +265,7 @@ class VhostManager
      */
     public function remove($queue)
     {
-        return $this->query('DELETE', '/api/queues/'.$this->credentials['vhost'].'/'.$queue);
+        return $this->action->remove($queue);
     }
 
     /**
@@ -271,7 +277,7 @@ class VhostManager
      */
     public function purge($queue)
     {
-        return $this->query('DELETE', '/api/queues/'.$this->credentials['vhost'].'/'.$queue.'/contents');
+        return $this->action->purge($queue);
     }
 
     /**
@@ -326,7 +332,7 @@ class VhostManager
             'durable' => true,
         ));
         $this->createQueue('unroutable', array(
-            'auto_delete' => 'false',
+            'auto_delete' => false,
             'durable'     => true,
         ));
         $this->createBinding('unroutable', 'unroutable');
