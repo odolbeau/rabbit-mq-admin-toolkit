@@ -33,6 +33,11 @@ class MessageMoveCommand extends BaseCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($input->getOption('dry-run'))
+        {
+            throw new \Exception('No dry-run scenario known for this command. Abort.');
+        }
+        
         $output->writeln(sprintf(
             'Move messages from queue "%s" (vhost: "%s") to exchange "%s" with routingKey "%s" (vhost: "%s")',
             $input->getArgument('from_queue'),
