@@ -10,14 +10,28 @@ class DryRunAction extends Action
 {
     const LABEL_EXCHANGE = 'exchange';
     const LABEL_QUEUE = 'queue';
-    
+    const LABEL_BINDING = 'binding';
+    const LABEL_PERMISSION = 'permission';
+
+    private $logs;
+
     public function __construct(HttpClient $httpClient)
     {
         parent::__construct($httpClient);
         
         $this->httpClient->setDryRunMode(GuzzleClient::DRYRUN_ENABLED);
     }
-    
+
+    public function startMapping()
+    {
+        $this->logger->debug('Start Dry-run RabbitMq configuration');
+    }
+
+    public function endMapping()
+    {
+        $this->logDryRunReport();
+    }
+
     public function resetVhost()
     {
         $vhost = $this->getContextValue('vhost');
@@ -52,12 +66,12 @@ class DryRunAction extends Action
         $bindings = json_decode($response->body, true);
         
         if ($this->isExistingBinding($bindings, $routingKey) === false) {
-            $this->log(sprintf(
-                'Will create binding between exchange <info>%s</info> and queue <info>%s</info> (with routing_key: <info>%s</info>)',
+            $this->logs[self::LABEL_BINDING]['update'][] = sprintf(
+                '<info>%s</info>. Queue <info>%s</info>. Parameters:  <info>routing_key: %s</info>)',
                 $name,
                 $queue,
                 null !== $routingKey ? $routingKey : 'none'
-            ));
+            );
         }
     }
     
@@ -81,7 +95,7 @@ class DryRunAction extends Action
         }
         
         if (!empty($permissionDelta)) {
-            $this->log(sprintf('Will attempt to grant following permissions for user <info>%s</info> on vhost <info>%s</info>: <info>%s</info>', $user, $this->getContextValue('vhost'), json_encode($permissionDelta)));
+            $this->logs[self::LABEL_PERMISSION]['update'][] = sprintf('User: <info>%s</info>. Vhost: <info>%s</info>. Parameters: <info>%s</info>', $user, $this->getContextValue('vhost'), json_encode($permissionDelta));
         }
     }
     
@@ -101,20 +115,17 @@ class DryRunAction extends Action
         
         if ($currentParameters instanceof Response) {
             if ($currentParameters->code === Response::NOT_FOUND) {
-                $this->log(sprintf('Add %s <info>%s</info> with following parameters <info>%s</info>', $objectType, $objectName, json_encode($parameters)));
+                $this->logs[$objectType]['update'][] = sprintf('<info>%s</info>. Parameters <info>%s</info>', $objectName, json_encode($parameters));
                 return;
             }
             
             $configurationDelta = $this->array_diff_assoc_recursive($parameters, json_decode($currentParameters->body, true));
         
             if (!empty($configurationDelta)) {
-                $this->log(
-                    sprintf(
-                        '<error>WARNING</error> following changes will crash the configuration update: Update %s <info>%s</info> with following parameters <error>%s</error>',
-                        $objectType,
-                        $objectName,
-                        json_encode($configurationDelta)
-                    )
+                $this->logs[$objectType]['error'][] = sprintf(
+                    '<info>%s</info>. Parameters <error>%s</error>',
+                    $objectName,
+                    json_encode($configurationDelta)
                 );
             }
         }
@@ -139,5 +150,27 @@ class DryRunAction extends Action
             }
         }
         return $difference;
+    }
+
+    private function logDryRunReport()
+    {
+        $steps = array(self::LABEL_EXCHANGE, self::LABEL_QUEUE, self::LABEL_BINDING, self::LABEL_PERMISSION);
+        $actions = array('update', 'error');
+
+        foreach ($steps as $step) {
+            foreach ($actions as $action) {
+                if (!empty($this->logs[$step][$action])) {
+                    $size = array_map('strlen', $this->logs[$step][$action]);
+                    foreach ($this->logs[$step][$action] as $message) {
+                        $message = str_pad(ucfirst($step) . ' : ' . $message, max($size)+20, '.');
+                        if($action == 'error') {
+                            $this->logger->error($message . '<error>[FAILED]</error>');
+                        } else {
+                            $this->logger->info($message . '<info>[UPDATED]</info>');
+                        }
+                    }
+                }
+            }
+        }
     }
 }
