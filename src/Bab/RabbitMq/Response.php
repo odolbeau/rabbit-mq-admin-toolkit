@@ -3,9 +3,10 @@ namespace Bab\RabbitMq;
 
 class Response
 {
-    public
-        $code,
-        $body;
+    const NOT_FOUND = 404;
+    
+    public $code;
+    public $body;
     
     public function __construct($code, $body)
     {
