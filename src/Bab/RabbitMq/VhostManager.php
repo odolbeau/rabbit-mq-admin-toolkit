@@ -96,7 +96,11 @@ class VhostManager
             $currentWithDl = $config->hasDeadLetterExchange();
             $retries = array();
 
-            $bindings = $parameters['bindings'];
+            $bindings = array();
+            
+            if (isset($parameters['bindings'])) {
+                $bindings = $parameters['bindings'];
+            }
             unset($parameters['bindings']);
 
             if (isset($parameters['with_dl'])) {
