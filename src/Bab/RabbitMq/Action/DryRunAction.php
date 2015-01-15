@@ -65,12 +65,9 @@ class DryRunAction extends Action
         $bindings = json_decode($response->body, true);
 
         if ($this->isExistingBinding($bindings, $routingKey) === false) {
-            $this->log->addUpdate(self::LABEL_BINDING, sprintf(
-                '<info>%s</info>. Queue <info>%s</info>. Parameters:  <info>routing_key: %s</info>)',
-                $name,
-                $queue,
-                null !== $routingKey ? $routingKey : 'none'
-            ));
+            $this->log->addUpdate(self::LABEL_BINDING, $queue.':'.$name, $arguments);
+        } else {
+            $this->log->addUnchanged(self::LABEL_BINDING, $queue.':'.$name, $arguments);
         }
     }
 
