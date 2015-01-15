@@ -21,27 +21,28 @@ class Log
         $this->logger = new NullLogger();
     }
 
-    public function addUpdate($context, $message)
+    public function addUpdate($context, $name, array $parameters)
     {
-        $this->append(self::TYPE_UPDATE, $context, $message);
+        $this->append(self::TYPE_UPDATE, $context, $name, $parameters);
     }
 
-    public function addFailed($context, $message)
+    public function addFailed($context, $name, array $parameters)
     {
-        $this->append(self::TYPE_FAILED, $context, $message);
+        $this->append(self::TYPE_FAILED, $context, $name, $parameters);
     }
 
-    public function addUnchanged($context, $message)
+    public function addUnchanged($context, $name, array $parameters)
     {
-        $this->append(self::TYPE_UNCHANGED, $context, $message);
+        $this->append(self::TYPE_UNCHANGED, $context, $name, $parameters);
     }
 
-    private function append($type, $context, $message)
+    private function append($type, $context, $name, array $parameters)
     {
         $log = array(
             'type' => $type,
             'context' => $context,
-            'message' => $message
+            'name' => $name,
+            'parameters' => $parameters,
         );
 
         $this->log[] = $log;
@@ -49,22 +50,46 @@ class Log
 
     public function output()
     {
-        $messageLength = 0;
-        $contextLength = 0;
+        $messageMaxLength = 0;
+        $contextMaxLength = 0;
         foreach ($this->log as $log) {
-            $currentMessageLength = strlen($log['message']);
-            if ($currentMessageLength > $messageLength) {
-                $messageLength = $currentMessageLength;
+            $currentMessageLength = strlen($log['name']);
+            if ($currentMessageLength > $messageMaxLength) {
+                $messageMaxLength = $currentMessageLength;
             }
 
             $currentContextLength = strlen($log['context']);
-            if ($currentContextLength > $contextLength) {
-                $contextLength = $currentContextLength;
+            if ($currentContextLength > $contextMaxLength) {
+                $contextMaxLength = $currentContextLength;
             }
         }
 
         foreach ($this->log as $log) {
-            $this->logger->info(str_pad(ucfirst(str_pad($log['context'], $contextLength)) . ': ' . $log['message'], $messageLength, '.') . ' ' . $log['type']);
+
+            $message = $this->formatLine($log, $contextMaxLength, $messageMaxLength);
+
+            switch ($log['type']) {
+                case self::TYPE_UPDATE:
+                    $this->logger->info($message);
+                    break;
+                case self::TYPE_FAILED:
+                    $this->logger->error($message .' Configuration values that cause failure: ' .json_encode($log['parameters']) );
+                    //$this->logger->error(json_encode($log['parameters']));
+                    break;
+                case self::TYPE_UNCHANGED:
+                    $this->logger->debug($message);
+                    break;
+            }
         }
+    }
+
+    private function formatContext($context, $contextMaxLength)
+    {
+        return ucfirst(str_pad($context, $contextMaxLength));
+    }
+
+    private function formatLine(array $log, $contextMaxLength, $messageMaxLength)
+    {
+        return str_pad($this->formatContext($log['context'], $contextMaxLength) . ': ' . $log['name'], $messageMaxLength+15, '.') . ' ' . $log['type'];
     }
 }
