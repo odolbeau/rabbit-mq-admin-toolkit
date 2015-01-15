@@ -46,10 +46,14 @@ class VhostManager
      */
     public function createMapping(Configuration $config)
     {
+        $this->action->startMapping();
+        
         $this->createBaseStructure($config);
         $this->createExchanges($config);
         $this->createQueues($config);
         $this->setPermissions($config);
+        
+        $this->action->endMapping();
     }
 
     private function createBaseStructure(Configuration $config)

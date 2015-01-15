@@ -6,6 +6,10 @@ interface Action
 {
     public function __construct(HttpClient $httpClient);
     
+    public function startMapping();
+    
+    public function endMapping();
+    
     public function resetVhost();
     
     public function createExchange($name, $parameters);

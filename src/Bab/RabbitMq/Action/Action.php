@@ -20,6 +20,16 @@ abstract class Action implements \Bab\RabbitMq\Action
         $this->logger = new NullLogger();
     }
     
+    public function startMapping()
+    {
+        
+    }
+    
+    public function endMapping()
+    {
+    
+    }
+    
     public function setContext(array $context = array())
     {
         $this->context = $context;
