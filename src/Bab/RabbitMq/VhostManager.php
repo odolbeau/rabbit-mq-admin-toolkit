@@ -195,12 +195,37 @@ class VhostManager
             }
     
             foreach ($bindings as $binding) {
-                list($exchange, $routingKey) = explode(':', $binding);
-                $bindingName = $withDelay ? $name.'_delay_'.$delay : $name;
-    
-                $this->createBinding($exchange, $bindingName, $routingKey);
+                $this->createUserBinding($name, $binding, $withDelay ? $delay : false);
             }
         }
+    }
+
+    private function createUserBinding($queueName, array $bindingDefinition, $delay = false)
+    {
+        $defaultParameterValues = array(
+            'routing_key' => null,
+            'x-match' => 'all',
+            'matches' => array(),
+        );
+
+        $parameters = array_merge($defaultParameterValues, $bindingDefinition);
+
+        if (! isset($parameters['exchange'])) {
+            throw new \InvalidArgumentException(sprintf(
+                'Exchange is missing in binding for queue %s',
+                $queueName
+            ));
+        }
+
+        $arguments = array();
+        if (! empty($parameters['matches'])) {
+            $arguments = $parameters['matches'];
+            $arguments['x-match'] = $parameters['x-match'];
+        }
+
+        $bindingName = $delay !== false ? $queueName.'_delay_'.$delay : $queueName;
+
+        $this->createBinding($parameters['exchange'], $bindingName, $parameters['routing_key'], $arguments);
     }
 
     /**
@@ -278,9 +303,9 @@ class VhostManager
      *
      * @return void
      */
-    protected function createBinding($exchange, $queue, $routingKey = null)
+    protected function createBinding($exchange, $queue, $routingKey = null, array $arguments = array())
     {
-        return $this->action->createBinding($exchange, $queue, $routingKey);
+        return $this->action->createBinding($exchange, $queue, $routingKey, $arguments);
     }
 
     /**

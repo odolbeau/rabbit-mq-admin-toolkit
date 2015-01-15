@@ -19,8 +19,8 @@ class RealAction extends Action
         
         return $this->query('PUT', '/api/queues/'.$this->vhost.'/'.$name, $parameters);
     }
-    
-    public function createBinding($name, $queue, $routingKey)
+
+    public function createBinding($name, $queue, $routingKey, array $arguments = array())
     {
         $this->log(sprintf(
             'Create binding between exchange <info>%s</info> and queue <info>%s</info> (with routing_key: <info>%s</info>)',
@@ -28,12 +28,13 @@ class RealAction extends Action
             $queue,
             null !== $routingKey ? $routingKey : 'none'
         ));
-        
-        $parameters = null;
-        if (null !== $routingKey) {
-            $parameters = array(
-                'routing_key' => $routingKey,
-            );
+
+        $parameters = array(
+            'arguments' => $arguments,
+        );
+
+        if (! empty($routingKey)) {
+            $parameters['routing_key'] = $routingKey;
         }
         
         return $this->query('POST', '/api/bindings/'.$this->vhost.'/e/'.$name.'/q/'.$queue, $parameters);

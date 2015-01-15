@@ -63,20 +63,58 @@ my_vhost_name:
             durable: true
             with_unroutable: true #if true, unroutable exchange will be created (if not already set as global parameter)
 
+        my_exchange_headers:
+            type: headers
+            durable: true
+
     queues:
         my_queue:
             durable: true
             delay: 5000 #create delayed message queue (value is in milliseconds)
             bindings:
-                - my_exchange:my_routing_key
+                - 
+                    exchange: my_exchange
+                    routing_key: my_routing_key
+                - 
+                    exchange: my_exchange
+                    routing_key: other_routing_key
+                    
         another_queue:
             durable: true
+            with_dl: false
             retries: [25, 125, 625]
             bindings:
-                - my_exchange:my_routing_key
+                - 
+                    exchange: my_exchange_headers
+                    x-match: all
+                    matches: {header_name: value, other_header_name: some_value}
 ```
 
 ## License
 
 This project is released under the MIT License. See the bundled LICENSE file
 for details.
+
+## Changelog
+
+### BC breaks between 1.x and 2.0.x
+
+  * Short binding syntax is no more supported. 
+```yaml
+  # old syntax
+  queues:
+    my_queue:
+        bindings:
+            - my_exchange:my_routing_key
+```
+must be replaced by
+```yaml
+  # new syntax
+  queues:
+    my_queue:
+        bindings:
+            - 
+                exchange: my_exchange
+                routing_key: my_routing_key
+```
+
