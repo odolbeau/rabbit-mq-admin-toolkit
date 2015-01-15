@@ -54,10 +54,6 @@ class VhostManager
 
     private function createBaseStructure(Configuration $config)
     {
-        $this->log(sprintf('With DL: <info>%s</info>', $config->hasDeadLetterExchange() === true ? 'true' : 'false'));
-
-        $this->log(sprintf('With Unroutable: <info>%s</info>', $config->hasUnroutableExchange() === true ? 'true' : 'false'));
-
         // Unroutable queue must be created even if not asked but with_dl is
         // true to not loose unroutable messages which enters in dl exchange
         if ($config->hasDeadLetterExchange() === true || $config->hasUnroutableExchange() === true) {
