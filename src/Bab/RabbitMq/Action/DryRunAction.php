@@ -70,7 +70,19 @@ class DryRunAction extends Action
     
     public function setPermissions($user, array $parameters = array())
     {
-        $this->log(sprintf('Will attempt to grant following permissions for user <info>%s</info> on vhost <info>%s</info>: <info>%s</info>', $user, $this->getContextValue('vhost'), json_encode($parameters)));
+        $response = $this->query('GET', '/api/users/'.$user.'/permissions');
+        $permissionDelta = array();
+        
+        if ($response->code === Response::NOT_FOUND) {
+            $permissionDelta = $parameters;
+        } else {
+            $userPermissions = current(json_decode($response->body, true));
+            $permissionDelta = array_diff_assoc($parameters, $userPermissions);
+        }
+        
+        if (!empty($permissionDelta)) {
+            $this->log(sprintf('Will attempt to grant following permissions for user <info>%s</info> on vhost <info>%s</info>: <info>%s</info>', $user, $this->getContextValue('vhost'), json_encode($permissionDelta)));
+        }
     }
     
     public function remove($queue)
@@ -88,7 +100,7 @@ class DryRunAction extends Action
         $currentParameters = $this->query('GET', $apiUri);
         
         if ($currentParameters instanceof Response) {
-            if ($currentParameters->code === 404) {
+            if ($currentParameters->code === Response::NOT_FOUND) {
                 $this->log(sprintf('Add %s <info>%s</info> with following parameters <info>%s</info>', $objectType, $objectName, json_encode($parameters)));
                 return;
             }
