@@ -92,6 +92,8 @@ class DryRunAction extends Action
 
         if (!empty($permissionDelta)) {
             $this->log->addUpdate(self::LABEL_PERMISSION, $user , $permissionDelta);
+        } else {
+            $this->log->addUnchanged(self::LABEL_PERMISSION, $user , $parameters);
         }
     }
 
