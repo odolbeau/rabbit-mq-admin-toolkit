@@ -4,6 +4,7 @@ namespace Bab\RabbitMq\Action;
 use Bab\RabbitMq\HttpClient;
 use Bab\RabbitMq\Response;
 use Bab\RabbitMq\HttpClient\GuzzleClient;
+use Bab\RabbitMq\Filter\BindingRoutingKeyFilterIterator;
 
 class DryRunAction extends Action
 {
@@ -47,12 +48,24 @@ class DryRunAction extends Action
     
     public function createBinding($name, $queue, $routingKey)
     {
-        $this->log(sprintf(
-            'Will create binding between exchange <info>%s</info> and queue <info>%s</info> (with routing_key: <info>%s</info>)',
-            $name,
-            $queue,
-            null !== $routingKey ? $routingKey : 'none'
-        ));
+        $response = $this->query('GET', '/api/bindings/'.$this->getContextValue('vhost').'/e/'.$name.'/q/'.$queue);
+        $bindings = json_decode($response->body, true);
+        
+        if ($this->isExistingBinding($bindings, $routingKey) === false) {
+            $this->log(sprintf(
+                'Will create binding between exchange <info>%s</info> and queue <info>%s</info> (with routing_key: <info>%s</info>)',
+                $name,
+                $queue,
+                null !== $routingKey ? $routingKey : 'none'
+            ));
+        }
+    }
+    
+    private function isExistingBinding(array $bindings = array(), $routingKey)
+    {
+        $matches = iterator_to_array(new BindingRoutingKeyFilterIterator(new \ArrayIterator($bindings), $routingKey));
+        
+        return !empty($matches);
     }
     
     public function setPermissions($user, array $parameters = array())
