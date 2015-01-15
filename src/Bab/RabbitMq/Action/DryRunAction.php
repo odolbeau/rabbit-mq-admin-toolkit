@@ -25,11 +25,6 @@ class DryRunAction extends Action
         $this->httpClient->setDryRunMode(GuzzleClient::DRYRUN_ENABLED);
     }
 
-    public function startMapping()
-    {
-        $this->logger->debug('Start Dry-run RabbitMq configuration');
-    }
-
     public function endMapping()
     {
         $this->log->setLogger($this->logger);
@@ -64,7 +59,7 @@ class DryRunAction extends Action
         return;
     }
 
-    public function createBinding($name, $queue, $routingKey)
+    public function createBinding($name, $queue, $routingKey, array $arguments = array())
     {
         $response = $this->query('GET', '/api/bindings/'.$this->getContextValue('vhost').'/e/'.$name.'/q/'.$queue);
         $bindings = json_decode($response->body, true);
@@ -99,7 +94,7 @@ class DryRunAction extends Action
         }
 
         if (!empty($permissionDelta)) {
-            $this->log->addUpdate(self::LABEL_PERMISSION, sprintf('User: <info>%s</info>. Vhost: <info>%s</info>. Parameters: <info>%s</info>', $user, $this->getContextValue('vhost'), json_encode($permissionDelta)));
+            $this->log->addUpdate(self::LABEL_PERMISSION, $user , $permissionDelta);
         }
     }
 
@@ -119,16 +114,18 @@ class DryRunAction extends Action
 
         if ($currentParameters instanceof Response) {
             if ($currentParameters->code === Response::NOT_FOUND) {
-                $this->log->addUpdate($objectType, sprintf('<info>%s</info>. Parameters <info>%s</info>', $objectName, json_encode($parameters)));
+                $this->log->addUpdate($objectType, $objectName, $parameters);
                 return;
             }
 
             $configurationDelta = $this->array_diff_assoc_recursive($parameters, json_decode($currentParameters->body, true));
 
             if (!empty($configurationDelta)) {
-                $this->log->addFailed($objectType, sprintf('<info>%s</info>. Parameters <error>%s</error>', $objectName, json_encode($configurationDelta)));
+                $this->log->addFailed($objectType, $objectName, $configurationDelta);
                 return;
             }
+
+            $this->log->addUnchanged($objectType, $objectName, $parameters);
         }
     }
 
