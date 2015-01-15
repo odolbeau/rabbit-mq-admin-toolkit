@@ -113,8 +113,8 @@ class VhostManager
                 $currentWithDl = true;
                 unset($parameters['retries']);
             }
-
-            if ($currentWithDl && $config->hasDeadLetterExchange() === false) {
+            
+            if ($currentWithDl === true && $config->hasDeadLetterExchange() === false) {
                 $this->createDl();
             }
 
@@ -153,7 +153,7 @@ class VhostManager
 
             if ($currentWithDl) {
                 $this->createQueue($name.'_dl', array(
-                        'durable' => true,
+                    'durable' => true,
                 ));
 
                 $this->createBinding('dl', $name.'_dl', $name);
