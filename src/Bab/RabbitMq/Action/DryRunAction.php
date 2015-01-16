@@ -83,7 +83,7 @@ class DryRunAction extends Action
         $response = $this->query('GET', '/api/users/'.$user.'/permissions');
         $permissionDelta = array();
 
-        if ($response->code === Response::NOT_FOUND) {
+        if ($response->isNotFound()) {
             $permissionDelta = $parameters;
         } else {
             $userPermissions = current(json_decode($response->body, true));
@@ -112,7 +112,7 @@ class DryRunAction extends Action
         $currentParameters = $this->query('GET', $apiUri);
 
         if ($currentParameters instanceof Response) {
-            if ($currentParameters->code === Response::NOT_FOUND) {
+            if ($currentParameters->isNotFound()) {
                 $this->log->addUpdate($objectType, $objectName, $parameters);
                 return;
             }
