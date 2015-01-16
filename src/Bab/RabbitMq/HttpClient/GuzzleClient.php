@@ -59,14 +59,11 @@ class GuzzleClient implements HttpClient
             throw new \RuntimeException('Dry run mode must only accept GET requests');
         }
 
-        if ($verb === 'GET' || $verb === 'DELETE') {
-            $request = $this->client->createRequest($verb, $uri, array('body' => '{}'));
-        } else {
-            if (!empty($parameters)) {
-                $parameters = json_encode($parameters);
-            }
-            $request = $this->client->createRequest($verb, $uri, array('body' => $parameters));
+        if (!empty($parameters)) {
+            $parameters = json_encode($parameters);
         }
+
+        $request = $this->client->createRequest($verb, $uri, array('body' => $parameters));
 
         try {
             $response = $this->client->send($request);
