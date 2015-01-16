@@ -22,7 +22,7 @@ class VhostManager
 
         $this->action = $action;
         $this->action->setContext($context);
-        
+
         $this->httpClient = $httpClient;
         $this->logger = new NullLogger();
     }
@@ -47,12 +47,12 @@ class VhostManager
     public function createMapping(Configuration $config)
     {
         $this->action->startMapping();
-        
+
         $this->createBaseStructure($config);
         $this->createExchanges($config);
         $this->createQueues($config);
         $this->setPermissions($config);
-        
+
         $this->action->endMapping();
     }
 
@@ -99,7 +99,7 @@ class VhostManager
             $retries = array();
 
             $bindings = array();
-            
+
             if (isset($parameters['bindings'])) {
                 $bindings = $parameters['bindings'];
             }
@@ -115,7 +115,7 @@ class VhostManager
                 $currentWithDl = true;
                 unset($parameters['retries']);
             }
-            
+
             if ($currentWithDl === true && $config->hasDeadLetterExchange() === false) {
                 $this->createDl();
             }
@@ -239,7 +239,7 @@ class VhostManager
                 $queues[] = $information['name'];
             }
         }
-        
+
         return $queues;
     }
 
