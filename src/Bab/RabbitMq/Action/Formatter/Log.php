@@ -50,21 +50,14 @@ class Log
 
     public function output()
     {
-        $messageMaxLength = 0;
-        $contextMaxLength = 0;
-        foreach ($this->log as $log) {
-            $currentMessageLength = strlen($log['name']);
-            if ($currentMessageLength > $messageMaxLength) {
-                $messageMaxLength = $currentMessageLength;
-            }
+        $logs = $this->log;
 
-            $currentContextLength = strlen($log['context']);
-            if ($currentContextLength > $contextMaxLength) {
-                $contextMaxLength = $currentContextLength;
-            }
-        }
+        $columnsMaxSize = $this->getColumnsMaxSize($logs);
 
-        foreach ($this->log as $log) {
+        $contextMaxLength = $columnsMaxSize['contextMaxLength'];
+        $messageMaxLength = $columnsMaxSize['messageMaxLength'];
+
+        foreach ($logs as $log) {
 
             $message = $this->formatLine($log, $contextMaxLength, $messageMaxLength);
 
@@ -80,6 +73,28 @@ class Log
                     break;
             }
         }
+    }
+
+    private function getColumnsMaxSize(array $logs)
+    {
+        $messageMaxLength = 0;
+        $contextMaxLength = 0;
+        foreach ($logs as $log) {
+            $currentMessageLength = strlen($log['name']);
+            if ($currentMessageLength > $messageMaxLength) {
+                $messageMaxLength = $currentMessageLength;
+            }
+
+            $currentContextLength = strlen($log['context']);
+            if ($currentContextLength > $contextMaxLength) {
+                $contextMaxLength = $currentContextLength;
+            }
+        }
+
+        return array(
+            'contextMaxLength' => $contextMaxLength,
+            'messageMaxLength' => $messageMaxLength
+        );
     }
 
     private function formatContext($context, $contextMaxLength)
