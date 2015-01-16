@@ -74,7 +74,6 @@ class Log
                     break;
                 case self::TYPE_FAILED:
                     $this->logger->error($message .' Configuration values that cause failure: ' .json_encode($log['parameters']) );
-                    //$this->logger->error(json_encode($log['parameters']));
                     break;
                 case self::TYPE_UNCHANGED:
                     $this->logger->debug($message);

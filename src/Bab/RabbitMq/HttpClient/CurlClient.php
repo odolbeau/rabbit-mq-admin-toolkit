@@ -11,8 +11,7 @@ class CurlClient implements HttpClient
     private $port;
     private $user;
     private $pass;
-    private $dryRunModeEnabled;
-    
+
     public function __construct($scheme, $host, $port, $user, $pass)
     {
         $this->host = $host;
@@ -82,8 +81,8 @@ class CurlClient implements HttpClient
 
         return $handle;
     }
-    
-    public function setDryRunMode($enabled = self::DRYRUN_NOT_ENABLED)
+
+    public function enableDryRun($enabled = false)
     {
         throw new \RuntimeException('Not Implemented');
     }

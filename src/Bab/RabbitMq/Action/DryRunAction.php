@@ -22,7 +22,7 @@ class DryRunAction extends Action
 
         $this->log = new Log();
 
-        $this->httpClient->setDryRunMode(GuzzleClient::DRYRUN_ENABLED);
+        $this->httpClient->enableDryRun(true);
     }
 
     public function endMapping()
@@ -130,7 +130,7 @@ class DryRunAction extends Action
 
     private function array_diff_assoc_recursive(array $arrayA, array $arrayB)
     {
-        $difference=array();
+        $difference = array();
 
         foreach ($arrayA as $key => $value) {
             if (is_array($value)) {
