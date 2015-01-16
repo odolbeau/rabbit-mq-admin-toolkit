@@ -22,7 +22,7 @@ class DryRunAction extends Action
 
         $this->log = new Log();
 
-        $this->httpClient->setDryRunMode(GuzzleClient::DRYRUN_ENABLED);
+        $this->httpClient->enableDryRun(true);
     }
 
     public function endMapping()
