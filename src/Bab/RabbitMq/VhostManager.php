@@ -99,6 +99,7 @@ class VhostManager
             $retries = array();
 
             $bindings = array();
+            $delay = null;
 
             if (isset($parameters['bindings'])) {
                 $bindings = $parameters['bindings'];
@@ -116,11 +117,18 @@ class VhostManager
                 unset($parameters['retries']);
             }
 
+            $withDelay = false;
+            if (isset($parameters['delay'])) {
+                $delay = (int) $parameters['delay'];
+                $withDelay = true;
+                unset($parameters['delay']);
+            }
+
             if ($currentWithDl === true && $config->hasDeadLetterExchange() === false) {
                 $this->createDl();
             }
 
-            if ($currentWithDl && !isset($config['arguments']['x-dead-letter-exchange'])) {
+            if ($currentWithDl === true && !isset($config['arguments']['x-dead-letter-exchange'])) {
                 if (!isset($parameters['arguments'])) {
                     $parameters['arguments'] = array();
                 }
@@ -131,10 +139,7 @@ class VhostManager
 
             $this->createQueue($name, $parameters);
 
-            $withDelay = false;
-            if (isset($parameters['delay'])) {
-                $withDelay = true;
-                $delay = (int) $parameters['delay'];
+            if ($withDelay === true) {
                 $this->createExchange('delay', array(
                     'durable' => true,
                 ));
@@ -149,8 +154,6 @@ class VhostManager
                 ));
 
                 $this->createBinding('delay', $name, $name);
-
-                unset($parameters['delay']);
             }
 
             if ($currentWithDl) {
