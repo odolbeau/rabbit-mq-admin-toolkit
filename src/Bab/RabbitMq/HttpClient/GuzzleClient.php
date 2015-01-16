@@ -74,18 +74,18 @@ class GuzzleClient implements HttpClient
             $response = $e->getResponse();
         }
 
-        $httpCode = $response->getStatusCode();
+        $response = new Response($response->getStatusCode(), $response->getBody());
 
-        if ($this->dryRunModeEnabled === false && !in_array($httpCode, array(200, 201, 204))) {
+        if ($this->dryRunModeEnabled === false && !$response->isSuccessful()) {
             throw new \RuntimeException(sprintf(
                 'Receive code %d instead of 200, 201 or 204. Url: %s. Body: %s',
-                $httpCode,
+                $response->code,
                 $uri,
-                $response
+                $response->body
             ));
         }
 
-        return new Response($httpCode, $response->getBody());
+        return $response;
     }
 
     public function enableDryRun($enabled = false)
