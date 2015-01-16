@@ -128,7 +128,7 @@ class VhostManager
                 $this->createDl();
             }
 
-            if ($currentWithDl && !isset($config['arguments']['x-dead-letter-exchange'])) {
+            if ($currentWithDl === true && !isset($config['arguments']['x-dead-letter-exchange'])) {
                 if (!isset($parameters['arguments'])) {
                     $parameters['arguments'] = array();
                 }
@@ -138,7 +138,6 @@ class VhostManager
             }
 
             $this->createQueue($name, $parameters);
-
 
             if ($withDelay === true) {
                 $this->createExchange('delay', array(
