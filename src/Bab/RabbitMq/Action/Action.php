@@ -12,7 +12,6 @@ abstract class Action implements \Bab\RabbitMq\Action
     
     protected $httpClient;
     protected $vhost;
-    protected $logger;
     
     public function __construct(HttpClient $httpClient)
     {
