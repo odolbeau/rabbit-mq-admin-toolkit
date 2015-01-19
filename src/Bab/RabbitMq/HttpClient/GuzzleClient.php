@@ -23,7 +23,9 @@ class GuzzleClient implements HttpClient
         $this->port = $port;
         $this->user = $user;
         $this->pass = $pass;
-
+        
+        $this->enableDryRun(false);
+        
         $this->client = new Client([
             'base_url' => $this->formatBaseUrl(),
             'defaults' => [
