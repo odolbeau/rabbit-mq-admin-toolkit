@@ -12,7 +12,6 @@ abstract class Action implements \Bab\RabbitMq\Action
 
     protected $httpClient;
     protected $context;
-    protected $logger;
     
     public function __construct(HttpClient $httpClient)
     {
@@ -22,12 +21,10 @@ abstract class Action implements \Bab\RabbitMq\Action
     
     public function startMapping()
     {
-        
     }
     
     public function endMapping()
     {
-    
     }
     
     public function setContext(array $context = array())

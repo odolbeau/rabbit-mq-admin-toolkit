@@ -4,7 +4,6 @@ namespace Bab\RabbitMq\Action;
 use Bab\RabbitMq\HttpClient;
 use Bab\RabbitMq\Response;
 use Bab\RabbitMq\HttpClient\GuzzleClient;
-use Bab\RabbitMq\Filter\BindingRoutingKeyFilterIterator;
 use Bab\RabbitMq\Action\Formatter\Log;
 
 class DryRunAction extends Action
@@ -61,21 +60,29 @@ class DryRunAction extends Action
 
     public function createBinding($name, $queue, $routingKey, array $arguments = array())
     {
-        $response = $this->query('GET', '/api/bindings/'.$this->getContextValue('vhost').'/e/'.$name.'/q/'.$queue);
+        $vhost = $this->getContextValue('vhost');
+        $response = $this->query('GET', '/api/queues/'.$vhost.'/'.$queue.'/bindings');
+        
+        $binding = array(
+            'source' => $name,
+            'destination' => $queue,
+            'vhost' => $vhost,
+            'routing_key' => is_null($routingKey) ? '' : $routingKey,
+            'arguments' => $arguments
+        );
+        
         $bindings = json_decode($response->body, true);
-
-        if ($this->isExistingBinding($bindings, $routingKey) === false) {
-            $this->log->addUpdate(self::LABEL_BINDING, $queue.':'.$name, $arguments);
-        } else {
-            $this->log->addUnchanged(self::LABEL_BINDING, $queue.':'.$name, $arguments);
+        
+        foreach ($bindings as $existingBinding) {
+            $configurationDelta = $this->array_diff_assoc_recursive($binding, $existingBinding);
+            
+            if (empty($configurationDelta)) {
+                $this->log->addUnchanged(self::LABEL_BINDING, $queue.':'.$name, $arguments);
+                return;
+            }
         }
-    }
-
-    private function isExistingBinding(array $bindings = array(), $routingKey)
-    {
-        $matches = iterator_to_array(new BindingRoutingKeyFilterIterator(new \ArrayIterator($bindings), $routingKey));
-
-        return !empty($matches);
+        
+        $this->log->addUpdate(self::LABEL_BINDING, $queue.':'.$name, $arguments);
     }
 
     public function setPermissions($user, array $parameters = array())
@@ -91,9 +98,9 @@ class DryRunAction extends Action
         }
 
         if (!empty($permissionDelta)) {
-            $this->log->addUpdate(self::LABEL_PERMISSION, $user , $permissionDelta);
+            $this->log->addUpdate(self::LABEL_PERMISSION, $user, $permissionDelta);
         } else {
-            $this->log->addUnchanged(self::LABEL_PERMISSION, $user , $parameters);
+            $this->log->addUnchanged(self::LABEL_PERMISSION, $user, $parameters);
         }
     }
 

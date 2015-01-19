@@ -58,7 +58,6 @@ class Log
         $messageMaxLength = $columnsMaxSize['messageMaxLength'];
 
         foreach ($logs as $log) {
-
             $message = $this->formatLine($log, $contextMaxLength, $messageMaxLength);
 
             switch ($log['type']) {
@@ -66,7 +65,7 @@ class Log
                     $this->logger->info($message);
                     break;
                 case self::TYPE_FAILED:
-                    $this->logger->error($message .' Configuration values that cause failure: ' .json_encode($log['parameters']) );
+                    $this->logger->error($message .' Configuration values that cause failure: ' .json_encode($log['parameters']));
                     break;
                 case self::TYPE_UNCHANGED:
                     $this->logger->debug($message);
