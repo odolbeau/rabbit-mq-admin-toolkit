@@ -18,5 +18,8 @@
         "branch-alias": {
             "dev-master": "2.1.x-dev"
         }
+    },
+    "require-dev": {
+        "fabpot/php-cs-fixer": "~1.4"
     }
 }
