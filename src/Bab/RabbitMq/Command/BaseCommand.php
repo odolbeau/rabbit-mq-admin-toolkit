@@ -42,7 +42,7 @@ class BaseCommand extends Command
             'user'   => $input->getOption('user'),
             'pass'   => $this->getPassword($input, $output),
             'port'   => $input->getOption('port'),
-            'vhost'  => $vhost
+            'vhost'  => $vhost,
         );
 
         $logger = new CliLogger($output);

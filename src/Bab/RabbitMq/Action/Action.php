@@ -12,28 +12,28 @@ abstract class Action implements \Bab\RabbitMq\Action
 
     protected $httpClient;
     protected $context;
-    
+
     public function __construct(HttpClient $httpClient)
     {
         $this->httpClient = $httpClient;
         $this->logger = new NullLogger();
     }
-    
+
     public function startMapping()
     {
     }
-    
+
     public function endMapping()
     {
     }
-    
+
     public function setContext(array $context = array())
     {
         $this->context = $context;
-        
+
         return $this;
     }
-    
+
     protected function query($verb, $uri, array $parameters = null)
     {
         $this->ensureVhostDefined();
@@ -53,13 +53,13 @@ abstract class Action implements \Bab\RabbitMq\Action
             throw new \RuntimeException('Vhost must be defined');
         }
     }
-    
+
     protected function getContextValue($key)
     {
         if (isset($this->context[$key])) {
             return $this->context[$key];
         }
-        
-        return null;
+
+        return;
     }
 }
