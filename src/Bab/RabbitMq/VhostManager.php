@@ -194,6 +194,13 @@ class VhostManager
             }
 
             foreach ($bindings as $binding) {
+                if (!is_array($binding) && false !== strpos($binding, ':')) {
+                    $parts = explode(':', $binding);
+                    $binding = [
+                        'exchange'    => $parts[0],
+                        'routing_key' => $parts[1],
+                    ];
+                }
                 $this->createUserBinding($name, $binding, $withDelay ? $delay : false);
             }
         }
