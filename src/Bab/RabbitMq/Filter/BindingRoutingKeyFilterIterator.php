@@ -8,7 +8,7 @@ class BindingRoutingKeyFilterIterator extends \FilterIterator
     
     public function __construct(\Iterator $it, $routingKey)
     {
-        $this->routingKey = $routingKey;
+        $this->routingKey = is_null($routingKey) ?  '' : $routingKey;
         
         parent::__construct($it);
     }
