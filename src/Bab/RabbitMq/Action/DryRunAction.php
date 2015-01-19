@@ -4,7 +4,6 @@ namespace Bab\RabbitMq\Action;
 use Bab\RabbitMq\HttpClient;
 use Bab\RabbitMq\Response;
 use Bab\RabbitMq\HttpClient\GuzzleClient;
-use Bab\RabbitMq\Filter\BindingRoutingKeyFilterIterator;
 use Bab\RabbitMq\Action\Formatter\Log;
 
 class DryRunAction extends Action
