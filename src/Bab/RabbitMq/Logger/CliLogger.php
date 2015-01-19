@@ -19,10 +19,9 @@ class CliLogger extends AbstractLogger
     {
         $verbosity = $this->output->getVerbosity();
 
-        if($verbosity >= OutputInterface::VERBOSITY_NORMAL && $level === LogLevel::ERROR
+        if ($verbosity >= OutputInterface::VERBOSITY_NORMAL && $level === LogLevel::ERROR
         || $verbosity >= OutputInterface::VERBOSITY_VERBOSE && $level === LogLevel::INFO
-        || $verbosity >= OutputInterface::VERBOSITY_VERY_VERBOSE)
-        {
+        || $verbosity >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
             $this->output->writeln($message);
         }
     }

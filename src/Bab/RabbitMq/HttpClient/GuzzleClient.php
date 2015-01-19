@@ -67,7 +67,7 @@ class GuzzleClient implements HttpClient
 
         try {
             $response = $this->client->send($request);
-        } catch(\GuzzleHttp\Exception\ClientException $e) {
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
             $response = $e->getResponse();
         }
 

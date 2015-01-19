@@ -77,7 +77,7 @@ class DryRunAction extends Action
         foreach ($bindings as $existingBinding) {
             $configurationDelta = $this->array_diff_assoc_recursive($binding, $existingBinding);
             
-            if( empty($configurationDelta) ) {
+            if (empty($configurationDelta)) {
                 $this->log->addUnchanged(self::LABEL_BINDING, $queue.':'.$name, $arguments);
                 return;
             }
@@ -99,9 +99,9 @@ class DryRunAction extends Action
         }
 
         if (!empty($permissionDelta)) {
-            $this->log->addUpdate(self::LABEL_PERMISSION, $user , $permissionDelta);
+            $this->log->addUpdate(self::LABEL_PERMISSION, $user, $permissionDelta);
         } else {
-            $this->log->addUnchanged(self::LABEL_PERMISSION, $user , $parameters);
+            $this->log->addUnchanged(self::LABEL_PERMISSION, $user, $parameters);
         }
     }
 

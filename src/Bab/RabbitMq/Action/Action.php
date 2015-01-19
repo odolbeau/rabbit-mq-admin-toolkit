@@ -22,12 +22,10 @@ abstract class Action implements \Bab\RabbitMq\Action
     
     public function startMapping()
     {
-        
     }
     
     public function endMapping()
     {
-    
     }
     
     public function setContext(array $context = array())
