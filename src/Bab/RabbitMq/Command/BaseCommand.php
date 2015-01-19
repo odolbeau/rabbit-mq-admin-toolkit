@@ -43,7 +43,7 @@ class BaseCommand extends Command
         $httpClient = new CurlClient($host, $port, $user, $pass);
         $action = new RealAction($httpClient);
         $action->setLogger($logger);
-        
+
         $vhostManager = new VhostManager(array(
             'host'     => $host,
             'user'     => $user,
@@ -51,9 +51,9 @@ class BaseCommand extends Command
             'port'     => $port,
             'vhost'    => $vhost,
         ), $action, $httpClient);
-        
+
         $vhostManager->setLogger($logger);
-        
+
         return $vhostManager;
     }
 

@@ -37,23 +37,23 @@ class QueueRemoveCommand extends BaseCommand
                 $pattern
             ));
         }
-        
+
         $hasQueueRemoved = false;
         foreach ($vhostManager->getQueues() as $queue) {
             if (null !== $pattern && 1 !== preg_match($pattern, $queue)) {
                 continue;
             }
-            
+
             $output->writeln(sprintf(
                 'Remove queue <comment>%s</comment>.',
                 $queue
             ));
 
             $vhostManager->remove($queue);
-            
+
             $hasQueueRemoved = true;
         };
-        
+
         if ($hasQueueRemoved === false) {
             $output->writeln('<info>No queue match the specified pattern</info>.');
         }

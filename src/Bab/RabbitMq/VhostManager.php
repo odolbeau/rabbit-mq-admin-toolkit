@@ -2,14 +2,13 @@
 
 namespace Bab\RabbitMq;
 
-use Bab\RabbitMq\Action\RealAction;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
 
 class VhostManager
 {
     use LoggerAwareTrait;
-    
+
     protected $credentials;
     private $httpClient;
     private $config;
@@ -20,7 +19,7 @@ class VhostManager
         if ('/' === $this->credentials['vhost']) {
             $this->credentials['vhost'] = '%2f';
         }
-        
+
         $this->action = $action;
         $this->action->setVhost($this->credentials['vhost']);
         $this->httpClient = $httpClient;
@@ -51,7 +50,7 @@ class VhostManager
             'scope'     => 'client',
             'configure' => '.*',
             'write'     => '.*',
-            'read'      => '.*'
+            'read'      => '.*',
         ));
     }
 
@@ -69,80 +68,80 @@ class VhostManager
         $this->createQueues($config);
         $this->setPermissions($config);
     }
-    
+
     private function createBaseStructure(Configuration $config)
     {
         $this->log(sprintf('With DL: <info>%s</info>', $config->hasDeadLetterExchange() === true ? 'true' : 'false'));
-    
+
         $this->log(sprintf('With Unroutable: <info>%s</info>', $config->hasUnroutableExchange() === true ? 'true' : 'false'));
-    
+
         // Unroutable queue must be created even if not asked but with_dl is
         // true to not loose unroutable messages which enters in dl exchange
         if ($config->hasDeadLetterExchange() === true || $config->hasUnroutableExchange() === true) {
             $this->createUnroutable();
         }
-    
+
         if ($config->hasDeadLetterExchange() === true) {
             $this->createDl();
         }
     }
-    
+
     private function createExchanges(Configuration $config)
     {
         foreach ($config['exchanges'] as $name => $parameters) {
             $currentWithUnroutable = $config->hasUnroutableExchange();
-    
+
             if (isset($parameters['with_unroutable'])) {
                 $currentWithUnroutable = (boolean) $parameters['with_unroutable'];
                 unset($parameters['with_unroutable']);
             }
-    
+
             if ($currentWithUnroutable && !isset($config['arguments']['alternate-exchange'])) {
                 if (!isset($parameters['arguments'])) {
                     $parameters['arguments'] = array();
                 }
                 $parameters['arguments']['alternate-exchange'] = 'unroutable';
             }
-    
+
             $this->createExchange($name, $parameters);
         }
     }
-    
+
     private function createQueues(Configuration $config)
     {
         foreach ($config['queues'] as $name => $parameters) {
             $currentWithDl = $config->hasDeadLetterExchange();
             $retries = array();
-    
+
             $bindings = $parameters['bindings'];
             unset($parameters['bindings']);
-    
+
             if (isset($parameters['with_dl'])) {
                 $currentWithDl = (boolean) $parameters['with_dl'];
                 unset($parameters['with_dl']);
             }
-    
+
             if (isset($parameters['retries'])) {
                 $retries = $parameters['retries'];
                 $currentWithDl = true;
                 unset($parameters['retries']);
             }
-    
+
             if ($currentWithDl && $config->hasDeadLetterExchange() === false) {
                 $this->createDl();
             }
-    
+
             if ($currentWithDl && !isset($config['arguments']['x-dead-letter-exchange'])) {
                 if (!isset($parameters['arguments'])) {
                     $parameters['arguments'] = array();
                 }
-    
+
                 $parameters['arguments']['x-dead-letter-exchange'] = 'dl';
                 $parameters['arguments']['x-dead-letter-routing-key'] = $name;
             }
-    
+
             $this->createQueue($name, $parameters);
-    
+
             $withDelay = false;
             if (isset($parameters['delay'])) {
                 $withDelay = true;
@@ -150,50 +149,50 @@ class VhostManager
                 $this->createExchange('delay', array(
                     'durable' => true,
                 ));
-    
+
                 $this->createQueue($name.'_delay_'.$delay, array(
                     'durable' => true,
                     'arguments' => array(
                         'x-message-ttl' => $delay,
                         'x-dead-letter-exchange' => 'delay',
-                        'x-dead-letter-routing-key' => $name
-                    )
+                        'x-dead-letter-routing-key' => $name,
+                    ),
                 ));
-    
+
                 $this->createBinding('delay', $name, $name);
-    
+
                 unset($parameters['delay']);
             }
-    
+
             if ($currentWithDl) {
                 $this->createQueue($name.'_dl', array(
                         'durable' => true,
                 ));
-    
+
                 $this->createBinding('dl', $name.'_dl', $name);
             }
-    
+
             for ($i = 0; $i < count($retries); $i++) {
                 $retryName = $name.'_retry_'.($i+1);
                 $this->createExchange('retry', array(
                     'durable' => true,
                     'type'    => 'topic',
                     'arguments' => array(
-                        'alternate-exchange' => 'unroutable'
-                    )
+                        'alternate-exchange' => 'unroutable',
+                    ),
                 ));
                 $this->createQueue($retryName, array(
                     'durable' => true,
                     'arguments' => array(
                         'x-message-ttl' => $retries[$i]*1000,
                         'x-dead-letter-exchange' => 'retry',
-                        'x-dead-letter-routing-key' => $name
-                    )
+                        'x-dead-letter-routing-key' => $name,
+                    ),
                 ));
                 $this->createBinding('retry', $retryName, $retryName);
                 $this->createBinding('retry', $name, $name);
             }
-    
+
             foreach ($bindings as $binding) {
                 $this->createUserBinding($name, $binding, $withDelay ? $delay : false);
             }
@@ -337,11 +336,11 @@ class VhostManager
             'type'      => 'direct',
             'durable'   => true,
             'arguments' => array(
-                'alternate-exchange' => 'unroutable'
-            )
+                'alternate-exchange' => 'unroutable',
+            ),
         ));
     }
-    
+
     /**
      * setPermissions
      *
@@ -358,7 +357,7 @@ class VhostManager
             }
         }
     }
-    
+
     /**
      * extractPermissions
      *
@@ -373,7 +372,7 @@ class VhostManager
             'read' => '',
             'write' => '',
         );
-        
+
         if (!empty($userPermissions)) {
             foreach (array_keys($permissions) as $permission) {
                 if (!empty($userPermissions[$permission])) {
@@ -381,7 +380,7 @@ class VhostManager
                 }
             }
         }
-        
+
         return $permissions;
     }
 
