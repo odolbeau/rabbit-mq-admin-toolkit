@@ -3,7 +3,6 @@ namespace Bab\RabbitMq\Action;
 
 use Bab\RabbitMq\HttpClient;
 use Bab\RabbitMq\Response;
-use Bab\RabbitMq\HttpClient\GuzzleClient;
 use Bab\RabbitMq\Action\Formatter\Log;
 
 class DryRunAction extends Action
@@ -49,12 +48,14 @@ class DryRunAction extends Action
     public function createExchange($name, $parameters)
     {
         $this->compare('/api/exchanges/'.$this->getContextValue('vhost').'/'.$name, $name, $parameters, self::LABEL_EXCHANGE);
+
         return;
     }
 
     public function createQueue($name, $parameters)
     {
         $this->compare('/api/queues/'.$this->getContextValue('vhost').'/'.$name, $name, $parameters, self::LABEL_QUEUE);
+
         return;
     }
 
@@ -62,26 +63,27 @@ class DryRunAction extends Action
     {
         $vhost = $this->getContextValue('vhost');
         $response = $this->query('GET', '/api/queues/'.$vhost.'/'.$queue.'/bindings');
-        
+
         $binding = array(
             'source' => $name,
             'destination' => $queue,
             'vhost' => $vhost,
             'routing_key' => is_null($routingKey) ? '' : $routingKey,
-            'arguments' => $arguments
+            'arguments' => $arguments,
         );
-        
+
         $bindings = json_decode($response->body, true);
-        
+
         foreach ($bindings as $existingBinding) {
             $configurationDelta = $this->array_diff_assoc_recursive($binding, $existingBinding);
-            
+
             if (empty($configurationDelta)) {
                 $this->log->addUnchanged(self::LABEL_BINDING, $queue.':'.$name, $arguments);
+
                 return;
             }
         }
-        
+
         $this->log->addUpdate(self::LABEL_BINDING, $queue.':'.$name, $arguments);
     }
 
@@ -121,6 +123,7 @@ class DryRunAction extends Action
         if ($currentParameters instanceof Response) {
             if ($currentParameters->isNotFound()) {
                 $this->log->addUpdate($objectType, $objectName, $parameters);
+
                 return;
             }
 
@@ -128,6 +131,7 @@ class DryRunAction extends Action
 
             if (!empty($configurationDelta)) {
                 $this->log->addFailed($objectType, $objectName, $configurationDelta);
+
                 return;
             }
 
@@ -153,6 +157,7 @@ class DryRunAction extends Action
                 $difference[$key] = $value;
             }
         }
+
         return $difference;
     }
 }

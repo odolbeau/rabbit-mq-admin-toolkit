@@ -23,15 +23,15 @@ class GuzzleClient implements HttpClient
         $this->port = $port;
         $this->user = $user;
         $this->pass = $pass;
-        
+
         $this->enableDryRun(false);
-        
+
         $this->client = new Client([
             'base_url' => $this->formatBaseUrl(),
             'defaults' => [
                 'auth' => [$this->user, $this->pass],
-                'headers' => ['Content-Type' => 'application/json']
-            ]
+                'headers' => ['Content-Type' => 'application/json'],
+            ],
         ]);
     }
 
@@ -44,7 +44,7 @@ class GuzzleClient implements HttpClient
             if (empty($scheme)) {
                 $scheme = 'http';
             }
-            $scheme = trim($scheme). '://';
+            $scheme = trim($scheme).'://';
         }
 
         return sprintf(

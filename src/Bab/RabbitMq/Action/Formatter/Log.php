@@ -65,7 +65,7 @@ class Log
                     $this->logger->info($message);
                     break;
                 case self::TYPE_FAILED:
-                    $this->logger->error($message .' Configuration values that cause failure: ' .json_encode($log['parameters']));
+                    $this->logger->error($message.' Configuration values that cause failure: '.json_encode($log['parameters']));
                     break;
                 case self::TYPE_UNCHANGED:
                     $this->logger->debug($message);
@@ -92,7 +92,7 @@ class Log
 
         return array(
             'contextMaxLength' => $contextMaxLength,
-            'messageMaxLength' => $messageMaxLength
+            'messageMaxLength' => $messageMaxLength,
         );
     }
 
@@ -103,6 +103,6 @@ class Log
 
     private function formatLine(array $log, $contextMaxLength, $messageMaxLength)
     {
-        return str_pad($this->formatContext($log['context'], $contextMaxLength) . ': ' . $log['name'], $messageMaxLength+15, '.') . ' ' . $log['type'];
+        return str_pad($this->formatContext($log['context'], $contextMaxLength).': '.$log['name'], $messageMaxLength+15, '.').' '.$log['type'];
     }
 }
