@@ -15,11 +15,11 @@ class VhostManager
 
     public function __construct(array $context, Action $action, HttpClient $httpClient)
     {
-        $this->credentials = $context;
-        if ('/' === $this->credentials['vhost']) {
-            $this->credentials['vhost'] = '%2f';
+        if ('/' === $context['vhost']) {
+            $context['vhost'] = '%2f';
         }
-
+        $this->credentials = $context;
+        
         $this->action = $action;
         $this->action->setContext($context);
 
@@ -94,7 +94,13 @@ class VhostManager
 
     private function createQueues(Configuration $config)
     {
-        foreach ($config['queues'] as $name => $parameters) {
+        $queues = array();
+        
+        if (!empty($config['queues'])) {
+            $queues = $config['queues'];
+        }
+        
+        foreach ($queues as $name => $parameters) {
             $currentWithDl = $config->hasDeadLetterExchange();
             $retries = array();
 
