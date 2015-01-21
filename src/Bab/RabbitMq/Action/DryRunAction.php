@@ -69,18 +69,18 @@ class DryRunAction extends Action
             'destination' => $queue,
             'vhost' => $vhost,
             'routing_key' => is_null($routingKey) ? '' : $routingKey,
-            'arguments' => $arguments,
+            'arguments' => $arguments
         );
 
-        $bindings = json_decode($response->body, true);
+        if ($response->isSuccessful()) {
+            $bindings = json_decode($response->body, true);
+            foreach ($bindings as $existingBinding) {
+                $configurationDelta = $this->array_diff_assoc_recursive($binding, $existingBinding);
 
-        foreach ($bindings as $existingBinding) {
-            $configurationDelta = $this->array_diff_assoc_recursive($binding, $existingBinding);
-
-            if (empty($configurationDelta)) {
-                $this->log->addUnchanged(self::LABEL_BINDING, $queue.':'.$name, $arguments);
-
-                return;
+                if (empty($configurationDelta)) {
+                    $this->log->addUnchanged(self::LABEL_BINDING, $queue.':'.$name, $arguments);
+                    return;
+                }
             }
         }
 
