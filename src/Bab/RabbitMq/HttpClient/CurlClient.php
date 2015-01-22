@@ -3,6 +3,7 @@
 namespace Bab\RabbitMq\HttpClient;
 
 use Bab\RabbitMq\HttpClient;
+use Bab\RabbitMq\Response;
 
 class CurlClient implements HttpClient
 {
@@ -11,7 +12,7 @@ class CurlClient implements HttpClient
     private $user;
     private $pass;
 
-    public function __construct($host, $port, $user, $pass)
+    public function __construct($scheme, $host, $port, $user, $pass)
     {
         $this->host = $host;
         $this->port = $port;
@@ -58,7 +59,7 @@ class CurlClient implements HttpClient
 
         curl_close($handle);
 
-        return $response;
+        return new Response($httpCode, $response);
     }
 
     protected function getHandle()
@@ -79,5 +80,10 @@ class CurlClient implements HttpClient
         ));
 
         return $handle;
+    }
+
+    public function enableDryRun($enabled = false)
+    {
+        throw new \RuntimeException('Not Implemented');
     }
 }
