@@ -11,6 +11,7 @@ class DryRunAction extends Action
     const LABEL_QUEUE = 'queue';
     const LABEL_BINDING = 'binding';
     const LABEL_PERMISSION = 'permission';
+    const LABEL_POLICY = 'policy';
 
     private $log;
 
@@ -48,14 +49,12 @@ class DryRunAction extends Action
     public function createExchange($name, $parameters)
     {
         $this->compare('/api/exchanges/'.$this->getContextValue('vhost').'/'.$name, $name, $parameters, self::LABEL_EXCHANGE);
-
         return;
     }
 
     public function createQueue($name, $parameters)
     {
         $this->compare('/api/queues/'.$this->getContextValue('vhost').'/'.$name, $name, $parameters, self::LABEL_QUEUE);
-
         return;
     }
 
@@ -123,7 +122,6 @@ class DryRunAction extends Action
         if ($currentParameters instanceof Response) {
             if ($currentParameters->isNotFound()) {
                 $this->log->addUpdate($objectType, $objectName, $parameters);
-
                 return;
             }
 
@@ -131,7 +129,6 @@ class DryRunAction extends Action
 
             if (!empty($configurationDelta)) {
                 $this->log->addFailed($objectType, $objectName, $configurationDelta);
-
                 return;
             }
 
@@ -157,7 +154,22 @@ class DryRunAction extends Action
                 $difference[$key] = $value;
             }
         }
-
         return $difference;
+    }
+
+    public function createPolicy($name, array $parameters = array())
+    {
+        $currentPolicy = $this->query('GET', '/api/policies/'.$this->getContextValue('vhost').'/'.$name);
+        $objectType = self::LABEL_POLICY;
+
+        if ($currentPolicy instanceof Response) {
+            $configurationDelta = $this->array_diff_assoc_recursive($parameters, json_decode($currentPolicy->body, true));
+            if ($currentPolicy->isNotFound() || !empty($configurationDelta)) {
+                $this->log->addUpdate($objectType, $name, $parameters);
+                return;
+            }
+
+            $this->log->addUnchanged($objectType, $name, $parameters);
+        }
     }
 }

@@ -52,6 +52,7 @@ class VhostManager
         $this->createExchanges($config);
         $this->createQueues($config);
         $this->setPermissions($config);
+        $this->setPolicies($config);
 
         $this->action->endMapping();
     }
@@ -391,6 +392,34 @@ class VhostManager
         }
 
         return $permissions;
+    }
+    
+    private function setPolicies(Configuration $config)
+    {
+        if (!empty($config['policies'])) {
+            foreach ($config['policies'] as $policyName => $parameters) {
+                $parameters = $this->extractPolicyParameters($parameters);
+                $this->action->createPolicy($policyName, $parameters);
+            }
+        }
+    }
+    
+    private function extractPolicyParameters(array $parameters = array())
+    {
+        $allowedParameters = array(
+            'pattern' => '',
+            'definition' => array(),
+            'priority' => 0,
+            'apply-to' => 'all'
+        );
+        
+        foreach (array_keys($allowedParameters) as $parameter) {
+            if (isset($parameters[$parameter])) {
+                $allowedParameters[$parameter] = $parameters[$parameter];
+            }
+        }
+        
+        return $allowedParameters;
     }
 
     /**

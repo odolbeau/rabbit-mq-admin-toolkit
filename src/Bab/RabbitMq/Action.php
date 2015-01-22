@@ -18,6 +18,8 @@ interface Action
 
     public function createBinding($name, $queue, $routingKey, array $arguments = array());
 
+    public function createPolicy($name, array $parameters = array());
+
     public function setPermissions($user, array $parameters = array());
 
     public function purge($queue);

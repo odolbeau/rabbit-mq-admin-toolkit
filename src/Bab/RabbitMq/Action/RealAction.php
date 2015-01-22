@@ -84,4 +84,15 @@ class RealAction extends Action
     {
         return $this->query('DELETE', '/api/queues/'.$this->getContextValue('vhost').'/'.$queue.'/contents');
     }
+    
+    public function createPolicy($name, array $parameters = array())
+    {
+        $this->log(sprintf(
+            'Create policy <info>%s</info> with following definition <info>%s</info>',
+            $name,
+            json_encode($parameters)
+        ));
+        
+        $this->query('PUT', '/api/policies/'.$this->getContextValue('vhost').'/'.$name, $parameters);
+    }
 }
