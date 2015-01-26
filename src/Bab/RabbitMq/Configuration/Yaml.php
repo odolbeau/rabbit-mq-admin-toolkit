@@ -27,7 +27,7 @@ class Yaml implements Configuration
     {
         $fs = new Filesystem();
         if (!$fs->exists($filePath)) {
-            throw new \InvalidArgumentException(sprintf('File "%s" doen\'t exist', $filePath));
+            throw new \InvalidArgumentException(sprintf('File "%s" doesn\'t exist', $filePath));
         }
 
         $yaml = new Parser();
