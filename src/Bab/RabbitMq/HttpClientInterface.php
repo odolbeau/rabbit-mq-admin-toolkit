@@ -2,7 +2,7 @@
 
 namespace Bab\RabbitMq;
 
-interface HttpClient
+interface HttpClientInterface
 {
     public function __construct($scheme, $host, $port, $user, $pass);
 

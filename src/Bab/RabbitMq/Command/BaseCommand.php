@@ -8,7 +8,7 @@ use Bab\RabbitMq\VhostManager;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Bab\RabbitMq\Logger\CliLogger;
-use Bab\RabbitMq\Action;
+use Bab\RabbitMq\ActionInterface;
 use Bab\RabbitMq\HttpClient\GuzzleClient;
 
 class BaseCommand extends Command

@@ -2,18 +2,18 @@
 
 namespace Bab\RabbitMq\Action;
 
-use Bab\RabbitMq\HttpClient;
+use Bab\RabbitMq\HttpClientInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
 
-abstract class Action implements \Bab\RabbitMq\Action
+abstract class Action implements \Bab\RabbitMq\ActionInterface
 {
     use LoggerAwareTrait;
 
     protected $httpClient;
     protected $context;
 
-    public function __construct(HttpClient $httpClient)
+    public function __construct(HttpClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
         $this->logger = new NullLogger();

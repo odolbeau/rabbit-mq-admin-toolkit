@@ -1,7 +1,7 @@
 <?php
 namespace Bab\RabbitMq\Action;
 
-use Bab\RabbitMq\HttpClient;
+use Bab\RabbitMq\HttpClientInterface;
 use Bab\RabbitMq\Response;
 use Bab\RabbitMq\Action\Formatter\Log;
 
@@ -14,7 +14,7 @@ class DryRunAction extends Action
 
     private $log;
 
-    public function __construct(HttpClient $httpClient)
+    public function __construct(HttpClientInterface $httpClient)
     {
         parent::__construct($httpClient);
 

@@ -2,11 +2,11 @@
 
 namespace Bab\RabbitMq\Configuration;
 
-use Bab\RabbitMq\Configuration;
+use Bab\RabbitMq\ConfigurationInterface;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Filesystem\Filesystem;
 
-class Yaml implements Configuration
+class Yaml implements ConfigurationInterface
 {
     private $config;
     private $vhost;
