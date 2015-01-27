@@ -13,15 +13,16 @@ class VhostManager
     private $httpClient;
     private $config;
 
-    public function __construct(array $credentials, Action $action, HttpClient $httpClient)
+    public function __construct(array $context, ActionInterface $action, HttpClientInterface $httpClient)
     {
-        $this->credentials = $credentials;
-        if ('/' === $this->credentials['vhost']) {
-            $this->credentials['vhost'] = '%2f';
+        if ('/' === $context['vhost']) {
+            $context['vhost'] = '%2f';
         }
-
+        $this->credentials = $context;
+        
         $this->action = $action;
-        $this->action->setVhost($this->credentials['vhost']);
+        $this->action->setContext($context);
+
         $this->httpClient = $httpClient;
         $this->logger = new NullLogger();
     }
@@ -33,25 +34,7 @@ class VhostManager
      */
     public function resetVhost()
     {
-        $vhost = $this->credentials['vhost'];
-        $this->log(sprintf('Delete vhost: <info>%s</info>', $vhost));
-        try {
-            $this->query('DELETE', '/api/vhosts/'.$vhost);
-        } catch (\Exception $e) {
-        }
-        $this->log(sprintf('Create vhost: <info>%s</info>', $vhost));
-        $this->query('PUT', '/api/vhosts/'.$vhost);
-        $this->log(sprintf(
-            'Grant all permission for <info>%s</info> on vhost <info>%s</info>',
-            $this->credentials['user'],
-            $vhost
-        ));
-        $this->query('PUT', '/api/permissions/'.$vhost.'/'.$this->credentials['user'], array(
-            'scope'     => 'client',
-            'configure' => '.*',
-            'write'     => '.*',
-            'read'      => '.*',
-        ));
+        $this->action->resetVhost();
     }
 
     /**
@@ -61,20 +44,22 @@ class VhostManager
      *
      * @return void
      */
-    public function createMapping(Configuration $config)
+    public function createMapping(ConfigurationInterface $config)
     {
+        $this->action->startMapping();
+
         $this->createBaseStructure($config);
         $this->createExchanges($config);
         $this->createQueues($config);
         $this->setPermissions($config);
+
+        $this->action->endMapping();
     }
 
-    private function createBaseStructure(Configuration $config)
+    private function createBaseStructure(ConfigurationInterface $config)
     {
         $this->log(sprintf('With DL: <info>%s</info>', $config->hasDeadLetterExchange() === true ? 'true' : 'false'));
-
         $this->log(sprintf('With Unroutable: <info>%s</info>', $config->hasUnroutableExchange() === true ? 'true' : 'false'));
-
         // Unroutable queue must be created even if not asked but with_dl is
         // true to not loose unroutable messages which enters in dl exchange
         if ($config->hasDeadLetterExchange() === true || $config->hasUnroutableExchange() === true) {
@@ -86,7 +71,7 @@ class VhostManager
         }
     }
 
-    private function createExchanges(Configuration $config)
+    private function createExchanges(ConfigurationInterface $config)
     {
         foreach ($config['exchanges'] as $name => $parameters) {
             $currentWithUnroutable = $config->hasUnroutableExchange();
@@ -107,13 +92,24 @@ class VhostManager
         }
     }
 
-    private function createQueues(Configuration $config)
+    private function createQueues(ConfigurationInterface $config)
     {
-        foreach ($config['queues'] as $name => $parameters) {
+        $queues = array();
+        
+        if (!empty($config['queues'])) {
+            $queues = $config['queues'];
+        }
+        
+        foreach ($queues as $name => $parameters) {
             $currentWithDl = $config->hasDeadLetterExchange();
             $retries = array();
 
-            $bindings = $parameters['bindings'];
+            $bindings = array();
+            $delay = null;
+
+            if (isset($parameters['bindings'])) {
+                $bindings = $parameters['bindings'];
+            }
             unset($parameters['bindings']);
 
             if (isset($parameters['with_dl'])) {
@@ -127,11 +123,18 @@ class VhostManager
                 unset($parameters['retries']);
             }
 
-            if ($currentWithDl && $config->hasDeadLetterExchange() === false) {
+            $withDelay = false;
+            if (isset($parameters['delay'])) {
+                $delay = (int) $parameters['delay'];
+                $withDelay = true;
+                unset($parameters['delay']);
+            }
+
+            if ($currentWithDl === true && $config->hasDeadLetterExchange() === false) {
                 $this->createDl();
             }
 
-            if ($currentWithDl && !isset($config['arguments']['x-dead-letter-exchange'])) {
+            if ($currentWithDl === true && !isset($config['arguments']['x-dead-letter-exchange'])) {
                 if (!isset($parameters['arguments'])) {
                     $parameters['arguments'] = array();
                 }
@@ -142,10 +145,7 @@ class VhostManager
 
             $this->createQueue($name, $parameters);
 
-            $withDelay = false;
-            if (isset($parameters['delay'])) {
-                $withDelay = true;
-                $delay = (int) $parameters['delay'];
+            if ($withDelay === true) {
                 $this->createExchange('delay', array(
                     'durable' => true,
                 ));
@@ -160,13 +160,11 @@ class VhostManager
                 ));
 
                 $this->createBinding('delay', $name, $name);
-
-                unset($parameters['delay']);
             }
 
             if ($currentWithDl) {
                 $this->createQueue($name.'_dl', array(
-                        'durable' => true,
+                    'durable' => true,
                 ));
 
                 $this->createBinding('dl', $name.'_dl', $name);
@@ -241,10 +239,14 @@ class VhostManager
      */
     public function getQueues()
     {
-        $informations = json_decode($this->query('GET', '/api/queues/'.$this->credentials['vhost']), true);
+        $response = $this->query('GET', '/api/queues/'.$this->credentials['vhost']);
+
         $queues = array();
-        foreach ($informations as $information) {
-            $queues[] = $information['name'];
+        if ($response instanceof Response) {
+            $informations = json_decode($response->body, true);
+            foreach ($informations as $information) {
+                $queues[] = $information['name'];
+            }
         }
 
         return $queues;
@@ -259,7 +261,7 @@ class VhostManager
      */
     public function remove($queue)
     {
-        return $this->query('DELETE', '/api/queues/'.$this->credentials['vhost'].'/'.$queue);
+        return $this->action->remove($queue);
     }
 
     /**
@@ -271,7 +273,7 @@ class VhostManager
      */
     public function purge($queue)
     {
-        return $this->query('DELETE', '/api/queues/'.$this->credentials['vhost'].'/'.$queue.'/contents');
+        return $this->action->purge($queue);
     }
 
     /**
@@ -326,7 +328,7 @@ class VhostManager
             'durable' => true,
         ));
         $this->createQueue('unroutable', array(
-            'auto_delete' => 'false',
+            'auto_delete' => false,
             'durable'     => true,
         ));
         $this->createBinding('unroutable', 'unroutable');
@@ -355,7 +357,7 @@ class VhostManager
      *
      * @return void
      */
-    protected function setPermissions(Configuration $config)
+    protected function setPermissions(ConfigurationInterface $config)
     {
         if (!empty($config['permissions'])) {
             foreach ($config['permissions'] as $user => $userPermissions) {
