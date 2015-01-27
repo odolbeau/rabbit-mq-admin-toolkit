@@ -2,9 +2,9 @@
 
 namespace Bab\RabbitMq;
 
-interface Action
+interface ActionInterface
 {
-    public function __construct(HttpClient $httpClient);
+    public function __construct(HttpClientInterface $httpClient);
 
     public function startMapping();
 

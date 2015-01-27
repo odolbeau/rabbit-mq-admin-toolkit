@@ -1,12 +1,12 @@
 <?php
 namespace Bab\RabbitMq\HttpClient;
 
-use Bab\RabbitMq\HttpClient;
+use Bab\RabbitMq\HttpClientInterface;
 use Bab\RabbitMq\Response;
 use GuzzleHttp\Client;
 use GuzzleHttp\Message\Request;
 
-class GuzzleClient implements HttpClient
+class GuzzleClient implements HttpClientInterface
 {
     private $scheme;
     private $host;

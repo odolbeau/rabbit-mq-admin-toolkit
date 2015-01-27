@@ -13,7 +13,7 @@ class VhostManager
     private $httpClient;
     private $config;
 
-    public function __construct(array $context, Action $action, HttpClient $httpClient)
+    public function __construct(array $context, ActionInterface $action, HttpClientInterface $httpClient)
     {
         if ('/' === $context['vhost']) {
             $context['vhost'] = '%2f';
@@ -44,7 +44,7 @@ class VhostManager
      *
      * @return void
      */
-    public function createMapping(Configuration $config)
+    public function createMapping(ConfigurationInterface $config)
     {
         $this->action->startMapping();
 
@@ -56,7 +56,7 @@ class VhostManager
         $this->action->endMapping();
     }
 
-    private function createBaseStructure(Configuration $config)
+    private function createBaseStructure(ConfigurationInterface $config)
     {
         $this->log(sprintf('With DL: <info>%s</info>', $config->hasDeadLetterExchange() === true ? 'true' : 'false'));
         $this->log(sprintf('With Unroutable: <info>%s</info>', $config->hasUnroutableExchange() === true ? 'true' : 'false'));
@@ -71,7 +71,7 @@ class VhostManager
         }
     }
 
-    private function createExchanges(Configuration $config)
+    private function createExchanges(ConfigurationInterface $config)
     {
         foreach ($config['exchanges'] as $name => $parameters) {
             $currentWithUnroutable = $config->hasUnroutableExchange();
@@ -92,7 +92,7 @@ class VhostManager
         }
     }
 
-    private function createQueues(Configuration $config)
+    private function createQueues(ConfigurationInterface $config)
     {
         $queues = array();
         
@@ -357,7 +357,7 @@ class VhostManager
      *
      * @return void
      */
-    protected function setPermissions(Configuration $config)
+    protected function setPermissions(ConfigurationInterface $config)
     {
         if (!empty($config['permissions'])) {
             foreach ($config['permissions'] as $user => $userPermissions) {
