@@ -73,7 +73,7 @@ class DryRunAction extends Action
         );
 
         if (!$response->isSuccessful()) {
-            $this->log->addUpdate(self::LABEL_BINDING, $queue.':'.$name, $arguments);
+            $this->log->addUpdate(self::LABEL_BINDING, $name.':'.$routingKey.' -> '.$queue, $arguments);
             return;
         }
 
@@ -82,7 +82,7 @@ class DryRunAction extends Action
             $configurationDelta = $this->array_diff_assoc_recursive($binding, $existingBinding);
 
             if (empty($configurationDelta)) {
-                $this->log->addUnchanged(self::LABEL_BINDING, $queue.':'.$name, $arguments);
+                $this->log->addUnchanged(self::LABEL_BINDING, $name.':'.$routingKey.' -> '.$queue, $arguments);
                 return;
             }
         }
