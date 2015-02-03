@@ -72,19 +72,20 @@ class DryRunAction extends Action
             'arguments' => $arguments
         );
 
-        if ($response->isSuccessful()) {
-            $bindings = json_decode($response->body, true);
-            foreach ($bindings as $existingBinding) {
-                $configurationDelta = $this->array_diff_assoc_recursive($binding, $existingBinding);
-
-                if (empty($configurationDelta)) {
-                    $this->log->addUnchanged(self::LABEL_BINDING, $queue.':'.$name, $arguments);
-                    return;
-                }
-            }
+        if (!$response->isSuccessful()) {
+            $this->log->addUpdate(self::LABEL_BINDING, $queue.':'.$name, $arguments);
+            return;
         }
 
-        $this->log->addUpdate(self::LABEL_BINDING, $queue.':'.$name, $arguments);
+        $bindings = json_decode($response->body, true);
+        foreach ($bindings as $existingBinding) {
+            $configurationDelta = $this->array_diff_assoc_recursive($binding, $existingBinding);
+
+            if (empty($configurationDelta)) {
+                $this->log->addUnchanged(self::LABEL_BINDING, $queue.':'.$name, $arguments);
+                return;
+            }
+        }
     }
 
     public function setPermissions($user, array $parameters = array())
@@ -120,23 +121,26 @@ class DryRunAction extends Action
     {
         $currentParameters = $this->query('GET', $apiUri);
 
-        if ($currentParameters instanceof Response) {
-            if ($currentParameters->isNotFound()) {
-                $this->log->addUpdate($objectType, $objectName, $parameters);
-
-                return;
-            }
-
-            $configurationDelta = $this->array_diff_assoc_recursive($parameters, json_decode($currentParameters->body, true));
-
-            if (!empty($configurationDelta)) {
-                $this->log->addFailed($objectType, $objectName, $configurationDelta);
-
-                return;
-            }
-
-            $this->log->addUnchanged($objectType, $objectName, $parameters);
+        if (!$currentParameters instanceof Response) {
+            return;
         }
+
+        if ($currentParameters->isNotFound()) {
+            $this->log->addUpdate($objectType, $objectName, $parameters);
+
+            return;
+        }
+
+        $configurationDelta = $this->array_diff_assoc_recursive($parameters, json_decode($currentParameters->body, true));
+
+        if (!empty($configurationDelta)) {
+            $this->log->addFailed($objectType, $objectName, $configurationDelta);
+
+            return;
+        }
+
+        $this->log->addUnchanged($objectType, $objectName, $parameters);
+
     }
 
     private function array_diff_assoc_recursive(array $arrayA, array $arrayB)
