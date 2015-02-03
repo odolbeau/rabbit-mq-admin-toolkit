@@ -2,29 +2,39 @@
 
 namespace Bab\RabbitMq\Action;
 
-use Bab\RabbitMq\HttpClient;
+use Bab\RabbitMq\HttpClientInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
 
-abstract class Action implements \Bab\RabbitMq\Action
+abstract class Action implements \Bab\RabbitMq\ActionInterface
 {
     use LoggerAwareTrait;
 
     protected $httpClient;
-    protected $vhost;
+    protected $context;
 
-    public function __construct(HttpClient $httpClient)
+    public function __construct(HttpClientInterface $httpClient)
     {
         $this->httpClient = $httpClient;
         $this->logger = new NullLogger();
     }
 
-    public function setVhost($vhost)
+    public function startMapping()
     {
-        $this->vhost = $vhost;
     }
 
-    protected function query($verb, $uri, $parameters)
+    public function endMapping()
+    {
+    }
+
+    public function setContext(array $context = array())
+    {
+        $this->context = $context;
+
+        return $this;
+    }
+
+    protected function query($verb, $uri, array $parameters = null)
     {
         $this->ensureVhostDefined();
 
@@ -38,8 +48,18 @@ abstract class Action implements \Bab\RabbitMq\Action
 
     private function ensureVhostDefined()
     {
-        if (empty($this->vhost)) {
+        $vhost = $this->getContextValue('vhost');
+        if (empty($vhost)) {
             throw new \RuntimeException('Vhost must be defined');
         }
+    }
+
+    protected function getContextValue($key)
+    {
+        if (isset($this->context[$key])) {
+            return $this->context[$key];
+        }
+
+        return;
     }
 }

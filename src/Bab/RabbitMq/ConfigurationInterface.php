@@ -2,7 +2,7 @@
 
 namespace Bab\RabbitMq;
 
-interface Configuration extends \ArrayAccess
+interface ConfigurationInterface extends \ArrayAccess
 {
     public function getVhost();
 

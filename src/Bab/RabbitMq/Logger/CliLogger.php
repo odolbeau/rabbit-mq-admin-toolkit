@@ -4,6 +4,7 @@ namespace Bab\RabbitMq\Logger;
 
 use Symfony\Component\Console\Output\OutputInterface;
 use Psr\Log\AbstractLogger;
+use Psr\Log\LogLevel;
 
 class CliLogger extends AbstractLogger
 {
@@ -16,6 +17,12 @@ class CliLogger extends AbstractLogger
 
     public function log($level, $message, array $context = array())
     {
-        $this->output->writeln($message);
+        $verbosity = $this->output->getVerbosity();
+
+        if ($verbosity >= OutputInterface::VERBOSITY_NORMAL && $level === LogLevel::ERROR
+        || $verbosity >= OutputInterface::VERBOSITY_VERBOSE && $level === LogLevel::INFO
+        || $verbosity >= OutputInterface::VERBOSITY_VERY_VERBOSE) {
+            $this->output->writeln($message);
+        }
     }
 }
