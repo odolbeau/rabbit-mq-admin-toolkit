@@ -109,6 +109,10 @@ class VhostManager
 
     private function createQueues(Configuration $config)
     {
+        if (!isset($config['queues'])) {
+            return; 
+        }
+
         foreach ($config['queues'] as $name => $parameters) {
             $currentWithDl = $config->hasDeadLetterExchange();
             $retries = array();
