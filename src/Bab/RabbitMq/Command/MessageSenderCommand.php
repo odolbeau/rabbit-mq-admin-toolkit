@@ -23,8 +23,8 @@ class MessageSenderCommand extends BaseCommand
             ->addArgument('to_vhost', InputArgument::REQUIRED, 'To which vhost?')
             ->addArgument('to_exchange', InputArgument::REQUIRED, 'To which exchange?')
             ->addArgument('to_routing_key', InputArgument::REQUIRED, 'To which routing key?')
-            ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'File containing every JSON Encoded messages to send into rabbit')
-            ->addOption('json_encoded_message', 'm', InputOption::VALUE_REQUIRED, 'JSON Encoded message to send into rabbit (Only available if the file was not filled)')
+            ->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'File containing every messages to send into rabbit')
+            ->addOption('message', 'm', InputOption::VALUE_REQUIRED, 'Message to send into rabbit (Only available if the file was not filled)')
         ;
     }
 
@@ -51,7 +51,7 @@ class MessageSenderCommand extends BaseCommand
         }
 
         if (!$messages) {
-            $encodedMessage = $input->getOption('json_encoded_message');
+            $encodedMessage = $input->getOption('message');
             if (!empty($encodedMessage)) {
                 $messages = array($encodedMessage);
             }
