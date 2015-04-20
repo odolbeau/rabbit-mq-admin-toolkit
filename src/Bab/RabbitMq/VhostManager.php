@@ -110,7 +110,7 @@ class VhostManager
     private function createQueues(Configuration $config)
     {
         if (!isset($config['queues'])) {
-            return; 
+            return;
         }
 
         foreach ($config['queues'] as $name => $parameters) {
@@ -252,6 +252,38 @@ class VhostManager
         }
 
         return $queues;
+    }
+
+    /**
+     * Publish a message into a specific queue
+     * related to the current vhost
+     *
+     * @param string $exchangeName
+     * @param string $routingKey
+     * @param string $message
+     *
+     * @throws \RuntimeException if an error occured during the publication
+     */
+    public function publishMessage($exchangeName, $routingKey, $message)
+    {
+        $informations = $this->query('POST', sprintf(
+            '/api/exchanges/%s/%s/publish',
+            $this->credentials['vhost'],
+            $exchangeName
+        ), array(
+            'properties'       => array(),
+            'routing_key'      => $routingKey,
+            'payload'          => $message,
+            'payload_encoding' => 'string',
+        ));
+
+        $decodedInformations = json_decode($informations, true);
+
+        if (isset($decodedInformations['routed']) && true === $decodedInformations['routed']) {
+            return;
+        }
+
+        throw new \RuntimeException('Unable to send that message into rabbit.');
     }
 
     /**
