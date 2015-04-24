@@ -42,25 +42,15 @@ class MessageMoveCommand extends BaseCommand
             $input->getArgument('to_vhost')
         ));
 
-        $password = $this->getPassword($input, $output);
+        $credentials = $this->getCredentials($input, $output);
 
-        $connection = new \AMQPConnection(array(
-            'host'     => $input->getOption('host'),
-            'login'    => $input->getOption('user'),
-            'password' => $password,
-            'vhost'    => $input->getArgument('from_vhost'),
-        ));
+        $connection = new \AMQPConnection(array_merge($credentials, ['vhost' => $input->getArgument('from_vhost')]));
         $connection->connect();
         $channel = new \AMQPChannel($connection);
         $queue = new \AMQPQueue($channel);
         $queue->setName($input->getArgument('from_queue'));
 
-        $connection = new \AMQPConnection(array(
-            'host'     => $input->getOption('host'),
-            'login'    => $input->getOption('user'),
-            'password' => $password,
-            'vhost'    => $input->getArgument('to_vhost'),
-        ));
+        $connection = new \AMQPConnection(array_merge($credentials, ['vhost' => $input->getArgument('to_vhost')]));
         $connection->connect();
         $channel = new \AMQPChannel($connection);
         $exchange = new \AMQPExchange($channel);

@@ -20,7 +20,7 @@ class BaseCommand extends Command
             ->addOption('host', 'H', InputOption::VALUE_REQUIRED, 'Which host?', '127.0.0.1')
             ->addOption('user', 'u', InputOption::VALUE_REQUIRED, 'Which user?', 'guest')
             ->addOption('password', 'p', InputOption::VALUE_REQUIRED, 'Which password? If nothing provided, password is asked', null)
-            ->addOption('port', null, InputOption::VALUE_REQUIRED, 'Which port?', 15672)
+            ->addOption('port', null, InputOption::VALUE_REQUIRED, 'Which port?', 5672)
         ;
     }
 
@@ -35,52 +35,15 @@ class BaseCommand extends Command
      */
     protected function getVhostManager(InputInterface $input, OutputInterface $output, $vhost)
     {
-        $fs = new Filesystem();
-        $credentials = array();
-        $file = rtrim(getenv('HOME'), '/') . '/.rabbitmq_admin_toolkit';
-        if ($fs->exists($file)) {
-            $credentials = json_decode(file_get_contents($file), true);
-        }
-
-        if ($input->hasParameterOption(['--host', '-H'])) {
-            $host = $input->getOption('host');
-        } else {
-            $host = isset($credentials['host'])? $credentials['host'] : $input->getOption('host');
-        }
-
-        if ($input->hasParameterOption('--port')) {
-            $port = $input->getOption('port');
-        } else {
-            $port = isset($credentials['port'])? $credentials['port'] : $input->getOption('port');
-        }
-
-        if ($input->hasParameterOption(['--user', '-u'])) {
-            $user = $input->getOption('user');
-        } else {
-            $user = isset($credentials['user'])? $credentials['user'] : $input->getOption('user');
-        }
-
-        if ($input->hasParameterOption(['--password', '-p'])) {
-            $password = $input->getOption('password');
-        } elseif (isset($credentials['password'])) {
-            $password = $credentials['password'];
-        } elseif (null === $password = $input->getOption('password')) {
-            $dialog = $this->getHelperSet()->get('dialog');
-            $password = $dialog->askHiddenResponse($output, 'Password?', false);
-        }
+        $credentials = $this->getCredentials();
 
         $logger = new CliLogger($output);
-        $httpClient = new CurlClient($host, $port, $user, $password);
+        $httpClient = new CurlClient($credentials['host'], $credentials['port'], $credentials['login'], $credentials['password']);
         $action = new RealAction($httpClient);
         $action->setLogger($logger);
 
-        $vhostManager = new VhostManager(array(
-            'host'     => $host,
-            'user'     => $user,
-            'password' => $password,
-            'port'     => $port,
-            'vhost'    => $vhost,
-        ), $action, $httpClient);
+        $credentials['vhost'] = $vhost;
+        $vhostManager = new VhostManager($credentials);
 
         $vhostManager->setLogger($logger);
 
@@ -88,49 +51,50 @@ class BaseCommand extends Command
     }
 
     /**
-     * getInfluxDB
+     * getCredentials
      *
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return InfluxDB
+     * @return array
      */
-    protected function getInfluxDB(InputInterface $input, OutputInterface $output)
+    protected function getCredentials(InputInterface $input, OutputInterface $output)
     {
         $fs = new Filesystem();
+
         $credentials = array();
-        $file = rtrim(getenv('HOME'), '/') . '/.influxdb_admin_cli';
+        $file = rtrim(getenv('HOME'), '/') . '/.rabbitmq_admin_toolkit';
         if ($fs->exists($file)) {
             $credentials = json_decode(file_get_contents($file), true);
         }
 
         if ($input->hasParameterOption(['--host', '-H'])) {
-            $host = $input->getOption('host');
+            $credentials['host'] = $input->getOption('host');
         } else {
-            $host = isset($credentials['host'])? $credentials['host'] : $input->getOption('host');
+            $credentials['host'] = isset($credentials['host'])? $credentials['host'] : $input->getOption('host');
         }
 
         if ($input->hasParameterOption('--port')) {
-            $port = $input->getOption('port');
+            $credentials['port'] = $input->getOption('port');
         } else {
-            $port = isset($credentials['port'])? $credentials['port'] : $input->getOption('port');
+            $credentials['port'] = isset($credentials['port'])? $credentials['port'] : $input->getOption('port');
         }
 
         if ($input->hasParameterOption(['--user', '-u'])) {
-            $user = $input->getOption('user');
+            $credentials['login'] = $input->getOption('user');
         } else {
-            $user = isset($credentials['user'])? $credentials['user'] : $input->getOption('user');
+            $credentials['login'] = isset($credentials['login'])? $credentials['login'] : $input->getOption('user');
         }
 
         if ($input->hasParameterOption(['--password', '-p'])) {
-            $password = $input->getOption('password');
+            $credentials['password'] = $input->getOption('password');
         } elseif (isset($credentials['password'])) {
-            $password = $credentials['password'];
+            $credentials['password'] = $credentials['password'];
         } elseif (null === $password = $input->getOption('password')) {
             $dialog = $this->getHelperSet()->get('dialog');
-            $password = $dialog->askHiddenResponse($output, 'Password?', false);
+            $credentials['password'] = $dialog->askHiddenResponse($output, 'Password?', false);
         }
 
-        return new InfluxDB($host, $port, $user, $password);
+        return $credentials;
     }
 }
