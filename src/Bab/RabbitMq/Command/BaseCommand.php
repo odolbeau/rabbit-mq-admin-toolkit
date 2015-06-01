@@ -20,7 +20,7 @@ class BaseCommand extends Command
             ->addOption('host', 'H', InputOption::VALUE_REQUIRED, 'Which host?', '127.0.0.1')
             ->addOption('user', 'u', InputOption::VALUE_REQUIRED, 'Which user?', 'guest')
             ->addOption('password', 'p', InputOption::VALUE_REQUIRED, 'Which password? If nothing provided, password is asked', null)
-            ->addOption('port', null, InputOption::VALUE_REQUIRED, 'Which port?', 5672)
+            ->addOption('port', null, InputOption::VALUE_REQUIRED, 'Which port?', 15672)
         ;
     }
 
@@ -35,15 +35,15 @@ class BaseCommand extends Command
      */
     protected function getVhostManager(InputInterface $input, OutputInterface $output, $vhost)
     {
-        $credentials = $this->getCredentials();
+        $credentials = $this->getCredentials($input, $output);
 
         $logger = new CliLogger($output);
-        $httpClient = new CurlClient($credentials['host'], $credentials['port'], $credentials['login'], $credentials['password']);
+        $httpClient = new CurlClient($credentials['host'], $credentials['port'], $credentials['user'], $credentials['password']);
         $action = new RealAction($httpClient);
         $action->setLogger($logger);
 
         $credentials['vhost'] = $vhost;
-        $vhostManager = new VhostManager($credentials);
+        $vhostManager = new VhostManager($credentials, $action, $httpClient);
 
         $vhostManager->setLogger($logger);
 
@@ -81,9 +81,9 @@ class BaseCommand extends Command
         }
 
         if ($input->hasParameterOption(['--user', '-u'])) {
-            $credentials['login'] = $input->getOption('user');
+            $credentials['user'] = $input->getOption('user');
         } else {
-            $credentials['login'] = isset($credentials['login'])? $credentials['login'] : $input->getOption('user');
+            $credentials['user'] = isset($credentials['user'])? $credentials['user'] : $input->getOption('user');
         }
 
         if ($input->hasParameterOption(['--password', '-p'])) {
