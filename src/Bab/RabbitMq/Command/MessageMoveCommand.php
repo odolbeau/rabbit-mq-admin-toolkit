@@ -43,6 +43,8 @@ class MessageMoveCommand extends BaseCommand
         ));
 
         $credentials = $this->getCredentials($input, $output);
+        $credentials['login'] = $credentials['user'];
+        unset($credentials['user'], $credentials['port']);
 
         $connection = new \AMQPConnection(array_merge($credentials, ['vhost' => $input->getArgument('from_vhost')]));
         $connection->connect();
