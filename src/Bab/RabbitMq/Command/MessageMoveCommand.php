@@ -90,6 +90,6 @@ class MoveProcessor implements ProcessorInterface
 
     public function process(Message $message, array $options)
     {
-        $this->messagePublisher->publish($message, $this->routingKey);
+        $this->messagePublisher->publish(new Message($message->getBody()), $this->routingKey);
     }
 }
