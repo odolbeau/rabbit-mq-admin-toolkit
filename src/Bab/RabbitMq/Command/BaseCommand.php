@@ -17,6 +17,7 @@ class BaseCommand extends Command
     protected function configure()
     {
         $this
+            ->addOption('connection', 'c', InputOption::VALUE_REQUIRED, 'Connection name (if you use a ~/.rabbitmq_admin_toolkit file)')
             ->addOption('host', 'H', InputOption::VALUE_REQUIRED, 'Which host?', '127.0.0.1')
             ->addOption('user', 'u', InputOption::VALUE_REQUIRED, 'Which user?', 'guest')
             ->addOption('password', 'p', InputOption::VALUE_REQUIRED, 'Which password? If nothing provided, password is asked', null)
@@ -60,37 +61,37 @@ class BaseCommand extends Command
      */
     protected function getCredentials(InputInterface $input, OutputInterface $output)
     {
-        $fs = new Filesystem();
+        if (null !== $connection = $input->getOption('connection')) {
+            $fs = new Filesystem();
 
-        $credentials = array();
-        $file = rtrim(getenv('HOME'), '/') . '/.rabbitmq_admin_toolkit';
-        if ($fs->exists($file)) {
+            $file = rtrim(getenv('HOME'), '/') . '/.rabbitmq_admin_toolkit';
+            if (!$fs->exists($file)) {
+                throw new \InvalidArgumentException('Can\'t use connection option without a ~/.rabbitmq_admin_toolkit file');
+            }
             $credentials = json_decode(file_get_contents($file), true);
+            if (!isset($credentials[$connection])) {
+                throw new \InvalidArgumentException("Connection $connection not found in ~/.rabbitmq_admin_toolkit");
+            }
+
+            $defaultCredentials = [
+                'host' => '127.0.0.1',
+                'port' => 15672,
+                'user' => 'root',
+                'password' => 'root',
+            ];
+
+            return array_merge($defaultCredentials, $credentials[$connection]);
         }
 
-        if ($input->hasParameterOption(['--host', '-H'])) {
-            $credentials['host'] = $input->getOption('host');
-        } else {
-            $credentials['host'] = isset($credentials['host'])? $credentials['host'] : $input->getOption('host');
-        }
-
-        if ($input->hasParameterOption('--port')) {
-            $credentials['port'] = $input->getOption('port');
-        } else {
-            $credentials['port'] = isset($credentials['port'])? $credentials['port'] : $input->getOption('port');
-        }
-
-        if ($input->hasParameterOption(['--user', '-u'])) {
-            $credentials['user'] = $input->getOption('user');
-        } else {
-            $credentials['user'] = isset($credentials['user'])? $credentials['user'] : $input->getOption('user');
-        }
+        $credentials = [
+            'host' => $input->getOption('host'),
+            'port' => $input->getOption('port'),
+            'user' => $input->getOption('user')
+        ];
 
         if ($input->hasParameterOption(['--password', '-p'])) {
             $credentials['password'] = $input->getOption('password');
-        } elseif (isset($credentials['password'])) {
-            $credentials['password'] = $credentials['password'];
-        } elseif (null === $password = $input->getOption('password')) {
+        } elseif (null === $input->getOption('password')) {
             $dialog = $this->getHelperSet()->get('dialog');
             $credentials['password'] = $dialog->askHiddenResponse($output, 'Password?', false);
         }
