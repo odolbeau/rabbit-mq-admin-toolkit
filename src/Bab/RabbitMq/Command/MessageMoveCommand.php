@@ -12,8 +12,10 @@ use Swarrot\Broker\MessagePublisher\PeclPackageMessagePublisher;
 use Swarrot\Processor\ProcessorInterface;
 use Swarrot\Broker\Message;
 use Swarrot\Consumer;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Filesystem\Filesystem;
 
-class MessageMoveCommand extends BaseCommand
+class MessageMoveCommand extends Command
 {
     protected function configure()
     {
@@ -22,6 +24,10 @@ class MessageMoveCommand extends BaseCommand
         $this
             ->setName('message:move')
             ->setDescription('Move messages from a queue to another one')
+
+            ->addArgument('from_connection', InputArgument::REQUIRED, 'From connection name')
+            ->addOption('to_connection', 't', InputOption::VALUE_REQUIRED, 'To connection name')
+
             ->addArgument('from_vhost', InputArgument::REQUIRED, 'From which vhost?')
             ->addArgument('from_queue', InputArgument::REQUIRED, 'From which queue?')
             ->addArgument('to_vhost', InputArgument::REQUIRED, 'To which vhost?')
@@ -42,20 +48,27 @@ class MessageMoveCommand extends BaseCommand
             $input->getArgument('to_vhost')
         ));
 
-        $credentials = $this->getCredentials($input, $output);
-        $credentials['login'] = $credentials['user'];
-        unset($credentials['user'], $credentials['port']);
+        $fromChannel = $this->getChannel(
+            $input->getArgument('from_connection'),
+            $input->getArgument('from_vhost')
+        );
 
-        $connection = new \AMQPConnection(array_merge($credentials, ['vhost' => $input->getArgument('from_vhost')]));
-        $connection->connect();
-        $channel = new \AMQPChannel($connection);
-        $queue = new \AMQPQueue($channel);
+        if (null === $toConnectionName = $input->getOption('to_connection')) {
+            $toChannel = $this->getChannel(
+                $input->getArgument('from_connection'),
+                $input->getArgument('to_vhost')
+            );
+        } else {
+            $toChannel = $this->getChannel(
+                $input->getOption('to_connection'),
+                $input->getArgument('to_vhost')
+            );
+        }
+
+        $queue = new \AMQPQueue($fromChannel);
         $queue->setName($input->getArgument('from_queue'));
 
-        $connection = new \AMQPConnection(array_merge($credentials, ['vhost' => $input->getArgument('to_vhost')]));
-        $connection->connect();
-        $channel = new \AMQPChannel($connection);
-        $exchange = new \AMQPExchange($channel);
+        $exchange = new \AMQPExchange($toChannel);
         $exchange->setName($input->getArgument('to_exchange'));
 
         $messageProvider = new PeclPackageMessageProvider($queue);
@@ -74,6 +87,44 @@ class MessageMoveCommand extends BaseCommand
 
         $consumer = new Consumer($messageProvider, $processor);
         $consumer->consume($options);
+    }
+
+    /**
+     * getChannel
+     *
+     * @param string $connectionName
+     *
+     * @return \AMQPChannel
+     */
+    public function getChannel($connectionName, $vhost)
+    {
+        $fs = new Filesystem();
+
+        $file = rtrim(getenv('HOME'), '/') . '/.rabbitmq_admin_toolkit';
+        if (!$fs->exists($file)) {
+            throw new \InvalidArgumentException('Can\'t find ~/.rabbitmq_admin_toolkit file');
+        }
+        $credentials = json_decode(file_get_contents($file), true);
+        if (!isset($credentials[$connectionName])) {
+            throw new \InvalidArgumentException("Connection $connectionName not found in ~/.rabbitmq_admin_toolkit");
+        }
+
+        $defaultCredentials = [
+            'host' => '127.0.0.1',
+            'port' => 15672,
+            'user' => 'root',
+            'password' => 'root',
+        ];
+
+        $credentials = array_merge($defaultCredentials, $credentials[$connectionName]);
+
+        $credentials['login'] = $credentials['user'];
+        unset($credentials['user'], $credentials['port']);
+
+        $connection = new \AMQPConnection(array_merge($credentials, ['vhost' => $vhost]));
+        $connection->connect();
+
+        return new \AMQPChannel($connection);
     }
 }
 
