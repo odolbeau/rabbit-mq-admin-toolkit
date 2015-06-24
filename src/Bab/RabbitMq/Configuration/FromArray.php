@@ -25,7 +25,7 @@ class FromArray implements Configuration
         if (isset($parameters['with_dl'])) {
             $this->hasDeadLetterExchange = (bool) $parameters['with_dl'];
         }
-        if (isset($parameters['with_dl'])) {
+        if (isset($parameters['with_unroutable'])) {
             $this->hasUnroutableExchange = (bool) $parameters['with_unroutable'];
         }
     }
