@@ -6,7 +6,7 @@ use Bab\RabbitMq\Configuration;
 use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Filesystem\Filesystem;
 
-class Yaml implements FromArray
+class Yaml extends FromArray
 {
     public function __construct($filePath)
     {
