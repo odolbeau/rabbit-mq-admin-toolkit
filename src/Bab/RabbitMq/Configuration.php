@@ -9,12 +9,4 @@ interface Configuration extends \ArrayAccess
     public function hasDeadLetterExchange();
 
     public function hasUnroutableExchange();
-
-    public function offsetExists($offset);
-
-    public function offsetGet($offset);
-
-    public function offsetSet($offset, $value);
-
-    public function offsetUnset($offset);
 }
