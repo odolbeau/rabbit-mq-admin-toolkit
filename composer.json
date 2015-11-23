@@ -4,7 +4,6 @@
     "license": "MIT",
     "require": {
         "symfony/console": "~2.4",
-        "symfony/filesystem": "~2.4",
         "symfony/yaml": "~2.4",
         "swarrot/swarrot": "~2.0"
     },

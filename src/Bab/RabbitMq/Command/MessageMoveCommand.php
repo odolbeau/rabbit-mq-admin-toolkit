@@ -13,7 +13,6 @@ use Swarrot\Processor\ProcessorInterface;
 use Swarrot\Broker\Message;
 use Swarrot\Consumer;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Filesystem\Filesystem;
 
 class MessageMoveCommand extends Command
 {
@@ -98,10 +97,8 @@ class MessageMoveCommand extends Command
      */
     public function getChannel($connectionName, $vhost)
     {
-        $fs = new Filesystem();
-
         $file = rtrim(getenv('HOME'), '/') . '/.rabbitmq_admin_toolkit';
-        if (!$fs->exists($file)) {
+        if (!file_exists($file)) {
             throw new \InvalidArgumentException('Can\'t find ~/.rabbitmq_admin_toolkit file');
         }
         $credentials = json_decode(file_get_contents($file), true);
