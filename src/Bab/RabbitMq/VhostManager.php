@@ -11,7 +11,6 @@ class VhostManager
 
     protected $credentials;
     private $httpClient;
-    private $config;
 
     public function __construct(array $credentials, Action $action, HttpClient $httpClient)
     {
@@ -27,7 +26,7 @@ class VhostManager
     }
 
     /**
-     * resetVhost
+     * Resets vhost
      *
      * @return void
      */
@@ -55,9 +54,9 @@ class VhostManager
     }
 
     /**
-     * createMapping
+     * Creates mapping
      *
-     * @param array $config
+     * @param Configuration $config
      *
      * @return void
      */
@@ -295,7 +294,7 @@ class VhostManager
      */
     public function remove($queue)
     {
-        return $this->query('DELETE', '/api/queues/'.$this->credentials['vhost'].'/'.$queue);
+        $this->query('DELETE', '/api/queues/'.$this->credentials['vhost'].'/'.$queue);
     }
 
     /**
@@ -307,7 +306,7 @@ class VhostManager
      */
     public function purge($queue)
     {
-        return $this->query('DELETE', '/api/queues/'.$this->credentials['vhost'].'/'.$queue.'/contents');
+        $this->query('DELETE', '/api/queues/'.$this->credentials['vhost'].'/'.$queue.'/contents');
     }
 
     /**
@@ -320,7 +319,7 @@ class VhostManager
      */
     protected function createExchange($exchange, array $parameters = array())
     {
-        return $this->action->createExchange($exchange, $parameters);
+        $this->action->createExchange($exchange, $parameters);
     }
 
     /**
@@ -333,7 +332,7 @@ class VhostManager
      */
     protected function createQueue($queue, array $parameters = array())
     {
-        return $this->action->createQueue($queue, $parameters);
+        $this->action->createQueue($queue, $parameters);
     }
 
     /**
@@ -347,7 +346,7 @@ class VhostManager
      */
     protected function createBinding($exchange, $queue, $routingKey = null, array $arguments = array())
     {
-        return $this->action->createBinding($exchange, $queue, $routingKey, $arguments);
+        $this->action->createBinding($exchange, $queue, $routingKey, $arguments);
     }
 
     /**
@@ -375,7 +374,7 @@ class VhostManager
      */
     protected function createDl()
     {
-        return $this->createExchange('dl', array(
+        $this->createExchange('dl', array(
             'type'      => 'direct',
             'durable'   => true,
             'arguments' => array(
@@ -387,7 +386,7 @@ class VhostManager
     /**
      * setPermissions
      *
-     * @param array $permissions
+     * @param Configuration $config
      *
      * @return void
      */
@@ -406,7 +405,7 @@ class VhostManager
      *
      * @param array $userPermissions
      *
-     * @return void
+     * @return array
      */
     private function extractPermissions(array $userPermissions = array())
     {
@@ -430,11 +429,11 @@ class VhostManager
     /**
      * query
      *
-     * @param mixed $method
-     * @param mixed $url
-     * @param array $parameters
+     * @param string $method
+     * @param string $url
+     * @param array|null $parameters
      *
-     * @return response body
+     * @return string response body
      */
     protected function query($method, $url, array $parameters = null)
     {
