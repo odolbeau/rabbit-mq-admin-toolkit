@@ -19,11 +19,21 @@ abstract class Action implements \Bab\RabbitMq\Action
         $this->logger = new NullLogger();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function setVhost($vhost)
     {
         $this->vhost = $vhost;
     }
 
+    /**
+     * @param string     $verb
+     * @param string     $uri
+     * @param array|null $parameters
+     *
+     * @return string
+     */
     protected function query($verb, $uri, $parameters)
     {
         $this->ensureVhostDefined();

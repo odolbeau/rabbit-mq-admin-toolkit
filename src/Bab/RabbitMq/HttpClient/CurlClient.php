@@ -19,6 +19,9 @@ class CurlClient implements HttpClient
         $this->pass = $pass;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function query($verb, $uri, array $parameters = null)
     {
         $handle = $this->getHandle();
