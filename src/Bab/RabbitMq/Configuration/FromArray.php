@@ -3,8 +3,6 @@
 namespace Bab\RabbitMq\Configuration;
 
 use Bab\RabbitMq\Configuration;
-use Symfony\Component\Yaml\Parser;
-use Symfony\Component\Filesystem\Filesystem;
 
 class FromArray implements Configuration
 {

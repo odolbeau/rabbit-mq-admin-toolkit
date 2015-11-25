@@ -10,7 +10,6 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Bab\RabbitMq\Action\RealAction;
 use Bab\RabbitMq\HttpClient\CurlClient;
 use Bab\RabbitMq\Logger\CliLogger;
-use Symfony\Component\Filesystem\Filesystem;
 
 class BaseCommand extends Command
 {
@@ -62,10 +61,8 @@ class BaseCommand extends Command
     protected function getCredentials(InputInterface $input, OutputInterface $output)
     {
         if (null !== $connection = $input->getOption('connection')) {
-            $fs = new Filesystem();
-
             $file = rtrim(getenv('HOME'), '/') . '/.rabbitmq_admin_toolkit';
-            if (!$fs->exists($file)) {
+            if (!file_exists($file)) {
                 throw new \InvalidArgumentException('Can\'t use connection option without a ~/.rabbitmq_admin_toolkit file');
             }
             $credentials = json_decode(file_get_contents($file), true);
