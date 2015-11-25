@@ -18,7 +18,7 @@ class QueueRemoveCommand extends BaseCommand
             ->setDescription('Remove queue of a vhost')
             ->addArgument('vhost', InputArgument::REQUIRED, 'Which vhost should be removed?')
             ->addOption('all', 'a', InputOption::VALUE_NONE, 'Should we remove all queues in vhost?')
-            ->addOption('pattern', 'P', InputOption::VALUE_OPTIONAL, 'Purge only queues matching pattern', null)
+            ->addOption('pattern', 'P', InputOption::VALUE_REQUIRED, 'Purge only queues matching pattern', null)
         ;
     }
 

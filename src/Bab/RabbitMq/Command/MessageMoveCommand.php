@@ -32,7 +32,7 @@ class MessageMoveCommand extends Command
             ->addArgument('to_vhost', InputArgument::REQUIRED, 'To which vhost?')
             ->addArgument('to_exchange', InputArgument::REQUIRED, 'To which exchange?')
             ->addArgument('to_routing_key', InputArgument::REQUIRED, 'To which routing key?')
-            ->addOption('max-messages', 'm', InputOption::VALUE_OPTIONAL, 'Limit messages?', 0)
+            ->addOption('max-messages', 'm', InputOption::VALUE_REQUIRED, 'Limit messages?', 0)
         ;
     }
 
