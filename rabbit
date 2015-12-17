@@ -7,6 +7,7 @@ use Bab\RabbitMq\Command\VhostMappingCreateCommand;
 use Bab\RabbitMq\Command\QueuePurgeCommand;
 use Bab\RabbitMq\Command\VhostResetCommand;
 use Bab\RabbitMq\Command\QueueRemoveCommand;
+use Bab\RabbitMq\Command\MessageGetCommand;
 use Bab\RabbitMq\Command\MessageMoveCommand;
 use Bab\RabbitMq\Command\MessageSenderCommand;
 use Symfony\Component\Console\Application;
@@ -14,6 +15,7 @@ use Symfony\Component\Console\Application;
 $application = new Application();
 
 $application->add(new VhostMappingCreateCommand());
+$application->add(new MessageGetCommand());
 $application->add(new MessageMoveCommand());
 $application->add(new QueuePurgeCommand());
 $application->add(new QueueRemoveCommand());
