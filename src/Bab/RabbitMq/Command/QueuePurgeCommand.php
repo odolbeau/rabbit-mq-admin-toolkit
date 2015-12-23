@@ -18,7 +18,7 @@ class QueuePurgeCommand extends BaseCommand
             ->setDescription('Purge all queue of a vhost')
             ->addArgument('vhost', InputArgument::REQUIRED, 'Which vhost should be purged?')
             ->addOption('all', 'a', InputOption::VALUE_NONE, 'Should we purge all queues in vhost?')
-            ->addOption('pattern', 'P', InputOption::VALUE_OPTIONAL, 'Purge only queues matching pattern', null)
+            ->addOption('pattern', 'P', InputOption::VALUE_REQUIRED, 'Purge only queues matching pattern', null)
         ;
     }
 
