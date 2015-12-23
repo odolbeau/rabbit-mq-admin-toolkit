@@ -3,26 +3,18 @@
 ## Installation
 
 The recommended way to install RabbitMQ Tools is through
-[Composer](http://getcomposer.org/). Require the
-`odolbeau/rabbit-mq-admin-toolkit` package into your `composer.json` file:
+[Composer](https://getcomposer.org/). Require the
+`odolbeau/rabbit-mq-admin-toolkit` package:
 
-```json
-{
-    "require": {
-        "odolbeau/rabbit-mq-admin-toolkit": "@stable"
-    }
-}
+```bash
+$ composer require odolbeau/rabbit-mq-admin-toolkit
 ```
-
-**Protip:** you should browse the
-[`odolbeau/rabbit-mq-admin-toolkit`](https://packagist.org/packages/odolbeau/rabbit-mq-admin-toolkit)
-page to choose a stable version to use, avoid the `@stable` meta constraint.
 
 ## Usage
 
 You can create / update vhosts with the following command:
 
-    ./rabbit vhost:mapping:create conf/vhost/events.yml
+    vendor/bin/rabbit vhost:mapping:create conf/vhost/events.yml
 
 You can change all connection informations with options. Launch `./console
 vhost:create -h` to have more informations.
