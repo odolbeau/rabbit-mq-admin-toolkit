@@ -30,8 +30,8 @@ class MessageMoveCommand extends Command
             ->addArgument('from_vhost', InputArgument::REQUIRED, 'From which vhost?')
             ->addArgument('from_queue', InputArgument::REQUIRED, 'From which queue?')
             ->addArgument('to_vhost', InputArgument::REQUIRED, 'To which vhost?')
-            ->addArgument('to_exchange', InputArgument::REQUIRED, 'To which exchange?')
-            ->addArgument('to_routing_key', InputArgument::REQUIRED, 'To which routing key?')
+            ->addArgument('to_exchange', InputArgument::OPTIONAL, 'To which exchange? (use message config by default)', null)
+            ->addArgument('to_routing_key', InputArgument::OPTIONAL, 'To which routing key? (use message config by default)', null)
             ->addOption('max-messages', 'm', InputOption::VALUE_REQUIRED, 'Limit messages?', 0)
         ;
     }
@@ -67,11 +67,7 @@ class MessageMoveCommand extends Command
         $queue = new \AMQPQueue($fromChannel);
         $queue->setName($input->getArgument('from_queue'));
 
-        $exchange = new \AMQPExchange($toChannel);
-        $exchange->setName($input->getArgument('to_exchange'));
-
         $messageProvider = new PeclPackageMessageProvider($queue);
-        $messagePublisher = new PeclPackageMessagePublisher($exchange);
 
         $options = array();
         $stack = (new \Swarrot\Processor\Stack\Builder());
@@ -82,7 +78,7 @@ class MessageMoveCommand extends Command
         $stack->push('Swarrot\Processor\Insomniac\InsomniacProcessor');
         $stack->push('Swarrot\Processor\Ack\AckProcessor', $messageProvider);
 
-        $processor = $stack->resolve(new MoveProcessor($messagePublisher, $input->getArgument('to_routing_key')));
+        $processor = $stack->resolve(new MoveProcessor($toChannel, $input->getArgument('to_exchange'), $input->getArgument('to_routing_key')));
 
         $consumer = new Consumer($messageProvider, $processor);
         $consumer->consume($options);
@@ -127,17 +123,50 @@ class MessageMoveCommand extends Command
 
 class MoveProcessor implements ProcessorInterface
 {
-    protected $messagePublisher;
+    protected $channel;
+    protected $exchange;
     protected $routingKey;
 
-    public function __construct(MessagePublisherInterface $messagePublisher, $routingKey)
+    protected $publishers = [];
+
+    public function __construct(\AMQPChannel $channel, $exchange, $routingKey)
     {
-        $this->messagePublisher = $messagePublisher;
-        $this->routingKey       = $routingKey;
+        $this->channel    = $channel;
+        $this->exchange   = $exchange;
+        $this->routingKey = $routingKey;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function process(Message $message, array $options)
     {
-        $this->messagePublisher->publish(new Message($message->getBody()), $this->routingKey);
+        $properties = $message->getProperties();
+
+        $exchange = $this->exchange ?: $properties['exchange_name'];
+        $routingKey = $this->routingKey ?: $properties['routing_key'];
+
+        $this->getMessagePublisher($exchange)->publish(new Message($message->getBody()), $routingKey);
+    }
+
+    /**
+     * getMessagePublisher
+     *
+     * @param string $name
+     *
+     * @return PeclPackageMessagePublisher
+     */
+    protected function getMessagePublisher($name)
+    {
+        if (isset($this->publishers[$name])) {
+            return $this->publishers[$name];
+        }
+
+        $exchange = new \AMQPExchange($this->channel);
+        $exchange->setName($name);
+
+        $this->publishers[$name] = new PeclPackageMessagePublisher($exchange);
+
+        return $this->publishers[$name];
     }
 }
