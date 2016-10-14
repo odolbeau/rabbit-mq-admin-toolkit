@@ -108,7 +108,7 @@ class VhostManager
 
     private function createQueues(Configuration $config)
     {
-        if (!isset($config['queues'])) {
+        if (!isset($config['queues']) || 0 === count($config['queues'])) {
             return;
         }
 
