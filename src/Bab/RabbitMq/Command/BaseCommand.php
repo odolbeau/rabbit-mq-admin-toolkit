@@ -25,7 +25,7 @@ class BaseCommand extends Command
     }
 
     /**
-     * getVhostManager
+     * getVhostManager.
      *
      * @param InputInterface  $input
      * @param OutputInterface $output
@@ -51,9 +51,9 @@ class BaseCommand extends Command
     }
 
     /**
-     * getCredentials
+     * getCredentials.
      *
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return array
@@ -61,7 +61,7 @@ class BaseCommand extends Command
     protected function getCredentials(InputInterface $input, OutputInterface $output)
     {
         if (null !== $connection = $input->getOption('connection')) {
-            $file = rtrim(getenv('HOME'), '/') . '/.rabbitmq_admin_toolkit';
+            $file = rtrim(getenv('HOME'), '/').'/.rabbitmq_admin_toolkit';
             if (!file_exists($file)) {
                 throw new \InvalidArgumentException('Can\'t use connection option without a ~/.rabbitmq_admin_toolkit file');
             }
@@ -83,14 +83,21 @@ class BaseCommand extends Command
         $credentials = [
             'host' => $input->getOption('host'),
             'port' => $input->getOption('port'),
-            'user' => $input->getOption('user')
+            'user' => $input->getOption('user'),
         ];
 
         if ($input->hasParameterOption(['--password', '-p'])) {
             $credentials['password'] = $input->getOption('password');
         } elseif (null === $input->getOption('password')) {
-            $dialog = $this->getHelperSet()->get('dialog');
-            $credentials['password'] = $dialog->askHiddenResponse($output, 'Password?', false);
+            $questionHelper = $this->getHelperSet()->has('question') ? $this->getHelperSet()->get('question') : $this->getHelperSet()->get('dialog');
+            $question = '<question>Password?</question>';
+
+            if ($questionHelper instanceof QuestionHelper) {
+                $question = new Question($question);
+                $question->setHidden(true);
+            }
+
+            $credentials['password'] = $questionHelper->ask($input, $output, $question);
         }
 
         return $credentials;
