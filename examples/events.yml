@@ -1,0 +1,36 @@
+my_vhost_name:
+    parameters:
+        with_dl: true # If true, all queues will have a dl and the corresponding mapping with the exchange "dl"
+        with_unroutable: true # If true, all exchange will be declared with an unroutable config
+
+    exchanges:
+        my_exchange:
+            type: direct
+            durable: true
+            with_unroutable: true #if true, unroutable exchange will be created (if not already set as global parameter)
+
+        my_exchange_headers:
+            type: headers
+            durable: true
+
+    queues:
+        my_queue:
+            durable: true
+            delay: 5000 #create delayed message queue (value is in milliseconds)
+            bindings:
+                -
+                    exchange: my_exchange
+                    routing_key: my_routing_key
+                -
+                    exchange: my_exchange
+                    routing_key: other_routing_key
+
+        another_queue:
+            durable: true
+            with_dl: false
+            retries: [25, 125, 625]
+            bindings:
+                -
+                    exchange: my_exchange_headers
+                    x-match: all
+                    matches: {header_name: value, other_header_name: some_value}

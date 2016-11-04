@@ -1,0 +1,24 @@
+sudo: false
+
+language: php
+
+php:
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+  - 7.1
+  - nightly
+
+services:
+    - rabbitmq
+
+before_install:
+    - composer self-update --stable --no-interaction
+
+before_script:
+    - composer install --prefer-source --no-interaction
+
+script:
+    - php rabbit vhost:reset my_vhost_name -p guest
+    - php rabbit vhost:mapping:create examples/events.yml -p guest
