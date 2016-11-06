@@ -1,12 +1,18 @@
 {
     "name": "odolbeau/rabbit-mq-admin-toolkit",
     "description": "RabbitMQ administration toolkit",
+    "keywords": ["rabbitmq", "admin", "toolkit", "amqp"],
+    "type": "library",
     "license": "MIT",
     "require": {
         "php": ">=5.4",
         "symfony/console": "^2.4|^3.0",
         "symfony/yaml": "^2.4|^3.0",
         "swarrot/swarrot": "~2.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "~1.12",
+        "phpunit/phpunit": ">=4.8"
     },
     "autoload": {
         "psr-0": {
@@ -16,11 +22,7 @@
     "bin": ["rabbit"],
     "extra": {
         "branch-alias": {
-            "dev-master": "3.0.x-dev"
+            "dev-master": "3.2.x-dev"
         }
-    },
-    "require-dev": {
-        "fabpot/php-cs-fixer": "~1.4",
-        "phpunit/phpunit": "^5.6"
     }
 }
