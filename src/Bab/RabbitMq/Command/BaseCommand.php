@@ -7,6 +7,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Bab\RabbitMq\VhostManager;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Helper\QuestionHelper;
+use Symfony\Component\Console\Question\Question;
 use Bab\RabbitMq\Action\RealAction;
 use Bab\RabbitMq\HttpClient\CurlClient;
 use Bab\RabbitMq\Logger\CliLogger;
