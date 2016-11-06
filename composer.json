@@ -20,6 +20,7 @@
         }
     },
     "require-dev": {
-        "fabpot/php-cs-fixer": "~1.4"
+        "fabpot/php-cs-fixer": "~1.4",
+        "phpunit/phpunit": "^5.6"
     }
 }

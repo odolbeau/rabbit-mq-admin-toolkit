@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 - Add Symfony3 & php7 compatibility
 - Create CHANGELOG
+- Start to unit test project
 
 ### Fixed
 
