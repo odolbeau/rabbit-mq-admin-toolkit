@@ -1,4 +1,8 @@
-# RabbitMQ Tools
+# RabbitMQ Admin Toolkit
+
+[![Build Status](https://travis-ci.org/odolbeau/rabbit-mq-admin-toolkit.svg?branch=master)](https://travis-ci.org/odolbeau/rabbit-mq-admin-toolkit)
+[![Latest Stable Version](https://poser.pugx.org/odolbeau/rabbit-mq-admin-toolkit/v/stable)](https://packagist.org/packages/odolbeau/rabbit-mq-admin-toolkit)
+[![Latest Unstable Version](https://poser.pugx.org/odolbeau/rabbit-mq-admin-toolkit/v/unstable)](https://packagist.org/packages/odolbeau/rabbit-mq-admin-toolkit)
 
 ## Installation
 
