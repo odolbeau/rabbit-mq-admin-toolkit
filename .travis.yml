@@ -10,6 +10,10 @@ php:
   - 7.1
   - nightly
 
+matrix:
+    allow_failures:
+        - php: nightly
+
 services:
     - rabbitmq
 
@@ -22,3 +26,4 @@ before_script:
 script:
     - php rabbit vhost:reset my_vhost_name -p guest
     - php rabbit vhost:mapping:create examples/events.yml -p guest
+    - vendor/bin/phpunit
