@@ -91,15 +91,10 @@ class BaseCommand extends Command
         if ($input->hasParameterOption(['--password', '-p'])) {
             $credentials['password'] = $input->getOption('password');
         } elseif (null === $input->getOption('password')) {
-            $questionHelper = $this->getHelperSet()->has('question') ? $this->getHelperSet()->get('question') : $this->getHelperSet()->get('dialog');
-            $question = '<question>Password?</question>';
+            $question = new Question('<question>Password?</question>');
+            $question->setHidden(true);
 
-            if ($questionHelper instanceof QuestionHelper) {
-                $question = new Question($question);
-                $question->setHidden(true);
-            }
-
-            $credentials['password'] = $questionHelper->ask($input, $output, $question);
+            $credentials['password'] = $this->getHelperSet()->get('question')->ask($input, $output, $question);
         }
 
         return $credentials;

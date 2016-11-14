@@ -2,6 +2,7 @@
 
 namespace Bab\RabbitMq\Command;
 
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
@@ -84,12 +85,14 @@ class MessageSenderCommand extends BaseCommand
         if (count($notHandledMessages)) {
             $output->writeln(sprintf('<error>- %d message(s) were/was not published into rabbit:</error>', count($notHandledMessages)));
 
-            $tableHelper = $this->getHelperSet()->get('table');
-            $tableHelper
+            $table = new Table($output);
+            $table
                 ->setHeaders(array('Message', 'Exception'))
                 ->setRows($notHandledMessages)
             ;
-            $tableHelper->render($output);
+            $table->render();
+
+            return 1;
         }
     }
 }
