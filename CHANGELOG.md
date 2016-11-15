@@ -5,6 +5,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [3.2.0]
+
+### Changed
+
+- Bump symfony/console minimum requirement from 2.4 to 2.7
+
 ### Added
 
 - Add Symfony3 & php7 compatibility
@@ -59,7 +65,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.0.0] - 2014-09-06
 
-[Unreleased]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.1.2...HEAD
+[Unreleased]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.2.0...HEAD
+[3.2.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.1.2...v3.2.0
 [3.1.2]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.1.0...v3.1.1
 [3.1.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.0.0...v3.1.0
