@@ -2,6 +2,9 @@
 
 namespace Bab\RabbitMq;
 
+use Bab\RabbitMq\Specification\DeadLetterExchangeCanBeCreated;
+use Bab\RabbitMq\Specification\DelayExchangeCanBeCreated;
+use Bab\RabbitMq\Specification\RetryExchangeCanBeCreated;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
 
@@ -80,8 +83,16 @@ class VhostManager
             $this->createUnroutable();
         }
 
-        if ($config->hasDeadLetterExchange() === true) {
-            $this->createDl();
+        if ((new DeadLetterExchangeCanBeCreated())->isSatisfiedBy($config)) {
+            $this->createDlExchange();
+        }
+
+        if ((new RetryExchangeCanBeCreated())->isSatisfiedBy($config)) {
+            $this->createRetryExchange();
+        }
+
+        if ((new DelayExchangeCanBeCreated())->isSatisfiedBy($config)) {
+            $this->createDelayExchange();
         }
     }
 
@@ -134,10 +145,6 @@ class VhostManager
                 unset($parameters['retries']);
             }
 
-            if ($currentWithDl && $config->hasDeadLetterExchange() === false) {
-                $this->createDl();
-            }
-
             if ($currentWithDl && !isset($config['arguments']['x-dead-letter-exchange'])) {
                 if (!isset($parameters['arguments'])) {
                     $parameters['arguments'] = array();
@@ -153,9 +160,6 @@ class VhostManager
             if (isset($parameters['delay'])) {
                 $withDelay = true;
                 $delay = (int) $parameters['delay'];
-                $this->createExchange('delay', array(
-                    'durable' => true,
-                ));
 
                 $this->createQueue($name.'_delay_'.$delay, array(
                     'durable' => true,
@@ -180,14 +184,12 @@ class VhostManager
             }
 
             for ($i = 0; $i < count($retries); $i++) {
+                if ($i === 0) {
+                    $this->createBinding('retry', $name, $name);
+                }
+
                 $retryName = $name.'_retry_'.($i+1);
-                $this->createExchange('retry', array(
-                    'durable' => true,
-                    'type'    => 'topic',
-                    'arguments' => array(
-                        'alternate-exchange' => 'unroutable',
-                    ),
-                ));
+
                 $this->createQueue($retryName, array(
                     'durable' => true,
                     'arguments' => array(
@@ -197,7 +199,6 @@ class VhostManager
                     ),
                 ));
                 $this->createBinding('retry', $retryName, $retryName);
-                $this->createBinding('retry', $name, $name);
             }
 
             foreach ($bindings as $binding) {
@@ -372,11 +373,9 @@ class VhostManager
     }
 
     /**
-     * createDl
-     *
      * @return void
      */
-    protected function createDl()
+    protected function createDlExchange()
     {
         $this->createExchange('dl', array(
             'type'      => 'direct',
@@ -384,6 +383,30 @@ class VhostManager
             'arguments' => array(
                 'alternate-exchange' => 'unroutable',
             ),
+        ));
+    }
+
+    /**
+     * @return void
+     */
+    protected function createRetryExchange()
+    {
+        $this->createExchange('retry', array(
+            'durable' => true,
+            'type'    => 'topic',
+            'arguments' => array(
+                'alternate-exchange' => 'unroutable',
+            ),
+        ));
+    }
+
+    /**
+     * @return void
+     */
+    protected function createDelayExchange()
+    {
+        $this->createExchange('delay', array(
+            'durable' => true,
         ));
     }
 
