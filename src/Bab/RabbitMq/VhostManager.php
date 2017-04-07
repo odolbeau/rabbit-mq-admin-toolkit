@@ -183,22 +183,29 @@ class VhostManager
                 $this->createBinding('dl', $name.'_dl', $name);
             }
 
+            $retriesQueues = [];
             for ($i = 0; $i < count($retries); $i++) {
                 if ($i === 0) {
                     $this->createBinding('retry', $name, $name);
                 }
 
-                $retryName = $name.'_retry_'.($i+1);
+                $retryQueueName = $name.'_retry_'.$retries[$i];
 
-                $this->createQueue($retryName, array(
-                    'durable' => true,
-                    'arguments' => array(
-                        'x-message-ttl' => $retries[$i]*1000,
-                        'x-dead-letter-exchange' => 'retry',
-                        'x-dead-letter-routing-key' => $name,
-                    ),
-                ));
-                $this->createBinding('retry', $retryName, $retryName);
+                if (!in_array($retryQueueName, $retriesQueues)) {
+                    $this->createQueue($retryQueueName, array(
+                        'durable' => true,
+                        'arguments' => array(
+                            'x-message-ttl' => $retries[$i]*1000,
+                            'x-dead-letter-exchange' => 'retry',
+                            'x-dead-letter-routing-key' => $name,
+                        ),
+                    ));
+
+                    $retriesQueues[] = $retryQueueName;
+                }
+
+                $retryRoutingkey = $name.'_retry_'.($i + 1);
+                $this->createBinding('retry', $retryQueueName, $retryRoutingkey);
             }
 
             foreach ($bindings as $binding) {
