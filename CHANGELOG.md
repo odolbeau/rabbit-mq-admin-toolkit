@@ -5,6 +5,20 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [4.0.0]
+
+If you update you project from 3.x version and if you use retry queues, take care!
+You'll need to remove all previous retry queues. You can use this command:
+
+`./rabbit queue:remove vhost -P "#.*retry_[1-3]\$#"`
+
+If you have more than 3 retries, update the regex accordingly.
+
+### Changed
+
+- Improve DL / retry / delay exchanges creation (avoid useless duplicates)
+- Change retry queues name from `queue_retry_{attempt}` to `queue_retry_{ttl}`
+
 ## [3.2.0]
 
 ### Changed
@@ -65,7 +79,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [1.0.0] - 2014-09-06
 
-[Unreleased]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.2.0...HEAD
+[Unreleased]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.2.0...v4.0.0
 [3.2.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.1.2...v3.2.0
 [3.1.2]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.1.1...v3.1.2
 [3.1.1]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.1.0...v3.1.1
