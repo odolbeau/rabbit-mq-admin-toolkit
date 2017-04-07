@@ -190,7 +190,6 @@ class VhostManager
                 }
 
                 $retryQueueName = $name.'_retry_'.$retries[$i];
-                $retriesQueues[] = $retryQueueName;
 
                 if (!in_array($retryQueueName, $retriesQueues)) {
                     $this->createQueue($retryQueueName, array(
@@ -201,6 +200,7 @@ class VhostManager
                             'x-dead-letter-routing-key' => $name,
                         ),
                     ));
+                    $retriesQueues[] = $retryQueueName;
                 }
 
                 $retryRoutingkey = $name.'_retry_'.($i + 1);
