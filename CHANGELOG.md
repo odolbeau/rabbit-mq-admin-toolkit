@@ -5,6 +5,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [4.0.1]
+
+### Added
+
+* Support swarrot 3.x
+
 ## [4.0.0]
 
 If you update you project from 3.x version and if you use retry queues, take care!
@@ -79,7 +85,8 @@ If you have more than 3 retries, update the regex accordingly.
 
 ## [1.0.0] - 2014-09-06
 
-[Unreleased]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v4.0.0...HEAD
+[Unreleased]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v4.0.1...HEAD
+[4.0.1]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.2.0...v4.0.0
 [3.2.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.1.2...v3.2.0
 [3.1.2]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.1.1...v3.1.2
