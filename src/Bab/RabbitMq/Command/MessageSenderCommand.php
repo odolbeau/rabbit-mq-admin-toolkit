@@ -2,6 +2,8 @@
 
 namespace Bab\RabbitMq\Command;
 
+use Swarrot\Broker\Message;
+use Swarrot\Broker\MessagePublisher\PeclPackageMessagePublisher;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -40,7 +42,9 @@ class MessageSenderCommand extends BaseCommand
             $input->getArgument('to_vhost')
         ));
 
-        $vhostManager = $this->getVhostManager($input, $output, $input->getArgument('to_vhost'));
+        $exchange = new \AMQPExchange($this->getChannel($input, $output, $input->getArgument('to_vhost')));
+        $exchange->setName($input->getArgument('to_exchange'));
+        $publisher = new PeclPackageMessagePublisher($exchange);
 
         $messages = array();
 
@@ -65,11 +69,8 @@ class MessageSenderCommand extends BaseCommand
 
         foreach ($messages as $message) {
             try {
-                $vhostManager->publishMessage(
-                    $input->getArgument('to_exchange'),
-                    $input->getArgument('to_routing_key'),
-                    $message
-                );
+                $swarrotMessage = new Message($message);
+                $publisher->publish($swarrotMessage, $input->getArgument('to_routing_key'));
             } catch (\Exception $e) {
                 $notHandledMessages[] = array(
                     'payload' => $message,
@@ -94,5 +95,18 @@ class MessageSenderCommand extends BaseCommand
 
             return 1;
         }
+    }
+
+    public function getChannel($input, $output, $vhost)
+    {
+        $credentials = $this->getCredentials($input, $output);
+
+        $credentials['login'] = $credentials['user'];
+        unset($credentials['user'], $credentials['port']);
+
+        $connection = new \AMQPConnection(array_merge($credentials, ['vhost' => $vhost]));
+        $connection->connect();
+
+        return new \AMQPChannel($connection);
     }
 }

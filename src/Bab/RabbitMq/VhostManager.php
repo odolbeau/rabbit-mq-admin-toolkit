@@ -271,9 +271,13 @@ class VhostManager
      * @param string $message
      *
      * @throws \RuntimeException if an error occured during the publication
+     *
+     * @deprecated
      */
     public function publishMessage($exchangeName, $routingKey, $message)
     {
+        @trigger_error('Sending messages using the VhostManager is deprecated. Use Swarrot instead, which has better performance when sending multiple messages.', E_USER_DEPRECATED);
+
         $informations = $this->query('POST', sprintf(
             '/api/exchanges/%s/%s/publish',
             $this->credentials['vhost'],
