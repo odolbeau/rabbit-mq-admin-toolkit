@@ -18,7 +18,7 @@ class VhostManager
     public function __construct(array $credentials, Action $action, HttpClient $httpClient)
     {
         $this->credentials = $credentials;
-        $this->credentials['vhost'] = str_replace('/', '%2F', $this->credentials['vhost']);
+        $this->credentials['vhost'] = str_replace('/', '%2f', $this->credentials['vhost']);
         $this->action = $action;
         $this->action->setVhost($this->credentials['vhost']);
         $this->httpClient = $httpClient;
