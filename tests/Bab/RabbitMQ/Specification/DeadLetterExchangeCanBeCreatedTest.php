@@ -3,8 +3,9 @@
 namespace Bab\RabbitMq;
 
 use Bab\RabbitMq\Specification\DeadLetterExchangeCanBeCreated;
+use PHPUnit\Framework\TestCase;
 
-class DeadLetterExchangeCanBeCreatedTest extends \PHPUnit_Framework_TestCase
+class DeadLetterExchangeCanBeCreatedTest extends TestCase
 {
     private $specification;
 

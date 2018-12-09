@@ -4,8 +4,9 @@ namespace Bab\RabbitMq\Configuration;
 
 use Prophecy\Argument;
 use Bab\RabbitMq\Configuration;
+use PHPUnit\Framework\TestCase;
 
-class FromArrayTest extends \PHPUnit_Framework_TestCase
+class FromArrayTest extends TestCase
 {
     public function test_with_dl_and_unroutable()
     {
