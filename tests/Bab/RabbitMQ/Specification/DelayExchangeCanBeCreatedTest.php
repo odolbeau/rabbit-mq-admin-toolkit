@@ -3,8 +3,9 @@
 namespace Bab\RabbitMq;
 
 use Bab\RabbitMq\Specification\DelayExchangeCanBeCreated;
+use PHPUnit\Framework\TestCase;
 
-class DelayExchangeCanBeCreatedTest extends \PHPUnit_Framework_TestCase
+class DelayExchangeCanBeCreatedTest extends TestCase
 {
     private $specification;
 

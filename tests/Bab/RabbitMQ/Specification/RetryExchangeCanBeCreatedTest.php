@@ -3,8 +3,9 @@
 namespace Bab\RabbitMq;
 
 use Bab\RabbitMq\Specification\RetryExchangeCanBeCreated;
+use PHPUnit\Framework\TestCase;
 
-class RetryExchangeCanBeCreatedTest extends \PHPUnit_Framework_TestCase
+class RetryExchangeCanBeCreatedTest extends TestCase
 {
     private $specification;
 
