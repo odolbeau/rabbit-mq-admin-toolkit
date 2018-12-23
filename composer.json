@@ -5,13 +5,13 @@
     "type": "library",
     "license": "MIT",
     "require": {
-        "symfony/console": "^2.7|^3.0|^4.0",
-        "symfony/yaml": "^2.4|^3.0|^4.0",
-        "swarrot/swarrot": "~2.0|~3.0"
+        "symfony/console": "^4.0",
+        "symfony/yaml": "^4.0",
+        "swarrot/swarrot": "~3.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.0",
-        "phpunit/phpunit": "^5.7|^6.0|^7.0"
+        "phpunit/phpunit": "^7.0"
     },
     "autoload": {
         "psr-0": {
