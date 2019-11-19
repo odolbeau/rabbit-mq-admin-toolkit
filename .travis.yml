@@ -1,5 +1,3 @@
-sudo: false
-
 language: php
 
 php:
@@ -15,7 +13,7 @@ services:
     - rabbitmq
 
 before_install:
-    - rabbitmq-plugins enable rabbitmq_management
+    - sudo rabbitmq-plugins enable rabbitmq_management
     - composer self-update --stable --no-interaction
 
 before_script:
