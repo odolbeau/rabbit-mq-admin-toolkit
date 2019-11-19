@@ -1,15 +1,19 @@
-sudo: false
-
 language: php
 
 php:
   - 7.1
   - 7.2
 
+addons:
+    apt:
+        packages:
+            - rabbitmq-server
+
 services:
     - rabbitmq
 
 before_install:
+    - sudo rabbitmq-plugins enable rabbitmq_management
     - composer self-update --stable --no-interaction
 
 before_script:
