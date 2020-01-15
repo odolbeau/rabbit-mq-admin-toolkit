@@ -6,7 +6,7 @@ class DelayExchangeCanBeCreated implements Specification
 {
     public function isSatisfiedBy($config)
     {
-        if (!isset($config['queues']) || 0 === count($config['queues'])) {
+        if (!isset($config['queues']) || empty($config['queues'])) {
             return false;
         }
 

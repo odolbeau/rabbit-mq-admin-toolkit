@@ -10,7 +10,7 @@ class DeadLetterExchangeCanBeCreated implements Specification
             return true;
         }
 
-        if (!isset($config['queues']) || 0 === count($config['queues'])) {
+        if (!isset($config['queues']) || empty($config['queues'])) {
             return false;
         }
 
