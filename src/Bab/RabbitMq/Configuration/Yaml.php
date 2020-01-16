@@ -2,7 +2,6 @@
 
 namespace Bab\RabbitMq\Configuration;
 
-use Bab\RabbitMq\Configuration;
 use Symfony\Component\Yaml\Parser;
 
 class Yaml extends FromArray

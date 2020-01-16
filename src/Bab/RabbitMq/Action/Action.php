@@ -20,7 +20,7 @@ abstract class Action implements \Bab\RabbitMq\Action
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function setVhost($vhost)
     {

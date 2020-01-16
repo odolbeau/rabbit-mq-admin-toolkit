@@ -2,22 +2,16 @@
 
 namespace Bab\RabbitMq\Command;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Swarrot\Broker\MessageProvider\PeclPackageMessageProvider;
-use Swarrot\Broker\MessagePublisher\MessagePublisherInterface;
-use Swarrot\Broker\MessagePublisher\PeclPackageMessagePublisher;
-use Swarrot\Processor\ProcessorInterface;
-use Swarrot\Broker\Message;
-use Swarrot\Consumer;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class MessageGetCommand extends Command
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -35,7 +29,7 @@ class MessageGetCommand extends Command
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -55,7 +49,7 @@ class MessageGetCommand extends Command
 
         $noRequeue = $input->getOption('no-requeue');
         $nbMessages = $input->getOption('nb-messages');
-        for ($i = 0; $i < $nbMessages; $i++) {
+        for ($i = 0; $i < $nbMessages; ++$i) {
             if ($noRequeue) {
                 $message = $queue->get(AMQP_AUTOACK);
             } else {
@@ -65,15 +59,17 @@ class MessageGetCommand extends Command
             if (false === $message) {
                 $output->writeln('No more messages in queue.');
 
-                return;
+                return 0;
             }
 
             $output->writeln(print_r($message, true));
         }
+
+        return 0;
     }
 
     /**
-     * getChannel
+     * getChannel.
      *
      * @param string $connectionName
      *
@@ -81,7 +77,7 @@ class MessageGetCommand extends Command
      */
     public function getChannel($connectionName, $vhost)
     {
-        $file = rtrim(getenv('HOME'), '/') . '/.rabbitmq_admin_toolkit';
+        $file = rtrim(getenv('HOME'), '/').'/.rabbitmq_admin_toolkit';
         if (!file_exists($file)) {
             throw new \InvalidArgumentException('Can\'t find ~/.rabbitmq_admin_toolkit file');
         }

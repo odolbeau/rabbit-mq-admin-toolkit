@@ -1,0 +1,517 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Property Bab\\\\RabbitMq\\\\Action\\\\Action\\:\\:\\$httpClient has no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Action/Action.php
+
+		-
+			message: "#^Property Bab\\\\RabbitMq\\\\Action\\\\Action\\:\\:\\$vhost has no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Action/Action.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Action\\\\Action\\:\\:log\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Action/Action.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Action\\\\Action\\:\\:log\\(\\) has parameter \\$message with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Action/Action.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Action\\\\Action\\:\\:ensureVhostDefined\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Action/Action.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Action/RealAction.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\BaseCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/BaseCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function rtrim expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/BaseCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/BaseCommand.php
+
+		-
+			message: "#^Part \\$connection \\(array\\<string\\>\\|bool\\|string\\) of encapsed string cannot be cast to string\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/BaseCommand.php
+
+		-
+			message: "#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/BaseCommand.php
+
+		-
+			message: "#^Cannot call method get\\(\\) on Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperSet\\|null\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/BaseCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$queue_name of method AMQPQueue\\:\\:setName\\(\\) expects string, array\\<string\\>\\|string\\|null given.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageGetCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MessageGetCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageGetCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|bool\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageGetCommand.php
+
+		-
+			message: "#^Parameter \\#3 \\.\\.\\.\\$args of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageGetCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$connectionName of method Bab\\\\RabbitMq\\\\Command\\\\MessageGetCommand\\:\\:getChannel\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageGetCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MessageGetCommand\\:\\:getChannel\\(\\) has parameter \\$vhost with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageGetCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function rtrim expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageGetCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageGetCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$queue_name of method AMQPQueue\\:\\:setName\\(\\) expects string, array\\<string\\>\\|string\\|null given.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MessageMoveCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Parameter \\#3 \\.\\.\\.\\$args of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Parameter \\#4 \\.\\.\\.\\$args of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Parameter \\#5 \\.\\.\\.\\$args of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Parameter \\#6 \\.\\.\\.\\$args of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$connectionName of method Bab\\\\RabbitMq\\\\Command\\\\MessageMoveCommand\\:\\:getChannel\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 2
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$connectionName of method Bab\\\\RabbitMq\\\\Command\\\\MessageMoveCommand\\:\\:getChannel\\(\\) expects string, array\\<string\\>\\|bool\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Cannot cast array\\<string\\>\\|bool\\|string\\|null to int\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MessageMoveCommand\\:\\:getChannel\\(\\) has parameter \\$vhost with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$str of function rtrim expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$json of function json_decode expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Property Bab\\\\RabbitMq\\\\Command\\\\MoveProcessor\\:\\:\\$channel has no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Property Bab\\\\RabbitMq\\\\Command\\\\MoveProcessor\\:\\:\\$exchange has no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Property Bab\\\\RabbitMq\\\\Command\\\\MoveProcessor\\:\\:\\$routingKey has no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Property Bab\\\\RabbitMq\\\\Command\\\\MoveProcessor\\:\\:\\$publishers has no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MoveProcessor\\:\\:__construct\\(\\) has parameter \\$exchange with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MoveProcessor\\:\\:__construct\\(\\) has parameter \\$routingKey with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MoveProcessor\\:\\:process\\(\\) should return bool\\|null but return statement is missing\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$exchange_name of method AMQPExchange\\:\\:setName\\(\\) expects string, array\\<string\\>\\|string\\|null given.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageSenderCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MessageSenderCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageSenderCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageSenderCommand.php
+
+		-
+			message: "#^Parameter \\#3 \\.\\.\\.\\$args of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageSenderCommand.php
+
+		-
+			message: "#^Parameter \\#4 \\.\\.\\.\\$args of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageSenderCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$filename of function file expects string, array\\<string\\>\\|bool\\|string given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageSenderCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\$key of method Swarrot\\\\Broker\\\\MessagePublisher\\\\PeclPackageMessagePublisher\\:\\:publish\\(\\) expects string\\|null, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageSenderCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|string\\|true given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageSenderCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MessageSenderCommand\\:\\:getChannel\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageSenderCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MessageSenderCommand\\:\\:getChannel\\(\\) has parameter \\$input with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageSenderCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MessageSenderCommand\\:\\:getChannel\\(\\) has parameter \\$output with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageSenderCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MessageSenderCommand\\:\\:getChannel\\(\\) has parameter \\$vhost with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/MessageSenderCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\QueuePurgeCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/QueuePurgeCommand.php
+
+		-
+			message: "#^Parameter \\#3 \\$vhost of method Bab\\\\RabbitMq\\\\Command\\\\BaseCommand\\:\\:getVhostManager\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/QueuePurgeCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$pattern of function preg_match expects string, array\\<string\\>\\|bool\\|string given\\.$#"
+			count: 2
+			path: src/Bab/RabbitMq/Command/QueuePurgeCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|bool\\|string given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/QueuePurgeCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\QueueRemoveCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/QueueRemoveCommand.php
+
+		-
+			message: "#^Parameter \\#3 \\$vhost of method Bab\\\\RabbitMq\\\\Command\\\\BaseCommand\\:\\:getVhostManager\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/QueueRemoveCommand.php
+
+		-
+			message: "#^Parameter \\#1 \\$pattern of function preg_match expects string, array\\<string\\>\\|bool\\|string given\\.$#"
+			count: 2
+			path: src/Bab/RabbitMq/Command/QueueRemoveCommand.php
+
+		-
+			message: "#^Parameter \\#2 \\.\\.\\.\\$args of function sprintf expects bool\\|float\\|int\\|string\\|null, array\\<string\\>\\|bool\\|string given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/QueueRemoveCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\VhostMappingCreateCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/VhostMappingCreateCommand.php
+
+		-
+			message: "#^Parameter \\#3 \\$vhost of method Bab\\\\RabbitMq\\\\Command\\\\BaseCommand\\:\\:getVhostManager\\(\\) expects string, array\\<string\\>\\|bool\\|string given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/VhostMappingCreateCommand.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\VhostResetCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/VhostResetCommand.php
+
+		-
+			message: "#^Parameter \\#3 \\$vhost of method Bab\\\\RabbitMq\\\\Command\\\\BaseCommand\\:\\:getVhostManager\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Command/VhostResetCommand.php
+
+		-
+			message: "#^Interface Bab\\\\RabbitMq\\\\Configuration extends generic interface ArrayAccess but does not specify its types\\: TKey, TValue$#"
+			count: 1
+			path: src/Bab/RabbitMq/Configuration.php
+
+		-
+			message: "#^Property Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:\\$vhost has no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Configuration/FromArray.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:__construct\\(\\) has parameter \\$configuration with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Configuration/FromArray.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetExists\\(\\) has parameter \\$offset with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Configuration/FromArray.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetGet\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Configuration/FromArray.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetGet\\(\\) has parameter \\$offset with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Configuration/FromArray.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetSet\\(\\) has parameter \\$offset with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Configuration/FromArray.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetSet\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Configuration/FromArray.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetUnset\\(\\) has parameter \\$offset with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Configuration/FromArray.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\Yaml\\:\\:__construct\\(\\) has parameter \\$filePath with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Configuration/Yaml.php
+
+		-
+			message: "#^Parameter \\#1 \\$value of method Symfony\\\\Component\\\\Yaml\\\\Parser\\:\\:parse\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Configuration/Yaml.php
+
+		-
+			message: "#^Property Bab\\\\RabbitMq\\\\HttpClient\\\\CurlClient\\:\\:\\$host has no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/HttpClient/CurlClient.php
+
+		-
+			message: "#^Property Bab\\\\RabbitMq\\\\HttpClient\\\\CurlClient\\:\\:\\$port has no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/HttpClient/CurlClient.php
+
+		-
+			message: "#^Property Bab\\\\RabbitMq\\\\HttpClient\\\\CurlClient\\:\\:\\$user has no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/HttpClient/CurlClient.php
+
+		-
+			message: "#^Property Bab\\\\RabbitMq\\\\HttpClient\\\\CurlClient\\:\\:\\$pass has no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/HttpClient/CurlClient.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\HttpClient\\\\CurlClient\\:\\:__construct\\(\\) has parameter \\$host with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/HttpClient/CurlClient.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\HttpClient\\\\CurlClient\\:\\:__construct\\(\\) has parameter \\$pass with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/HttpClient/CurlClient.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\HttpClient\\\\CurlClient\\:\\:__construct\\(\\) has parameter \\$port with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/HttpClient/CurlClient.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\HttpClient\\\\CurlClient\\:\\:__construct\\(\\) has parameter \\$user with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/HttpClient/CurlClient.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\HttpClient\\\\CurlClient\\:\\:query\\(\\) should return string but returns string\\|true\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/HttpClient/CurlClient.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\HttpClient\\\\CurlClient\\:\\:getHandle\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/HttpClient/CurlClient.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Specification\\\\DeadLetterExchangeCanBeCreated\\:\\:isSatisfiedBy\\(\\) has parameter \\$config with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Specification/DeadLetterExchangeCanBeCreated.php
+
+		-
+			message: "#^If condition is always false\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Specification/DeadLetterExchangeCanBeCreated.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Specification\\\\DelayExchangeCanBeCreated\\:\\:isSatisfiedBy\\(\\) has parameter \\$config with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Specification/DelayExchangeCanBeCreated.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Specification\\\\RetryExchangeCanBeCreated\\:\\:isSatisfiedBy\\(\\) has parameter \\$config with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Specification/RetryExchangeCanBeCreated.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\Specification\\\\Specification\\:\\:isSatisfiedBy\\(\\) has parameter \\$candidate with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/Specification/Specification.php
+
+		-
+			message: "#^PHPDoc tag @param has invalid value \\(\\$candidate\\)\\: Unexpected token \"\\$candidate\", expected type at offset 18$#"
+			count: 1
+			path: src/Bab/RabbitMq/Specification/Specification.php
+
+		-
+			message: "#^Property Bab\\\\RabbitMq\\\\VhostManager\\:\\:\\$credentials has no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/VhostManager.php
+
+		-
+			message: "#^Access to an undefined property Bab\\\\RabbitMq\\\\VhostManager\\:\\:\\$action\\.$#"
+			count: 5
+			path: src/Bab/RabbitMq/VhostManager.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\VhostManager\\:\\:createBaseStructure\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/VhostManager.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\VhostManager\\:\\:createExchanges\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/VhostManager.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\VhostManager\\:\\:createQueues\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/VhostManager.php
+
+		-
+			message: "#^Variable \\$delay might not be defined\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/VhostManager.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\VhostManager\\:\\:createUserBinding\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/VhostManager.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\VhostManager\\:\\:createUserBinding\\(\\) has parameter \\$delay with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/VhostManager.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\VhostManager\\:\\:createUserBinding\\(\\) has parameter \\$queueName with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/VhostManager.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\VhostManager\\:\\:publishMessage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/VhostManager.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\VhostManager\\:\\:log\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/VhostManager.php
+
+		-
+			message: "#^Method Bab\\\\RabbitMq\\\\VhostManager\\:\\:log\\(\\) has parameter \\$message with no typehint specified\\.$#"
+			count: 1
+			path: src/Bab/RabbitMq/VhostManager.php
+

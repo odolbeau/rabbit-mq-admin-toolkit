@@ -6,14 +6,14 @@ use Swarrot\Broker\Message;
 use Swarrot\Broker\MessagePublisher\PeclPackageMessagePublisher;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class MessageSenderCommand extends BaseCommand
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function configure()
     {
@@ -31,7 +31,7 @@ class MessageSenderCommand extends BaseCommand
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
@@ -46,7 +46,7 @@ class MessageSenderCommand extends BaseCommand
         $exchange->setName($input->getArgument('to_exchange'));
         $publisher = new PeclPackageMessagePublisher($exchange);
 
-        $messages = array();
+        $messages = [];
 
         $file = $input->getOption('file');
 
@@ -57,7 +57,7 @@ class MessageSenderCommand extends BaseCommand
         if (!$messages) {
             $encodedMessage = $input->getOption('message');
             if (!empty($encodedMessage)) {
-                $messages = array($encodedMessage);
+                $messages = [$encodedMessage];
             }
         }
 
@@ -65,17 +65,17 @@ class MessageSenderCommand extends BaseCommand
             throw new \InvalidArgumentException('No message to publish.');
         }
 
-        $notHandledMessages = array();
+        $notHandledMessages = [];
 
         foreach ($messages as $message) {
             try {
                 $swarrotMessage = new Message($message);
                 $publisher->publish($swarrotMessage, $input->getArgument('to_routing_key'));
             } catch (\Exception $e) {
-                $notHandledMessages[] = array(
+                $notHandledMessages[] = [
                     'payload' => $message,
                     'exception' => $e->getMessage(),
-                );
+                ];
 
                 continue;
             }
@@ -83,18 +83,20 @@ class MessageSenderCommand extends BaseCommand
             $output->writeln(sprintf('Message published: <info>%s</info>', $message));
         }
 
-        if (count($notHandledMessages)) {
-            $output->writeln(sprintf('<error>- %d message(s) were/was not published into rabbit:</error>', count($notHandledMessages)));
+        if (\count($notHandledMessages)) {
+            $output->writeln(sprintf('<error>- %d message(s) were/was not published into rabbit:</error>', \count($notHandledMessages)));
 
             $table = new Table($output);
             $table
-                ->setHeaders(array('Message', 'Exception'))
+                ->setHeaders(['Message', 'Exception'])
                 ->setRows($notHandledMessages)
             ;
             $table->render();
 
             return 1;
         }
+
+        return 0;
     }
 
     public function getChannel($input, $output, $vhost)

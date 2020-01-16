@@ -6,7 +6,7 @@ class DeadLetterExchangeCanBeCreated implements Specification
 {
     public function isSatisfiedBy($config)
     {
-        if ($config->hasDeadLetterExchange() === true) {
+        if (true === $config->hasDeadLetterExchange()) {
             return true;
         }
 

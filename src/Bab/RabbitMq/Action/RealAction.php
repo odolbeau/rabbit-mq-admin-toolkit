@@ -5,7 +5,7 @@ namespace Bab\RabbitMq\Action;
 class RealAction extends Action
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function createExchange($name, $parameters)
     {
@@ -15,7 +15,7 @@ class RealAction extends Action
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function createQueue($name, $parameters)
     {
@@ -25,9 +25,9 @@ class RealAction extends Action
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function createBinding($name, $queue, $routingKey, array $arguments = array())
+    public function createBinding($name, $queue, $routingKey, array $arguments = [])
     {
         $this->log(sprintf(
             'Create binding between exchange <info>%s</info> and queue <info>%s</info> (with routing_key: <info>%s</info>)',
@@ -36,11 +36,11 @@ class RealAction extends Action
             null !== $routingKey ? $routingKey : 'none'
         ));
 
-        $parameters = array(
+        $parameters = [
             'arguments' => $arguments,
-        );
+        ];
 
-        if (! empty($routingKey)) {
+        if (!empty($routingKey)) {
             $parameters['routing_key'] = $routingKey;
         }
 
@@ -48,9 +48,9 @@ class RealAction extends Action
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function setPermissions($user, array $parameters = array())
+    public function setPermissions($user, array $parameters = [])
     {
         $this->log(sprintf('Grant following permissions for user <info>%s</info> on vhost <info>%s</info>: <info>%s</info>', $user, $this->vhost, json_encode($parameters)));
 

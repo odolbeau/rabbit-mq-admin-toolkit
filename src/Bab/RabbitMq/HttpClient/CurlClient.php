@@ -20,7 +20,7 @@ class CurlClient implements HttpClient
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function query($verb, $uri, array $parameters = null)
     {
@@ -42,21 +42,13 @@ class CurlClient implements HttpClient
 
         $response = curl_exec($handle);
         if (false === $response) {
-            throw new \RuntimeException(sprintf(
-                'Curl error: %s',
-                curl_error($handle)
-            ));
+            throw new \RuntimeException(sprintf('Curl error: %s', curl_error($handle)));
         }
 
         $httpCode = curl_getinfo($handle, CURLINFO_HTTP_CODE);
 
-        if (!in_array($httpCode, array(200, 201, 204))) {
-            throw new \RuntimeException(sprintf(
-                'Receive code %d instead of 200, 201 or 204. Url: %s. Body: %s',
-                $httpCode,
-                $uri,
-                $response
-            ));
+        if (!\in_array($httpCode, [200, 201, 204])) {
+            throw new \RuntimeException(sprintf('Receive code %d instead of 200, 201 or 204. Url: %s. Body: %s', $httpCode, $uri, $response));
         }
 
         curl_close($handle);
@@ -68,18 +60,18 @@ class CurlClient implements HttpClient
     {
         $handle = curl_init();
 
-        curl_setopt_array($handle, array(
-            CURLOPT_HTTPHEADER     => array('Content-Type: application/json'),
-            CURLOPT_PORT           => $this->port,
-            CURLOPT_VERBOSE        => false,
-            CURLOPT_HEADER         => false,
+        curl_setopt_array($handle, [
+            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+            CURLOPT_PORT => $this->port,
+            CURLOPT_VERBOSE => false,
+            CURLOPT_HEADER => false,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_USERPWD        => sprintf(
+            CURLOPT_USERPWD => sprintf(
                 '%s:%s',
                 $this->user,
                 $this->pass
             ),
-        ));
+        ]);
 
         return $handle;
     }

@@ -5,9 +5,8 @@ namespace Bab\RabbitMq;
 interface HttpClient
 {
     /**
-     * @param string     $verb
-     * @param string     $uri
-     * @param array|null $parameters
+     * @param string $verb
+     * @param string $uri
      *
      * @return string response body
      */

@@ -2,11 +2,11 @@
 
 namespace Bab\RabbitMq\Command;
 
+use Bab\RabbitMq\Configuration;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Bab\RabbitMq\Configuration;
 
 class VhostMappingCreateCommand extends BaseCommand
 {
@@ -39,5 +39,7 @@ class VhostMappingCreateCommand extends BaseCommand
         }
 
         $vhostManager->createMapping($configuration);
+
+        return 0;
     }
 }

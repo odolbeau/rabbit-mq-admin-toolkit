@@ -2,17 +2,16 @@
 
 namespace Bab\RabbitMq\Command;
 
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Swarrot\Broker\MessageProvider\PeclPackageMessageProvider;
-use Swarrot\Broker\MessagePublisher\MessagePublisherInterface;
-use Swarrot\Broker\MessagePublisher\PeclPackageMessagePublisher;
-use Swarrot\Processor\ProcessorInterface;
 use Swarrot\Broker\Message;
+use Swarrot\Broker\MessageProvider\PeclPackageMessageProvider;
+use Swarrot\Broker\MessagePublisher\PeclPackageMessagePublisher;
 use Swarrot\Consumer;
+use Swarrot\Processor\ProcessorInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class MessageMoveCommand extends Command
 {
@@ -69,7 +68,7 @@ class MessageMoveCommand extends Command
 
         $messageProvider = new PeclPackageMessageProvider($queue);
 
-        $options = array();
+        $options = [];
         $stack = (new \Swarrot\Processor\Stack\Builder());
         if (0 !== $max = (int) $input->getOption('max-messages')) {
             $stack->push('Swarrot\Processor\MaxMessages\MaxMessagesProcessor');
@@ -82,10 +81,12 @@ class MessageMoveCommand extends Command
 
         $consumer = new Consumer($messageProvider, $processor);
         $consumer->consume($options);
+
+        return 0;
     }
 
     /**
-     * getChannel
+     * getChannel.
      *
      * @param string $connectionName
      *
@@ -93,7 +94,7 @@ class MessageMoveCommand extends Command
      */
     public function getChannel($connectionName, $vhost)
     {
-        $file = rtrim(getenv('HOME'), '/') . '/.rabbitmq_admin_toolkit';
+        $file = rtrim(getenv('HOME'), '/').'/.rabbitmq_admin_toolkit';
         if (!file_exists($file)) {
             throw new \InvalidArgumentException('Can\'t find ~/.rabbitmq_admin_toolkit file');
         }
@@ -131,13 +132,13 @@ class MoveProcessor implements ProcessorInterface
 
     public function __construct(\AMQPChannel $channel, $exchange, $routingKey)
     {
-        $this->channel    = $channel;
-        $this->exchange   = $exchange;
+        $this->channel = $channel;
+        $this->exchange = $exchange;
         $this->routingKey = $routingKey;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function process(Message $message, array $options)
     {
@@ -150,7 +151,7 @@ class MoveProcessor implements ProcessorInterface
     }
 
     /**
-     * getMessagePublisher
+     * getMessagePublisher.
      *
      * @param string $name
      *

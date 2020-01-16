@@ -23,5 +23,7 @@ class VhostResetCommand extends BaseCommand
     {
         $vhostManager = $this->getVhostManager($input, $output, $input->getArgument('vhost'));
         $vhostManager->resetVhost();
+
+        return 0;
     }
 }
