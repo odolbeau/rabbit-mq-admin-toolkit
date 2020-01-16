@@ -9,7 +9,7 @@ class RetryExchangeCanBeCreatedTest extends TestCase
 {
     private $specification;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->specification = new RetryExchangeCanBeCreated();
     }
