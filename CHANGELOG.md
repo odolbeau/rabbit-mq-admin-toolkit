@@ -5,6 +5,27 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [4.1.0]
+
+### Added
+
+* Support symfony 5
+
+### Removed
+
+* Support for symfony < 4.3
+* Support for PHP < 7.2
+
+### Changed
+
+* Use swarrot to send messages instead of the VhostManager.
+* Use PSR-4 instead of PSR-1
+
+### Fixed
+
+* Now support / in vhost name
+* Deal with incorrect / empty queues config
+
 ## [4.0.2]
 
 ### Added
@@ -91,7 +112,8 @@ If you have more than 3 retries, update the regex accordingly.
 
 ## [1.0.0] - 2014-09-06
 
-[Unreleased]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v4.0.2...HEAD
+[Unreleased]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v4.1.0...HEAD
+[4.1.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v4.0.2...v4.1.0
 [4.0.2]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v4.0.1...v4.0.2
 [4.0.1]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v4.0.0...v4.0.1
 [4.0.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.2.0...v4.0.0
