@@ -14,7 +14,7 @@ use Symfony\Component\Console\Question\Question;
 
 class BaseCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->addOption('connection', 'c', InputOption::VALUE_REQUIRED, 'Connection name (if you use a ~/.rabbitmq_admin_toolkit file)')
@@ -25,14 +25,7 @@ class BaseCommand extends Command
         ;
     }
 
-    /**
-     * getVhostManager.
-     *
-     * @param string $vhost
-     *
-     * @return VhostManager
-     */
-    protected function getVhostManager(InputInterface $input, OutputInterface $output, $vhost)
+    protected function getVhostManager(InputInterface $input, OutputInterface $output, string $vhost): VhostManager
     {
         $credentials = $this->getCredentials($input, $output);
 
@@ -49,12 +42,7 @@ class BaseCommand extends Command
         return $vhostManager;
     }
 
-    /**
-     * getCredentials.
-     *
-     * @return array
-     */
-    protected function getCredentials(InputInterface $input, OutputInterface $output)
+    protected function getCredentials(InputInterface $input, OutputInterface $output): array
     {
         if (null !== $connection = $input->getOption('connection')) {
             $file = rtrim(getenv('HOME'), '/').'/.rabbitmq_admin_toolkit';

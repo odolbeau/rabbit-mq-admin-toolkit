@@ -10,7 +10,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class VhostMappingCreateCommand extends BaseCommand
 {
-    protected function configure()
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure(): void
     {
         parent::configure();
 
@@ -23,7 +26,10 @@ class VhostMappingCreateCommand extends BaseCommand
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $configuration = new Configuration\Yaml($input->getArgument('filepath'));
 

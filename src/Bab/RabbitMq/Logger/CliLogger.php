@@ -14,7 +14,10 @@ class CliLogger extends AbstractLogger
         $this->output = $output;
     }
 
-    public function log($level, $message, array $context = [])
+    /**
+     * {@inheritdoc}
+     */
+    public function log($level, $message, array $context = []): void
     {
         $this->output->writeln($message);
     }

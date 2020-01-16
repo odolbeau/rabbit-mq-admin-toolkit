@@ -13,7 +13,7 @@ class MessageGetCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 
@@ -31,7 +31,7 @@ class MessageGetCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(sprintf(
             'Get %d messages from queue "%s"',
@@ -48,7 +48,7 @@ class MessageGetCommand extends Command
         $queue->setName($input->getArgument('queue'));
 
         $noRequeue = $input->getOption('no-requeue');
-        $nbMessages = $input->getOption('nb-messages');
+        $nbMessages = (int) $input->getOption('nb-messages');
         for ($i = 0; $i < $nbMessages; ++$i) {
             if ($noRequeue) {
                 $message = $queue->get(AMQP_AUTOACK);
@@ -68,14 +68,7 @@ class MessageGetCommand extends Command
         return 0;
     }
 
-    /**
-     * getChannel.
-     *
-     * @param string $connectionName
-     *
-     * @return \AMQPChannel
-     */
-    public function getChannel($connectionName, $vhost)
+    public function getChannel(string $connectionName, string $vhost): \AMQPChannel
     {
         $file = rtrim(getenv('HOME'), '/').'/.rabbitmq_admin_toolkit';
         if (!file_exists($file)) {

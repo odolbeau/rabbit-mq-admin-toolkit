@@ -10,7 +10,9 @@ abstract class Action implements \Bab\RabbitMq\Action
 {
     use LoggerAwareTrait;
 
+    /** @var HttpClient */
     protected $httpClient;
+    /** @var string */
     protected $vhost;
 
     public function __construct(HttpClient $httpClient)
@@ -22,31 +24,24 @@ abstract class Action implements \Bab\RabbitMq\Action
     /**
      * {@inheritdoc}
      */
-    public function setVhost($vhost)
+    public function setVhost(string $vhost): void
     {
         $this->vhost = $vhost;
     }
 
-    /**
-     * @param string     $verb
-     * @param string     $uri
-     * @param array|null $parameters
-     *
-     * @return string
-     */
-    protected function query($verb, $uri, $parameters)
+    protected function query(string $verb, string $uri, array $parameters = []): string
     {
         $this->ensureVhostDefined();
 
         return $this->httpClient->query($verb, $uri, $parameters);
     }
 
-    protected function log($message)
+    protected function log(string $message): void
     {
         $this->logger->info($message);
     }
 
-    private function ensureVhostDefined()
+    private function ensureVhostDefined(): void
     {
         if (empty($this->vhost)) {
             throw new \RuntimeException('Vhost must be defined');

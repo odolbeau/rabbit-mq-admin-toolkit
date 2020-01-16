@@ -15,7 +15,7 @@ class MessageSenderCommand extends BaseCommand
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 
@@ -33,7 +33,7 @@ class MessageSenderCommand extends BaseCommand
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(sprintf(
             'Send messages to exchange "%s" with routingKey "%s" (vhost: "%s")',
@@ -99,7 +99,7 @@ class MessageSenderCommand extends BaseCommand
         return 0;
     }
 
-    public function getChannel($input, $output, $vhost)
+    public function getChannel(InputInterface $input, OutputInterface $output, string $vhost): \AMQPChannel
     {
         $credentials = $this->getCredentials($input, $output);
 

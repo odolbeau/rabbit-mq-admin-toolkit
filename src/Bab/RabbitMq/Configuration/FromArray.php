@@ -6,12 +6,16 @@ use Bab\RabbitMq\Configuration;
 
 class FromArray implements Configuration
 {
+    /** @var array */
     private $config;
+    /** @var string */
     private $vhost;
+    /** @var bool */
     private $hasDeadLetterExchange;
+    /** @var bool */
     private $hasUnroutableExchange;
 
-    public function __construct($configuration)
+    public function __construct(array $configuration)
     {
         $this->vhost = key($configuration);
         $this->config = current($configuration);
@@ -31,7 +35,7 @@ class FromArray implements Configuration
     /**
      * {@inheritdoc}
      */
-    public function getVhost()
+    public function getVhost(): string
     {
         return $this->vhost;
     }
@@ -39,7 +43,7 @@ class FromArray implements Configuration
     /**
      * {@inheritdoc}
      */
-    public function hasDeadLetterExchange()
+    public function hasDeadLetterExchange(): bool
     {
         return $this->hasDeadLetterExchange;
     }
@@ -47,7 +51,7 @@ class FromArray implements Configuration
     /**
      * {@inheritdoc}
      */
-    public function hasUnroutableExchange()
+    public function hasUnroutableExchange(): bool
     {
         return $this->hasUnroutableExchange;
     }
@@ -55,7 +59,7 @@ class FromArray implements Configuration
     /**
      * {@inheritdoc}
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return \array_key_exists($offset, $this->config);
     }
@@ -71,7 +75,7 @@ class FromArray implements Configuration
     /**
      * {@inheritdoc}
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         throw new \LogicException('You shall not update configuration');
     }
@@ -79,7 +83,7 @@ class FromArray implements Configuration
     /**
      * {@inheritdoc}
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         throw new \LogicException('No need to unset');
     }

@@ -2,9 +2,10 @@ includes:
     - phpstan-baseline.neon
 
 parameters:
-    level: max
+    level: 6
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
     paths:
         - src
     excludes_analyse:

@@ -4,11 +4,5 @@ namespace Bab\RabbitMq;
 
 interface HttpClient
 {
-    /**
-     * @param string $verb
-     * @param string $uri
-     *
-     * @return string response body
-     */
-    public function query($verb, $uri, array $parameters = null);
+    public function query(string $verb, string $uri, array $parameters = null): string;
 }

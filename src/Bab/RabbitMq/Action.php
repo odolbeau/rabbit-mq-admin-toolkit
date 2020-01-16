@@ -4,42 +4,13 @@ namespace Bab\RabbitMq;
 
 interface Action
 {
-    /**
-     * @param string $name
-     * @param array  $parameters
-     *
-     * @return void
-     */
-    public function createExchange($name, $parameters);
+    public function createExchange(string $name, array $parameters): void;
 
-    /**
-     * @param string $name
-     * @param array  $parameters
-     *
-     * @return void
-     */
-    public function createQueue($name, $parameters);
+    public function createQueue(string $name, array $parameters): void;
 
-    /**
-     * @param string $name
-     * @param string $queue
-     * @param string $routingKey
-     *
-     * @return void
-     */
-    public function createBinding($name, $queue, $routingKey, array $arguments = []);
+    public function createBinding(string $name, string $queue, string $routingKey, array $arguments = []): void;
 
-    /**
-     * @param string $user
-     *
-     * @return void
-     */
-    public function setPermissions($user, array $parameters = []);
+    public function setPermissions(string $user, array $parameters = []): void;
 
-    /**
-     * @param string $vhost
-     *
-     * @return void
-     */
-    public function setVhost($vhost);
+    public function setVhost(string $vhost): void;
 }
