@@ -59,11 +59,13 @@ class MessageGetCommand extends Command
             if (false === $message) {
                 $output->writeln('No more messages in queue.');
 
-                return;
+                return 0;
             }
 
             $output->writeln(print_r($message, true));
         }
+
+        return 0;
     }
 
     /**

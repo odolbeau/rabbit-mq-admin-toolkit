@@ -46,5 +46,7 @@ class QueuePurgeCommand extends BaseCommand
 
             $vhostManager->purge($queue);
         }
+
+        return 0;
     }
 }

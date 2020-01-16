@@ -39,5 +39,7 @@ class VhostMappingCreateCommand extends BaseCommand
         }
 
         $vhostManager->createMapping($configuration);
+
+        return 0;
     }
 }

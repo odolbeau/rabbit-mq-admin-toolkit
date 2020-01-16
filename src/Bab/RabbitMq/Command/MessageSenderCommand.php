@@ -95,6 +95,8 @@ class MessageSenderCommand extends BaseCommand
 
             return 1;
         }
+
+        return 0;
     }
 
     public function getChannel($input, $output, $vhost)

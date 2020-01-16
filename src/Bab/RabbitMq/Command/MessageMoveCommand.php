@@ -81,6 +81,8 @@ class MessageMoveCommand extends Command
 
         $consumer = new Consumer($messageProvider, $processor);
         $consumer->consume($options);
+
+        return 0;
     }
 
     /**

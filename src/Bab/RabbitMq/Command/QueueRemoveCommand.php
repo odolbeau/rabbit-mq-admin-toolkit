@@ -54,5 +54,7 @@ class QueueRemoveCommand extends BaseCommand
         if (false === $hasQueueRemoved) {
             $output->writeln('<info>No queue match the specified pattern</info>.');
         }
+
+        return 0;
     }
 }
