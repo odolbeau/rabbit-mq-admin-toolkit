@@ -15,8 +15,13 @@
         "phpunit/phpunit": "^8.4"
     },
     "autoload": {
-        "psr-0": {
-            "Bab\\RabbitMq": "src"
+        "psr-4": {
+            "Bab\\RabbitMq\\": "src/Bab/RabbitMq/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bab\\RabbitMq\\Tests\\": "tests/"
         }
     },
     "bin": ["rabbit"],

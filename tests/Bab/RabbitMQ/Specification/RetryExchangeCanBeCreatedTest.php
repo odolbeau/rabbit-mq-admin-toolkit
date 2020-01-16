@@ -1,7 +1,8 @@
 <?php
 
-namespace Bab\RabbitMq;
+namespace Bab\RabbitMq\Tests\Specification;
 
+use Bab\RabbitMq\Configuration;
 use Bab\RabbitMq\Specification\RetryExchangeCanBeCreated;
 use PHPUnit\Framework\TestCase;
 

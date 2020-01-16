@@ -1,6 +1,6 @@
 <?php
 
-namespace Bab\RabbitMq\Configuration;
+namespace Bab\RabbitMq\Tests\Configuration;
 
 use Prophecy\Argument;
 use Bab\RabbitMq\Configuration;
