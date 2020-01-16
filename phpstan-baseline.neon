@@ -86,16 +86,6 @@ parameters:
 			path: src/Bab/RabbitMq/Command/MessageGetCommand.php
 
 		-
-			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MessageGetCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src/Bab/RabbitMq/Command/MessageGetCommand.php
-
-		-
-			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MessageGetCommand\\:\\:execute\\(\\) should return int but empty return statement found\\.$#"
-			count: 1
-			path: src/Bab/RabbitMq/Command/MessageGetCommand.php
-
-		-
 			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MessageGetCommand\\:\\:getChannel\\(\\) has parameter \\$vhost with no typehint specified\\.$#"
 			count: 1
 			path: src/Bab/RabbitMq/Command/MessageGetCommand.php
@@ -157,11 +147,6 @@ parameters:
 
 		-
 			message: "#^Cannot cast array\\<string\\>\\|bool\\|string\\|null to int\\.$#"
-			count: 1
-			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
-
-		-
-			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MessageMoveCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
 			count: 1
 			path: src/Bab/RabbitMq/Command/MessageMoveCommand.php
 
@@ -256,11 +241,6 @@ parameters:
 			path: src/Bab/RabbitMq/Command/MessageSenderCommand.php
 
 		-
-			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MessageSenderCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src/Bab/RabbitMq/Command/MessageSenderCommand.php
-
-		-
 			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\MessageSenderCommand\\:\\:getChannel\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Bab/RabbitMq/Command/MessageSenderCommand.php
@@ -301,11 +281,6 @@ parameters:
 			path: src/Bab/RabbitMq/Command/QueuePurgeCommand.php
 
 		-
-			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\QueuePurgeCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src/Bab/RabbitMq/Command/QueuePurgeCommand.php
-
-		-
 			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\QueueRemoveCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Bab/RabbitMq/Command/QueueRemoveCommand.php
@@ -326,11 +301,6 @@ parameters:
 			path: src/Bab/RabbitMq/Command/QueueRemoveCommand.php
 
 		-
-			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\QueueRemoveCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src/Bab/RabbitMq/Command/QueueRemoveCommand.php
-
-		-
 			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\VhostMappingCreateCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Bab/RabbitMq/Command/VhostMappingCreateCommand.php
@@ -341,22 +311,12 @@ parameters:
 			path: src/Bab/RabbitMq/Command/VhostMappingCreateCommand.php
 
 		-
-			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\VhostMappingCreateCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
-			count: 1
-			path: src/Bab/RabbitMq/Command/VhostMappingCreateCommand.php
-
-		-
 			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\VhostResetCommand\\:\\:configure\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: src/Bab/RabbitMq/Command/VhostResetCommand.php
 
 		-
 			message: "#^Parameter \\#3 \\$vhost of method Bab\\\\RabbitMq\\\\Command\\\\BaseCommand\\:\\:getVhostManager\\(\\) expects string, array\\<string\\>\\|string\\|null given\\.$#"
-			count: 1
-			path: src/Bab/RabbitMq/Command/VhostResetCommand.php
-
-		-
-			message: "#^Method Bab\\\\RabbitMq\\\\Command\\\\VhostResetCommand\\:\\:execute\\(\\) should return int but return statement is missing\\.$#"
 			count: 1
 			path: src/Bab/RabbitMq/Command/VhostResetCommand.php
 
