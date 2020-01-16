@@ -2,16 +2,15 @@
 
 namespace Bab\RabbitMq\Command;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Bab\RabbitMq\VhostManager;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Question\Question;
 use Bab\RabbitMq\Action\RealAction;
 use Bab\RabbitMq\HttpClient\CurlClient;
 use Bab\RabbitMq\Logger\CliLogger;
+use Bab\RabbitMq\VhostManager;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\Question;
 
 class BaseCommand extends Command
 {
@@ -29,9 +28,7 @@ class BaseCommand extends Command
     /**
      * getVhostManager.
      *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
-     * @param string          $vhost
+     * @param string $vhost
      *
      * @return VhostManager
      */
@@ -54,9 +51,6 @@ class BaseCommand extends Command
 
     /**
      * getCredentials.
-     *
-     * @param InputInterface  $input
-     * @param OutputInterface $output
      *
      * @return array
      */

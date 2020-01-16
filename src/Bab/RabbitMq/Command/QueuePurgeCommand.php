@@ -3,8 +3,8 @@
 namespace Bab\RabbitMq\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class QueuePurgeCommand extends BaseCommand
@@ -31,11 +31,8 @@ class QueuePurgeCommand extends BaseCommand
         $vhostManager = $this->getVhostManager($input, $output, $input->getArgument('vhost'));
 
         // Test pattern
-        if (null !== $pattern && false === preg_match($pattern, "")) {
-            throw new \InvalidArgumentException(sprintf(
-                'Invalid pattern: "%s".',
-                $pattern
-            ));
+        if (null !== $pattern && false === preg_match($pattern, '')) {
+            throw new \InvalidArgumentException(sprintf('Invalid pattern: "%s".', $pattern));
         }
 
         foreach ($vhostManager->getQueues() as $queue) {
@@ -48,6 +45,6 @@ class QueuePurgeCommand extends BaseCommand
             ));
 
             $vhostManager->purge($queue);
-        };
+        }
     }
 }

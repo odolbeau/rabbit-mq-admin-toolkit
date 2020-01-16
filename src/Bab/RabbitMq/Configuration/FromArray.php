@@ -29,7 +29,7 @@ class FromArray implements Configuration
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getVhost()
     {
@@ -37,7 +37,7 @@ class FromArray implements Configuration
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasDeadLetterExchange()
     {
@@ -45,7 +45,7 @@ class FromArray implements Configuration
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function hasUnroutableExchange()
     {
@@ -53,23 +53,23 @@ class FromArray implements Configuration
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function offsetExists($offset)
     {
-        return array_key_exists($offset, $this->config);
+        return \array_key_exists($offset, $this->config);
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function offsetGet($offset)
     {
-        return isset($this->config[$offset]) ? $this->config[$offset] :  null;
+        return isset($this->config[$offset]) ? $this->config[$offset] : null;
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function offsetSet($offset, $value)
     {
@@ -77,7 +77,7 @@ class FromArray implements Configuration
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function offsetUnset($offset)
     {

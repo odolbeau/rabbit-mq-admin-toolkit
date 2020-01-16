@@ -2,8 +2,8 @@
 
 namespace Bab\RabbitMq\Logger;
 
-use Symfony\Component\Console\Output\OutputInterface;
 use Psr\Log\AbstractLogger;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class CliLogger extends AbstractLogger
 {
@@ -14,7 +14,7 @@ class CliLogger extends AbstractLogger
         $this->output = $output;
     }
 
-    public function log($level, $message, array $context = array())
+    public function log($level, $message, array $context = [])
     {
         $this->output->writeln($message);
     }
