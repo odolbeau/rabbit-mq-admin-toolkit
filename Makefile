@@ -9,7 +9,10 @@ cs-fix:
 cs-lint:
 	@docker run --rm -v $(DIR):/project -w /project $(QA_IMAGE) php-cs-fixer fix --diff-format udiff --dry-run -vvv
 
-static: cs-lint
+phpstan:
+	@docker run --rm -v $(DIR):/project -w /project $(QA_IMAGE) phpstan analyze
+
+static: cs-lint phpstan
 
 test: static
 	@vendor/bin/phpunit
