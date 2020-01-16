@@ -15,7 +15,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class MessageMoveCommand extends Command
 {
-    protected function configure()
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure(): void
     {
         parent::configure();
 
@@ -35,7 +38,10 @@ class MessageMoveCommand extends Command
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $output->writeln(sprintf(
             'Move messages from queue "%s" (vhost: "%s") to exchange "%s" with routingKey "%s" (vhost: "%s")',
@@ -85,14 +91,7 @@ class MessageMoveCommand extends Command
         return 0;
     }
 
-    /**
-     * getChannel.
-     *
-     * @param string $connectionName
-     *
-     * @return \AMQPChannel
-     */
-    public function getChannel($connectionName, $vhost)
+    public function getChannel(string $connectionName, string $vhost): \AMQPChannel
     {
         $file = rtrim(getenv('HOME'), '/').'/.rabbitmq_admin_toolkit';
         if (!file_exists($file)) {
@@ -124,13 +123,14 @@ class MessageMoveCommand extends Command
 
 class MoveProcessor implements ProcessorInterface
 {
-    protected $channel;
-    protected $exchange;
-    protected $routingKey;
+    private $channel;
+    private $exchange;
+    private $routingKey;
 
-    protected $publishers = [];
+    /** @var array */
+    private $publishers = [];
 
-    public function __construct(\AMQPChannel $channel, $exchange, $routingKey)
+    public function __construct(\AMQPChannel $channel, string $exchange, string $routingKey)
     {
         $this->channel = $channel;
         $this->exchange = $exchange;
@@ -148,16 +148,11 @@ class MoveProcessor implements ProcessorInterface
         $routingKey = $this->routingKey ?: $properties['routing_key'];
 
         $this->getMessagePublisher($exchange)->publish(new Message($message->getBody()), $routingKey);
+
+        return null;
     }
 
-    /**
-     * getMessagePublisher.
-     *
-     * @param string $name
-     *
-     * @return PeclPackageMessagePublisher
-     */
-    protected function getMessagePublisher($name)
+    protected function getMessagePublisher(string $name): PeclPackageMessagePublisher
     {
         if (isset($this->publishers[$name])) {
             return $this->publishers[$name];

@@ -12,7 +12,8 @@ class VhostManager
 {
     use LoggerAwareTrait;
 
-    protected $credentials;
+    private $credentials;
+    private $action;
     private $httpClient;
 
     public function __construct(array $credentials, Action $action, HttpClient $httpClient)
@@ -25,12 +26,7 @@ class VhostManager
         $this->logger = new NullLogger();
     }
 
-    /**
-     * Resets vhost.
-     *
-     * @return void
-     */
-    public function resetVhost()
+    public function resetVhost(): void
     {
         $vhost = $this->credentials['vhost'];
         $this->log(sprintf('Delete vhost: <info>%s</info>', $vhost));
@@ -53,12 +49,7 @@ class VhostManager
         ]);
     }
 
-    /**
-     * Creates mapping.
-     *
-     * @return void
-     */
-    public function createMapping(Configuration $config)
+    public function createMapping(Configuration $config): void
     {
         $this->createBaseStructure($config);
         $this->createExchanges($config);
@@ -66,7 +57,124 @@ class VhostManager
         $this->setPermissions($config);
     }
 
-    private function createBaseStructure(Configuration $config)
+    public function getQueues(): array
+    {
+        $informations = json_decode($this->query('GET', '/api/queues/'.$this->credentials['vhost']), true);
+        $queues = [];
+        foreach ($informations as $information) {
+            $queues[] = $information['name'];
+        }
+
+        return $queues;
+    }
+
+    public function remove(string $queue): void
+    {
+        $this->query('DELETE', '/api/queues/'.$this->credentials['vhost'].'/'.$queue);
+    }
+
+    public function purge(string $queue): void
+    {
+        $this->query('DELETE', '/api/queues/'.$this->credentials['vhost'].'/'.$queue.'/contents');
+    }
+
+    protected function createExchange(string $exchange, array $parameters = []): void
+    {
+        $this->action->createExchange($exchange, $parameters);
+    }
+
+    protected function createQueue(string $queue, array $parameters = []): void
+    {
+        $this->action->createQueue($queue, $parameters);
+    }
+
+    protected function createBinding(string $exchange, string $queue, string $routingKey = null, array $arguments = []): void
+    {
+        $this->action->createBinding($exchange, $queue, $routingKey, $arguments);
+    }
+
+    protected function createUnroutable(): void
+    {
+        $this->createExchange('unroutable', [
+            'type' => 'fanout',
+            'durable' => true,
+        ]);
+        $this->createQueue('unroutable', [
+            'auto_delete' => 'false',
+            'durable' => true,
+        ]);
+        $this->createBinding('unroutable', 'unroutable');
+    }
+
+    protected function createDlExchange(): void
+    {
+        $this->createExchange('dl', [
+            'type' => 'direct',
+            'durable' => true,
+            'arguments' => [
+                'alternate-exchange' => 'unroutable',
+            ],
+        ]);
+    }
+
+    protected function createRetryExchange(): void
+    {
+        $this->createExchange('retry', [
+            'durable' => true,
+            'type' => 'topic',
+            'arguments' => [
+                'alternate-exchange' => 'unroutable',
+            ],
+        ]);
+    }
+
+    protected function createDelayExchange(): void
+    {
+        $this->createExchange('delay', [
+            'durable' => true,
+        ]);
+    }
+
+    protected function setPermissions(Configuration $config): void
+    {
+        if (!empty($config['permissions'])) {
+            foreach ($config['permissions'] as $user => $userPermissions) {
+                $parameters = $this->extractPermissions($userPermissions);
+                $this->action->setPermissions($user, $parameters);
+            }
+        }
+    }
+
+    private function extractPermissions(array $userPermissions = []): array
+    {
+        $permissions = [
+            'configure' => '',
+            'read' => '',
+            'write' => '',
+        ];
+
+        if (!empty($userPermissions)) {
+            foreach (array_keys($permissions) as $permission) {
+                if (!empty($userPermissions[$permission])) {
+                    $permissions[$permission] = $userPermissions[$permission];
+                }
+            }
+        }
+
+        return $permissions;
+    }
+
+    protected function query(string $method, string $url, array $parameters = null): string
+    {
+        return $this->httpClient->query($method, $url, $parameters);
+    }
+
+    protected function log(string $message): void
+    {
+        $this->logger->info($message);
+    }
+
+    private function createBaseStructure(Configuration $config): void
     {
         $this->log(sprintf('With DL: <info>%s</info>', true === $config->hasDeadLetterExchange() ? 'true' : 'false'));
 
@@ -91,7 +199,7 @@ class VhostManager
         }
     }
 
-    private function createExchanges(Configuration $config)
+    private function createExchanges(Configuration $config): void
     {
         foreach ($config['exchanges'] as $name => $parameters) {
             $currentWithUnroutable = $config->hasUnroutableExchange();
@@ -112,7 +220,7 @@ class VhostManager
         }
     }
 
-    private function createQueues(Configuration $config)
+    private function createQueues(Configuration $config): void
     {
         if (!isset($config['queues']) || 0 === \count($config['queues'])) {
             return;
@@ -151,9 +259,8 @@ class VhostManager
 
             $this->createQueue($name, $parameters);
 
-            $withDelay = false;
+            $delay = null;
             if (isset($parameters['delay'])) {
-                $withDelay = true;
                 $delay = (int) $parameters['delay'];
 
                 $this->createQueue($name.'_delay_'.$delay, [
@@ -211,12 +318,12 @@ class VhostManager
                         'routing_key' => $parts[1],
                     ];
                 }
-                $this->createUserBinding($name, $binding, $withDelay ? $delay : false);
+                $this->createUserBinding($name, $binding, $delay);
             }
         }
     }
 
-    private function createUserBinding($queueName, array $bindingDefinition, $delay = false)
+    private function createUserBinding(string $queueName, array $bindingDefinition, int $delay = null): void
     {
         $defaultParameterValues = [
             'routing_key' => null,
@@ -236,235 +343,8 @@ class VhostManager
             $arguments['x-match'] = $parameters['x-match'];
         }
 
-        $bindingName = false !== $delay ? $queueName.'_delay_'.$delay : $queueName;
+        $bindingName = null !== $delay ? $queueName.'_delay_'.$delay : $queueName;
 
         $this->createBinding($parameters['exchange'], $bindingName, $parameters['routing_key'], $arguments);
-    }
-
-    /**
-     * getQueues.
-     *
-     * @return array
-     */
-    public function getQueues()
-    {
-        $informations = json_decode($this->query('GET', '/api/queues/'.$this->credentials['vhost']), true);
-        $queues = [];
-        foreach ($informations as $information) {
-            $queues[] = $information['name'];
-        }
-
-        return $queues;
-    }
-
-    /**
-     * Publish a message into a specific queue
-     * related to the current vhost.
-     *
-     * @param string $exchangeName
-     * @param string $routingKey
-     * @param string $message
-     *
-     * @throws \RuntimeException if an error occured during the publication
-     *
-     * @deprecated
-     */
-    public function publishMessage($exchangeName, $routingKey, $message)
-    {
-        @trigger_error('Sending messages using the VhostManager is deprecated. Use Swarrot instead, which has better performance when sending multiple messages.', E_USER_DEPRECATED);
-
-        $informations = $this->query('POST', sprintf(
-            '/api/exchanges/%s/%s/publish',
-            $this->credentials['vhost'],
-            $exchangeName
-        ), [
-            'properties' => [],
-            'routing_key' => $routingKey,
-            'payload' => $message,
-            'payload_encoding' => 'string',
-        ]);
-
-        $decodedInformations = json_decode($informations, true);
-
-        if (isset($decodedInformations['routed']) && true === $decodedInformations['routed']) {
-            return;
-        }
-
-        throw new \RuntimeException('Unable to send that message into rabbit.');
-    }
-
-    /**
-     * remove.
-     *
-     * @param string $queue
-     *
-     * @return void
-     */
-    public function remove($queue)
-    {
-        $this->query('DELETE', '/api/queues/'.$this->credentials['vhost'].'/'.$queue);
-    }
-
-    /**
-     * purge.
-     *
-     * @param string $queue
-     *
-     * @return void
-     */
-    public function purge($queue)
-    {
-        $this->query('DELETE', '/api/queues/'.$this->credentials['vhost'].'/'.$queue.'/contents');
-    }
-
-    /**
-     * createExchange.
-     *
-     * @param string $exchange
-     *
-     * @return void
-     */
-    protected function createExchange($exchange, array $parameters = [])
-    {
-        $this->action->createExchange($exchange, $parameters);
-    }
-
-    /**
-     * createQueue.
-     *
-     * @param string $queue
-     *
-     * @return void
-     */
-    protected function createQueue($queue, array $parameters = [])
-    {
-        $this->action->createQueue($queue, $parameters);
-    }
-
-    /**
-     * createBinding.
-     *
-     * @param string $exchange
-     * @param string $queue
-     * @param string $routingKey
-     *
-     * @return void
-     */
-    protected function createBinding($exchange, $queue, $routingKey = null, array $arguments = [])
-    {
-        $this->action->createBinding($exchange, $queue, $routingKey, $arguments);
-    }
-
-    /**
-     * createUnroutable.
-     *
-     * @return void
-     */
-    protected function createUnroutable()
-    {
-        $this->createExchange('unroutable', [
-            'type' => 'fanout',
-            'durable' => true,
-        ]);
-        $this->createQueue('unroutable', [
-            'auto_delete' => 'false',
-            'durable' => true,
-        ]);
-        $this->createBinding('unroutable', 'unroutable');
-    }
-
-    /**
-     * @return void
-     */
-    protected function createDlExchange()
-    {
-        $this->createExchange('dl', [
-            'type' => 'direct',
-            'durable' => true,
-            'arguments' => [
-                'alternate-exchange' => 'unroutable',
-            ],
-        ]);
-    }
-
-    /**
-     * @return void
-     */
-    protected function createRetryExchange()
-    {
-        $this->createExchange('retry', [
-            'durable' => true,
-            'type' => 'topic',
-            'arguments' => [
-                'alternate-exchange' => 'unroutable',
-            ],
-        ]);
-    }
-
-    /**
-     * @return void
-     */
-    protected function createDelayExchange()
-    {
-        $this->createExchange('delay', [
-            'durable' => true,
-        ]);
-    }
-
-    /**
-     * setPermissions.
-     *
-     * @return void
-     */
-    protected function setPermissions(Configuration $config)
-    {
-        if (!empty($config['permissions'])) {
-            foreach ($config['permissions'] as $user => $userPermissions) {
-                $parameters = $this->extractPermissions($userPermissions);
-                $this->action->setPermissions($user, $parameters);
-            }
-        }
-    }
-
-    /**
-     * extractPermissions.
-     *
-     * @return array
-     */
-    private function extractPermissions(array $userPermissions = [])
-    {
-        $permissions = [
-            'configure' => '',
-            'read' => '',
-            'write' => '',
-        ];
-
-        if (!empty($userPermissions)) {
-            foreach (array_keys($permissions) as $permission) {
-                if (!empty($userPermissions[$permission])) {
-                    $permissions[$permission] = $userPermissions[$permission];
-                }
-            }
-        }
-
-        return $permissions;
-    }
-
-    /**
-     * query.
-     *
-     * @param string $method
-     * @param string $url
-     *
-     * @return string response body
-     */
-    protected function query($method, $url, array $parameters = null)
-    {
-        return $this->httpClient->query($method, $url, $parameters);
-    }
-
-    protected function log($message)
-    {
-        $this->logger->info($message);
     }
 }

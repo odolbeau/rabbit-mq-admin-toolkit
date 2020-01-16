@@ -16,12 +16,9 @@ class RetryExchangeCanBeCreatedTest extends TestCase
     }
 
     /**
-     * @param $expected
-     * @param array $arrayConfig
-     *
      * @dataProvider provideConfig
      */
-    public function testItCreatesAnExchange($expected, array $arrayConfig)
+    public function testItCreatesAnExchange(bool $expected, array $arrayConfig)
     {
         $config = new Configuration\FromArray($arrayConfig);
         $this->assertEquals($expected, $this->specification->isSatisfiedBy($config));

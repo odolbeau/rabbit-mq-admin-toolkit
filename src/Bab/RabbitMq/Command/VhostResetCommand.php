@@ -8,7 +8,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class VhostResetCommand extends BaseCommand
 {
-    protected function configure()
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure(): void
     {
         parent::configure();
 
@@ -19,7 +22,10 @@ class VhostResetCommand extends BaseCommand
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $vhostManager = $this->getVhostManager($input, $output, $input->getArgument('vhost'));
         $vhostManager->resetVhost();

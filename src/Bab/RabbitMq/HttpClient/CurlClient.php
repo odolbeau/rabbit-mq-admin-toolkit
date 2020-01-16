@@ -11,7 +11,7 @@ class CurlClient implements HttpClient
     private $user;
     private $pass;
 
-    public function __construct($host, $port, $user, $pass)
+    public function __construct(string $host, int $port, string $user, string $pass)
     {
         $this->host = $host;
         $this->port = $port;
@@ -22,9 +22,22 @@ class CurlClient implements HttpClient
     /**
      * {@inheritdoc}
      */
-    public function query($verb, $uri, array $parameters = null)
+    public function query(string $verb, string $uri, array $parameters = null): string
     {
-        $handle = $this->getHandle();
+        $handle = curl_init();
+
+        curl_setopt_array($handle, [
+            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
+            CURLOPT_PORT => $this->port,
+            CURLOPT_VERBOSE => false,
+            CURLOPT_HEADER => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_USERPWD => sprintf(
+                '%s:%s',
+                $this->user,
+                $this->pass
+            ),
+        ]);
 
         curl_setopt($handle, CURLOPT_URL, $this->host.$uri);
 
@@ -54,25 +67,5 @@ class CurlClient implements HttpClient
         curl_close($handle);
 
         return $response;
-    }
-
-    protected function getHandle()
-    {
-        $handle = curl_init();
-
-        curl_setopt_array($handle, [
-            CURLOPT_HTTPHEADER => ['Content-Type: application/json'],
-            CURLOPT_PORT => $this->port,
-            CURLOPT_VERBOSE => false,
-            CURLOPT_HEADER => false,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_USERPWD => sprintf(
-                '%s:%s',
-                $this->user,
-                $this->pass
-            ),
-        ]);
-
-        return $handle;
     }
 }

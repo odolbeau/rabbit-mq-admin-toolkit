@@ -2,12 +2,9 @@
 
 namespace Bab\RabbitMq\Specification;
 
+use Bab\RabbitMq\Configuration;
+
 interface Specification
 {
-    /**
-     * @param $candidate
-     *
-     * @return bool
-     */
-    public function isSatisfiedBy($candidate);
+    public function isSatisfiedBy(Configuration $config): bool;
 }

@@ -11,7 +11,7 @@ jobs:
       - name: Run PHPStan
         uses: docker://jakzal/phpqa:php7.3-alpine
         with:
-          args: phpstan analyze
+          args: phpstan analyze --error-format=baselineNeon
 
   php-cs-fixer:
     name: PHP-CS-Fixer

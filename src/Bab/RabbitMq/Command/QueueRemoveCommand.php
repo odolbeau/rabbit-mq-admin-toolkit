@@ -9,7 +9,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class QueueRemoveCommand extends BaseCommand
 {
-    protected function configure()
+    /**
+     * {@inheritdoc}
+     */
+    protected function configure(): void
     {
         parent::configure();
 
@@ -22,7 +25,10 @@ class QueueRemoveCommand extends BaseCommand
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    /**
+     * {@inheritdoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $pattern = $input->getOption('pattern');
         if (false === $input->getOption('all') && null === $pattern) {

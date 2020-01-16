@@ -6,7 +6,7 @@ use Symfony\Component\Yaml\Parser;
 
 class Yaml extends FromArray
 {
-    public function __construct($filePath)
+    public function __construct(string $filePath)
     {
         if (!file_exists($filePath)) {
             throw new \InvalidArgumentException(sprintf('File "%s" doesn\'t exist', $filePath));

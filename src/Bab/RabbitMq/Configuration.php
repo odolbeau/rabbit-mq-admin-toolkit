@@ -4,18 +4,9 @@ namespace Bab\RabbitMq;
 
 interface Configuration extends \ArrayAccess
 {
-    /**
-     * @return string
-     */
-    public function getVhost();
+    public function getVhost(): string;
 
-    /**
-     * @return bool
-     */
-    public function hasDeadLetterExchange();
+    public function hasDeadLetterExchange(): bool;
 
-    /**
-     * @return bool
-     */
-    public function hasUnroutableExchange();
+    public function hasUnroutableExchange(): bool;
 }
