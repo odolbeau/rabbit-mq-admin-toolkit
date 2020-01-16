@@ -44,6 +44,51 @@ class RetryExchangeCanBeCreatedTest extends TestCase
                 ],
             ],
             [
+                false,
+                [
+                    'my_vhost' => [
+                        'parameters' => [
+                            'with_dl' => false,
+                            'with_unroutable' => false,
+                        ],
+                        'exchanges' => [
+                            'default' => ['type' => 'direct', 'durable' => true],
+                        ],
+                        'queues' => null,
+                    ],
+                ],
+            ],
+            [
+                false,
+                [
+                    'my_vhost' => [
+                        'parameters' => [
+                            'with_dl' => false,
+                            'with_unroutable' => false,
+                        ],
+                        'exchanges' => [
+                            'default' => ['type' => 'direct', 'durable' => true],
+                        ],
+                        'queues' => '',
+                    ],
+                ],
+            ],
+            [
+                false,
+                [
+                    'my_vhost' => [
+                        'parameters' => [
+                            'with_dl' => false,
+                            'with_unroutable' => false,
+                        ],
+                        'exchanges' => [
+                            'default' => ['type' => 'direct', 'durable' => true],
+                        ],
+                        'queues' => [],
+                    ],
+                ],
+            ],
+            [
                 true,
                 [
                     'my_vhost' => [
