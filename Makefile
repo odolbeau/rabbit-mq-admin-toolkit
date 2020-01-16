@@ -1,10 +1,15 @@
-.PHONY: install clean
+.PHONY: ${TARGETS}
 
-install:
-	composer install
+DIR := ${CURDIR}
+QA_IMAGE := jakzal/phpqa:php7.3-alpine
 
-test:
-	vendor/bin/phpunit ./tests
+cs-fix:
+	@docker run --rm -v $(DIR):/project -w /project $(QA_IMAGE) php-cs-fixer fix --diff-format udiff -vvv
 
-clean:
-	vendor/bin/php-cs-fixer fix .
+cs-lint:
+	@docker run --rm -v $(DIR):/project -w /project $(QA_IMAGE) php-cs-fixer fix --diff-format udiff --dry-run -vvv
+
+static: cs-lint
+
+test: static
+	@vendor/bin/phpunit
