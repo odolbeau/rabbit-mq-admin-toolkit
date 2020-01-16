@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [5.0.0]
+
+* Removed deprecated `publishMessage` method from VhostManager.
+* Add strict type hinting
+
 ## [4.1.0]
 
 ### Added
