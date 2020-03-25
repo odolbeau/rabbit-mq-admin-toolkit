@@ -140,7 +140,7 @@ class MoveProcessor implements ProcessorInterface
     /**
      * {@inheritdoc}
      */
-    public function process(Message $message, array $options)
+    public function process(Message $message, array $options): bool
     {
         $properties = $message->getProperties();
 
@@ -149,7 +149,7 @@ class MoveProcessor implements ProcessorInterface
 
         $this->getMessagePublisher($exchange)->publish(new Message($message->getBody()), $routingKey);
 
-        return null;
+        return true;
     }
 
     protected function getMessagePublisher(string $name): PeclPackageMessagePublisher

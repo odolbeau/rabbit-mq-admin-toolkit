@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+* Support swarrot 4.x
+
 ## [5.0.0]
 
 * Removed deprecated `publishMessage` method from VhostManager.
