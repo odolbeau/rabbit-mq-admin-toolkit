@@ -4,10 +4,8 @@ matrix:
     fast_finish: true
     include:
           # Test with lowest dependencies
-        - php: 7.2
-          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="weak"
-
         - php: 7.3
+          env: COMPOSER_FLAGS="--prefer-stable --prefer-lowest" SYMFONY_DEPRECATIONS_HELPER="weak"
         - php: 7.4
         - php: 8.0
 
