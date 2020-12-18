@@ -5,6 +5,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [5.1.0]
+
+### Added
+
+* Support PHP 8
+
 ## [5.0.1]
 
 ### Added
@@ -123,7 +129,8 @@ If you have more than 3 retries, update the regex accordingly.
 
 ## [1.0.0] - 2014-09-06
 
-[Unreleased]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v5.0.1...HEAD
+[Unreleased]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v5.1.0...HEAD
+[5.1.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v5.0.1...v5.1.0
 [5.0.1]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v5.0.0...v5.0.1
 [5.0.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v4.1.0...v5.0.0
 [4.1.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v4.0.2...v4.1.0
