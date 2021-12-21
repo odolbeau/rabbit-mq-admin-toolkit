@@ -6,32 +6,32 @@ parameters:
 			path: src/Bab/RabbitMq/Command/BaseCommand.php
 
 		-
-			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetExists\\(\\) has parameter \\$offset with no typehint specified\\.$#"
+			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetExists\\(\\) has parameter \\$offset with no type specified\\.$#"
 			count: 1
 			path: src/Bab/RabbitMq/Configuration/FromArray.php
 
 		-
-			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetGet\\(\\) has no return typehint specified\\.$#"
+			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetGet\\(\\) has no return type specified\\.$#"
 			count: 1
 			path: src/Bab/RabbitMq/Configuration/FromArray.php
 
 		-
-			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetGet\\(\\) has parameter \\$offset with no typehint specified\\.$#"
+			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetGet\\(\\) has parameter \\$offset with no type specified\\.$#"
 			count: 1
 			path: src/Bab/RabbitMq/Configuration/FromArray.php
 
 		-
-			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetSet\\(\\) has parameter \\$offset with no typehint specified\\.$#"
+			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetSet\\(\\) has parameter \\$offset with no type specified\\.$#"
 			count: 1
 			path: src/Bab/RabbitMq/Configuration/FromArray.php
 
 		-
-			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetSet\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetSet\\(\\) has parameter \\$value with no type specified\\.$#"
 			count: 1
 			path: src/Bab/RabbitMq/Configuration/FromArray.php
 
 		-
-			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetUnset\\(\\) has parameter \\$offset with no typehint specified\\.$#"
+			message: "#^Method Bab\\\\RabbitMq\\\\Configuration\\\\FromArray\\:\\:offsetUnset\\(\\) has parameter \\$offset with no type specified\\.$#"
 			count: 1
 			path: src/Bab/RabbitMq/Configuration/FromArray.php
 
