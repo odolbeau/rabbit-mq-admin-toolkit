@@ -9,9 +9,9 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Run PHPStan
-        uses: docker://jakzal/phpqa:php7.3-alpine
+        uses: docker://jakzal/phpqa:latest
         with:
-          args: phpstan analyze --error-format=baselineNeon
+          args: phpstan analyze
 
   php-cs-fixer:
     name: PHP-CS-Fixer
@@ -19,6 +19,6 @@ jobs:
     steps:
       - uses: actions/checkout@master
       - name: Run PHP-CS-Fixer
-        uses: docker://jakzal/phpqa:php7.3-alpine
+        uses: docker://jakzal/phpqa:latest
         with:
-            args: php-cs-fixer fix --dry-run --diff-format udiff -vvv
+            args: php-cs-fixer fix --dry-run -vvv --diff

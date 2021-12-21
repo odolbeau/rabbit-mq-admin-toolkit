@@ -51,7 +51,7 @@ class MessageSenderCommand extends BaseCommand
         $file = $input->getOption('file');
 
         if (null !== $file) {
-            $messages = file($file, FILE_SKIP_EMPTY_LINES);
+            $messages = file($file, \FILE_SKIP_EMPTY_LINES);
         }
 
         if (!$messages) {
