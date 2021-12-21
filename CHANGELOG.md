@@ -5,6 +5,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [5.2.0]
+
+### Added
+
+* Support Symfony 6.x
+
 ## [5.1.0]
 
 ### Added
@@ -128,25 +134,3 @@ If you have more than 3 retries, update the regex accordingly.
 ## [1.0.1] - 2014-09-09
 
 ## [1.0.0] - 2014-09-06
-
-[Unreleased]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v5.1.0...HEAD
-[5.1.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v5.0.1...v5.1.0
-[5.0.1]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v5.0.0...v5.0.1
-[5.0.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v4.1.0...v5.0.0
-[4.1.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v4.0.2...v4.1.0
-[4.0.2]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v4.0.1...v4.0.2
-[4.0.1]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v4.0.0...v4.0.1
-[4.0.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.2.0...v4.0.0
-[3.2.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.1.2...v3.2.0
-[3.1.2]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.1.1...v3.1.2
-[3.1.1]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.1.0...v3.1.1
-[3.1.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v3.0.0...v3.1.0
-[3.0.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v2.1.0...v3.0.0
-[2.1.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v2.0.2...v2.1.0
-[2.0.2]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v2.0.1...v2.0.2
-[2.0.1]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v2.0.0...v2.0.1
-[2.0.0]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v1.0.4...v2.0.0
-[1.0.4]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v1.0.3...v1.0.4
-[1.0.3]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v1.0.2...v1.0.3
-[1.0.2]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v1.0.1...v1.0.2
-[1.0.1]: https://github.com/odolbeau/rabbit-mq-admin-toolkit/compare/v1.0.0...v1.0.1
