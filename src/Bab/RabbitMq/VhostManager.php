@@ -226,8 +226,15 @@ class VhostManager
             return;
         }
 
+        $defaultDlArguments = [];
+
+        if (isset($config['parameters']['with_dl']['arguments']) && \is_array($config['parameters']['with_dl']['arguments'])) {
+            $defaultDlArguments = $config['parameters']['with_dl']['arguments'];
+        }
+
         foreach ($config['queues'] as $name => $parameters) {
             $currentWithDl = $config->hasDeadLetterExchange();
+            $dlArguments = $defaultDlArguments;
             $retries = [];
 
             $bindings = [];
@@ -238,7 +245,12 @@ class VhostManager
             unset($parameters['bindings']);
 
             if (isset($parameters['with_dl'])) {
-                $currentWithDl = (bool) $parameters['with_dl'];
+                if (isset($parameters['with_dl']['arguments']) && \is_array($parameters['with_dl']['arguments'])) {
+                    $currentWithDl = true;
+                    $dlArguments = $parameters['with_dl']['arguments'];
+                } else {
+                    $currentWithDl = (bool) $parameters['with_dl'];
+                }
                 unset($parameters['with_dl']);
             }
 
@@ -279,7 +291,8 @@ class VhostManager
 
             if ($currentWithDl) {
                 $this->createQueue($name.'_dl', [
-                        'durable' => true,
+                    'durable' => true,
+                    'arguments' => $dlArguments,
                 ]);
 
                 $this->createBinding('dl', $name.'_dl', $name);
