@@ -67,6 +67,7 @@ class FromArray implements Configuration
     /**
      * {@inheritdoc}
      */
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return isset($this->config[$offset]) ? $this->config[$offset] : null;
